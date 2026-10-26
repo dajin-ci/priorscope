@@ -1,0 +1,119 @@
+{
+  "status": "PASSED",
+  "final_level": "Low Overlap",
+  "classify_level": "Low Overlap",
+  "classify_agrees": true,
+  "llm_score": 28,
+  "coverage": {
+    "min": 21.4,
+    "max": 21.4,
+    "uncertain_count": 0,
+    "verdict_counts": {
+      "일치": 0,
+      "유사": 3,
+      "없음": 4,
+      "확인필요": 0
+    },
+    "thresholds": {
+      "high": 70.0,
+      "medium": 30.0
+    }
+  },
+  "mappings": [
+    {
+      "id": "M1",
+      "text": "[1] the OV-AVEBench dataset | 보지 못한 클래스까지 포함하는 개방어휘 AVEL용 세그먼트 단위 수동 주석 데이터셋을 구축함",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "개방어휘 AVEL용 세그먼트 단위 수동 주석 데이터셋 구축은 기존 논문의 공동 임베딩 학습 절차·인코더·손실 설계 요소와 대응되지 않는다.",
+      "demoted_reasons": []
+    },
+    {
+      "id": "M2",
+      "text": "[1] three evaluation metrics | 정확도 외에 세그먼트 수준 및 이벤트 수준 F1을 포함한 평가 지표를 정립함",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "세그먼트 수준 및 이벤트 수준 F1을 포함한 AVEL 평가 지표 정립은 기존 논문의 임베딩 학습 방법 요소와 대응되지 않는다.",
+      "demoted_reasons": []
+    },
+    {
+      "id": "M3",
+      "text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 공통 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출함",
+      "section": "1",
+      "prior_ids": [
+        "P6",
+        "P8"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[1] / P[3.2],[3.3]",
+      "explanation": "사전학습된 ImageBind의 공통 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 활용한다는 점에서 관련되지만, 내 논문은 이를 다운스트림 AVEL에 특징 추출기로 사용하고 기존 논문은 그 공간 자체의 정렬 학습과 임베딩 구성을 제안한다.",
+      "demoted_reasons": []
+    },
+    {
+      "id": "M4",
+      "text": "[1] The training-free baseline then determines predictions by comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 학습 없이 이벤트를 예측함",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 학습 없이 이벤트를 예측하는 추론 규칙은 기존 논문의 공동 임베딩 학습 기법과 직접 대응되지 않는다.",
+      "demoted_reasons": []
+    },
+    {
+      "id": "M5",
+      "text": "[1] The fine-tuning baseline incorporates lightweight temporal layers to encode temporal relations within the audio and visual modalities | 경량 temporal layer를 추가해 오디오·비주얼 내부의 시간 관계를 인코딩함",
+      "section": "1",
+      "prior_ids": [
+        "P7"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[1] / P[3.3]",
+      "explanation": "경량 temporal layer를 추가해 시계열 관계를 인코딩하는 점은 Transformer 계열 구조 사용과 부분적으로 닿아 있으나, 내 논문은 AVEL용 시간 관계 인코딩 모듈이고 기존 논문은 모달리티 인코더 전반의 아키텍처 선택이다.",
+      "demoted_reasons": []
+    },
+    {
+      "id": "M6",
+      "text": "[3.2] the temporal layers are implemented as a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현함",
+      "section": "3.2",
+      "prior_ids": [
+        "P7"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[3.2] / P[3.3]",
+      "explanation": "temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 기존 논문의 Transformer architecture 사용과 구성 요소 수준에서 유사하다.",
+      "demoted_reasons": []
+    },
+    {
+      "id": "M7",
+      "text": "[3.2] we generate the final audio-visual event probability Save by fusing them as follows | 오디오/비주얼 확률을 결합해 최종 오디오-비주얼 이벤트 확률을 생성함",
+      "section": "3.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "오디오/비주얼 확률을 결합해 최종 이벤트 확률을 생성하는 예측 결합 방식은 기존 논문의 임베딩 정렬·투영·손실 요소와 대응되지 않는다.",
+      "demoted_reasons": []
+    }
+  ],
+  "uncertain_items": [],
+  "numeric_checks": [],
+  "expected_result_pairs": [],
+  "issues": [],
+  "not_checked": [
+    {
+      "code": "SEMANTIC_VALIDITY_NOT_CHECKED",
+      "path": "comparison_result.element_mapping",
+      "reason": "기법의 의미상 동일성, 원문 주장 전체의 참·거짓, 근거의 충분성은 규칙 기반으로 판정하지 않습니다."
+    }
+  ]
+}

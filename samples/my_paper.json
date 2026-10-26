@@ -1,0 +1,49 @@
+{
+    "title": [
+        "Towards Open-Vocabulary Audio-Visual Event Localization"
+    ],
+    "language": [
+        "en"
+    ],
+    "research_field": [
+        "컴퓨터비전"
+    ],
+    "problem": [
+        "Most research in this field assumes a closed-set setting, which restricts these models' ability to handle test data containing event categories absent (unseen) during training.",
+        "Recently, a few studies have explored AVEL in an open-set setting, enabling the recognition of unseen events as \"unknown\", but without providing category-specific semantics.",
+        "OV-AVEL requires localizing audio-visual events and predicting explicit categories for both seen and unseen test data at inference."
+    ],
+    "core_techniques": [
+        "[1] the OV-AVEBench dataset | 보지 못한 클래스까지 포함하는 개방어휘 AVEL용 세그먼트 단위 수동 주석 데이터셋을 구축함",
+        "[1] three evaluation metrics | 정확도 외에 세그먼트 수준 및 이벤트 수준 F1을 포함한 평가 지표를 정립함",
+        "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 공통 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출함",
+        "[1] The training-free baseline then determines predictions by comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 학습 없이 이벤트를 예측함",
+        "[1] The fine-tuning baseline incorporates lightweight temporal layers to encode temporal relations within the audio and visual modalities | 경량 temporal layer를 추가해 오디오·비주얼 내부의 시간 관계를 인코딩함",
+        "[3.2] the temporal layers are implemented as a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현함",
+        "[3.2] we generate the final audio-visual event probability Save by fusing them as follows | 오디오/비주얼 확률을 결합해 최종 오디오-비주얼 이벤트 확률을 생성함"
+    ],
+    "experiment_results": [
+        "OV-AVEBench | Training-free (our) | Avg. | 46.6 | ↑ | [Table 2]",
+        "OV-AVEBench | Fine-tuning (our) | Avg. | 57.8 | ↑ | [Table 2]",
+        "OV-AVEBench | Fine-tuning (our), seen | Avg. | 62.9 | ↑ | [Table 2]",
+        "OV-AVEBench | Fine-tuning (our), unseen | Avg. | 55.8 | ↑ | [Table 2]",
+        "OV-AVEBench | Fine-tuning (our), with other | Avg. | 57.8 | ↑ | [Table 3]",
+        "OV-AVEBench | Fine-tuning (our), Sqrt (Eq. 2) | Avg. | 57.8 | ↑ | [Table 4]",
+        "OV-AVEBench | Fine-tuning (our), Temporal layer | Avg. | 57.8 | ↑ | [Table 5]",
+        "OV-AVEBench | Fine-tuning (our), 100% training data | Avg. | 57.8 | ↑ | [Table 6]",
+        "AVE | fine-tuning (our), zero-shot | Acc. | 61.9 | ↑ | [Table All]"
+    ],
+    "keywords": [
+        "Open-Vocabulary Audio-Visual Event Localization",
+        "OV-AVEBench",
+        "ImageBind",
+        "training-free baseline",
+        "fine-tuning baseline"
+    ],
+    "contributions": [
+        "[3] We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos.",
+        "[3] To facilitate this new task, we construct the OV-AVEBench dataset, which includes segment-level manual event annotations.",
+        "[3] Besides, we establish standard evaluation metrics that encompass typical accuracy, as well as segment-level and event-level Fl-scores.",
+        "[3] We present two simple baselines: one adopting a training-free paradigm, which can be upgraded through further fine-tuning on available training data."
+    ]
+}
