@@ -14,6 +14,7 @@ from pathlib import Path
 import streamlit as st
 
 from ids import assign_ids
+from validator import derive_weaknesses
 
 BASE_DIR = Path(__file__).resolve().parent
 SAMPLES_DIR = BASE_DIR / "samples"
@@ -144,6 +145,62 @@ def render_novel_overlap(verified):
             st.info("겹치는 요소가 없습니다.")
 
 
+def _fmt_diff(diff, unit):
+    return f"{diff:+.4g} {unit or ''}".strip() if isinstance(diff, (int, float)) else "-"
+
+
+def render_weakness(verified, ids):
+    st.subheader("부족한 점 (기존 논문 대비)")
+    st.caption(
+        "코드가 대응표와 정량 비교에서 계산한 항목입니다. "
+        "기존 논문에만 있는 구성이 모두 약점은 아니므로, 내 연구 범위에 필요한지 판단해 보세요."
+    )
+    # 예전 결과 파일(weaknesses 없음)도 같은 함수로 계산해 보여준다.
+    weak = verified.get("weaknesses") or derive_weaknesses(verified, ids)
+
+    st.markdown(f"**기존 논문에만 있는 요소** · {weak['counts']['prior_only']}개")
+    if not weak["prior_only_complete"]:
+        st.warning(
+            "대응 판정이 빠진 요소("
+            + ", ".join(weak["uncertain_without_prior"])
+            + ")가 있어, 이 목록에 실제로는 대응되는 요소가 섞여 있을 수 있습니다."
+        )
+    if weak["prior_only"]:
+        st.dataframe(
+            [
+                {
+                    "P": p["id"],
+                    "기존 논문 요소": p["text"],
+                    "근거 위치": f"P[{p['section']}]" if p.get("section") else "-",
+                    "판단 이유": p["reason"],
+                }
+                for p in weak["prior_only"]
+            ],
+            hide_index=True,
+        )
+    else:
+        st.success("기존 논문의 모든 요소가 내 논문 요소와 대응됩니다.")
+
+    st.markdown(f"**동일 조건에서 수치가 낮은 실험** · {weak['counts']['inferior_results']}개")
+    if weak["inferior_results"]:
+        st.dataframe(
+            [
+                {
+                    "데이터셋": r.get("dataset") or "-",
+                    "지표": r.get("metric") or "-",
+                    "내 수치": f"{r['my_result_id']}: {r.get('my_value') or '-'}",
+                    "기존 수치": f"{r['prior_result_id']}: {r.get('prior_value') or '-'}",
+                    "차이(내−기존)": _fmt_diff(r.get("difference"), r.get("difference_unit")),
+                    "근거": f"{r['my_text']}  ↔  {r['prior_text']}",
+                }
+                for r in weak["inferior_results"]
+            ],
+            hide_index=True,
+        )
+    else:
+        st.info("동일 조건에서 기존 논문보다 낮은 실험 결과가 없습니다. (비교 가능한 실험이 없는 경우 포함)")
+
+
 def render_numeric(verified, ids):
     st.subheader("정량 비교")
     checks = verified.get("numeric_checks") or []
@@ -161,8 +218,10 @@ def render_numeric(verified, ids):
             "내 결과": f"{c['my_result_id']}. {rm_text.get(c['my_result_id'], '')}",
             "기존 결과": f"{c['prior_result_id']}. {rp_text.get(c['prior_result_id'], '')}",
             "결과": c["outcome"],
-            "차이(내−기존)": f"{diff:+.4g} {unit}".strip() if diff is not None else "-",
+            "차이(내−기존)": _fmt_diff(diff, unit),
+            "조건(에이전트)": c.get("agent_condition") or "-",
             "사유": c.get("reason") or "",
+            "경고": " / ".join(c.get("warnings") or []),
         })
     st.dataframe(rows, hide_index=True)
 
@@ -209,6 +268,8 @@ def render_result(bundle, key_prefix):
     st.divider()
     render_mapping_table(verified, ids)
     render_novel_overlap(verified)
+    st.divider()
+    render_weakness(verified, ids)
     st.divider()
     render_numeric(verified, ids)
     st.divider()

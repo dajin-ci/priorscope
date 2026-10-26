@@ -1,17 +1,17 @@
 {
   "status": "PASSED",
-  "final_level": "Low Overlap",
+  "final_level": "Medium Overlap",
   "classify_level": "Low Overlap",
-  "classify_agrees": true,
+  "classify_agrees": false,
   "llm_score": 28,
   "coverage": {
-    "min": 21.4,
-    "max": 21.4,
+    "min": 35.7,
+    "max": 35.7,
     "uncertain_count": 0,
     "verdict_counts": {
       "일치": 0,
-      "유사": 3,
-      "없음": 4,
+      "유사": 5,
+      "없음": 2,
       "확인필요": 0
     },
     "thresholds": {
@@ -22,92 +22,107 @@
   "mappings": [
     {
       "id": "M1",
-      "text": "[1] the OV-AVEBench dataset | 보지 못한 클래스까지 포함하는 개방어휘 AVEL용 세그먼트 단위 수동 주석 데이터셋을 구축함",
+      "text": "[1] OV-AVEBench dataset | seen/unseen을 포함한 개방어휘 AVEL용 세그먼트 수준 수동 주석 데이터셋 구축",
       "section": "1",
       "prior_ids": [],
       "agent_verdict": "없음",
       "final_verdict": "없음",
-      "evidence": "검토 범위 P1~P8",
-      "explanation": "개방어휘 AVEL용 세그먼트 단위 수동 주석 데이터셋 구축은 기존 논문의 공동 임베딩 학습 절차·인코더·손실 설계 요소와 대응되지 않는다.",
+      "evidence": "검토 범위 P1~P12",
+      "explanation": "OV-AVEBench는 개방어휘 AVEL용 세그먼트 수준 수동 주석 데이터셋 구축이고, 기존 논문은 새로운 AVEL 데이터셋이나 세그먼트 주석 데이터셋 구축을 다루지 않는다.",
       "demoted_reasons": []
     },
     {
       "id": "M2",
-      "text": "[1] three evaluation metrics | 정확도 외에 세그먼트 수준 및 이벤트 수준 F1을 포함한 평가 지표를 정립함",
+      "text": "[1] three evaluation metrics | 정확도 외에 segment-level/event-level F1을 포함한 평가 지표 정립",
       "section": "1",
       "prior_ids": [],
       "agent_verdict": "없음",
       "final_verdict": "없음",
-      "evidence": "검토 범위 P1~P8",
-      "explanation": "세그먼트 수준 및 이벤트 수준 F1을 포함한 AVEL 평가 지표 정립은 기존 논문의 임베딩 학습 방법 요소와 대응되지 않는다.",
+      "evidence": "검토 범위 P1~P12",
+      "explanation": "정확도와 segment-level/event-level F1을 포함한 AVEL 평가 지표 정립은 기존 논문의 공동 임베딩 학습 기법과 대응되지 않는다.",
       "demoted_reasons": []
     },
     {
       "id": "M3",
-      "text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 공통 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출함",
+      "text": "[1] the unified multimodal spacefrom the pretrained ImageBind model | 사전학습 ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출",
       "section": "1",
       "prior_ids": [
-        "P6",
-        "P8"
+        "P1",
+        "P2",
+        "P12"
       ],
       "agent_verdict": "유사",
       "final_verdict": "유사",
       "evidence": "M[1] / P[3.2],[3.3]",
-      "explanation": "사전학습된 ImageBind의 공통 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 활용한다는 점에서 관련되지만, 내 논문은 이를 다운스트림 AVEL에 특징 추출기로 사용하고 기존 논문은 그 공간 자체의 정렬 학습과 임베딩 구성을 제안한다.",
+      "explanation": "내 논문은 사전학습 ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출하고, 기존 논문은 이미지 기준의 단일 공동 임베딩과 각 모달리티 인코더 및 사전학습 초기화를 제시한다. 표현 공간 활용이라는 점에서 대응되지만 목적은 다운스트림 적용과 표현 학습으로 다르다.",
       "demoted_reasons": []
     },
     {
       "id": "M4",
-      "text": "[1] The training-free baseline then determines predictions by comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 학습 없이 이벤트를 예측함",
+      "text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 학습 없이 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 baseline",
       "section": "1",
-      "prior_ids": [],
-      "agent_verdict": "없음",
-      "final_verdict": "없음",
-      "evidence": "검토 범위 P1~P8",
-      "explanation": "오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 학습 없이 이벤트를 예측하는 추론 규칙은 기존 논문의 공동 임베딩 학습 기법과 직접 대응되지 않는다.",
+      "prior_ids": [
+        "P2"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[1] / P[3.2]",
+      "explanation": "내 논문은 오디오-텍스트와 비주얼-텍스트 특징 유사도의 일치성을 비교해 학습 없이 예측하고, 기존 논문은 모달리티들을 같은 임베딩 공간에 인코딩한다. 공통적으로 교차 모달 유사도를 활용하지만, 하나는 다운스트림 추론 규칙이고 다른 하나는 표현 학습 구성이다.",
       "demoted_reasons": []
     },
     {
       "id": "M5",
-      "text": "[1] The fine-tuning baseline incorporates lightweight temporal layers to encode temporal relations within the audio and visual modalities | 경량 temporal layer를 추가해 오디오·비주얼 내부의 시간 관계를 인코딩함",
+      "text": "[1] lightweight temporal layers | 오디오/비주얼 모달리티 내부의 시간 관계를 인코딩하는 경량 temporal layer 도입",
       "section": "1",
       "prior_ids": [
-        "P7"
+        "P6"
       ],
       "agent_verdict": "유사",
       "final_verdict": "유사",
       "evidence": "M[1] / P[3.3]",
-      "explanation": "경량 temporal layer를 추가해 시계열 관계를 인코딩하는 점은 Transformer 계열 구조 사용과 부분적으로 닿아 있으나, 내 논문은 AVEL용 시간 관계 인코딩 모듈이고 기존 논문은 모달리티 인코더 전반의 아키텍처 선택이다.",
+      "explanation": "내 논문은 오디오/비주얼 모달리티 내부의 시간 관계를 인코딩하는 경량 temporal layer를 도입하고, 기존 논문은 모든 모달리티 인코더에 Transformer 아키텍처를 사용한다. Transformer 계열 구조를 쓴다는 점은 비슷하지만 목적과 배치 수준이 다르다.",
       "demoted_reasons": []
     },
     {
       "id": "M6",
-      "text": "[3.2] the temporal layers are implemented as a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현함",
+      "text": "[3.2] a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현",
       "section": "3.2",
       "prior_ids": [
-        "P7"
+        "P6"
       ],
       "agent_verdict": "유사",
       "final_verdict": "유사",
       "evidence": "M[3.2] / P[3.3]",
-      "explanation": "temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 기존 논문의 Transformer architecture 사용과 구성 요소 수준에서 유사하다.",
+      "explanation": "temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 기존 논문의 Transformer encoder 사용과 구조적으로 유사하다. 다만 내 논문은 다운스트림 temporal modeling용 추가 층이고, 기존 논문은 각 모달리티의 기본 인코더 아키텍처이다.",
       "demoted_reasons": []
     },
     {
       "id": "M7",
-      "text": "[3.2] we generate the final audio-visual event probability Save by fusing them as follows | 오디오/비주얼 확률을 결합해 최종 오디오-비주얼 이벤트 확률을 생성함",
+      "text": "[3.2] optimizing the cross entropy loss between Save and Y' | 융합된 오디오-비주얼 이벤트 확률에 대해 교차엔트로피로 미세조정",
       "section": "3.2",
-      "prior_ids": [],
-      "agent_verdict": "없음",
-      "final_verdict": "없음",
-      "evidence": "검토 범위 P1~P8",
-      "explanation": "오디오/비주얼 확률을 결합해 최종 이벤트 확률을 생성하는 예측 결합 방식은 기존 논문의 임베딩 정렬·투영·손실 요소와 대응되지 않는다.",
+      "prior_ids": [
+        "P3",
+        "P4"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[3.2] / P[3.2]",
+      "explanation": "내 논문은 융합된 오디오-비주얼 이벤트 확률에 대해 cross entropy loss로 미세조정하고, 기존 논문은 임베딩과 인코더를 InfoNCE 및 대칭 손실로 최적화한다. 둘 다 학습 손실 최적화를 사용하지만 손실 종류와 학습 목표가 다르다.",
       "demoted_reasons": []
     }
   ],
   "uncertain_items": [],
   "numeric_checks": [],
   "expected_result_pairs": [],
+  "result_warnings": {
+    "duplicates": {
+      "R-P16": "R-P9"
+    },
+    "invalid_locations": [
+      "R-M11",
+      "R-M12"
+    ]
+  },
   "issues": [],
   "not_checked": [
     {

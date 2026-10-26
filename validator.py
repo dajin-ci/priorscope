@@ -1264,6 +1264,70 @@ def _first(data: Mapping[str, Any], key: str) -> Any:
     return value
 
 
+
+##################################################
+# 약점 리포트 (피드백 반영: "부족한 부분과 판단 이유를 근거와 함께")
+##################################################
+
+def derive_weaknesses(verified: Mapping[str, Any], ids: Mapping[str, Any]) -> dict[str, Any]:
+    """검증 결과에서 '기존 논문 대비 부족할 수 있는 점'을 코드로 파생한다. LLM 관여 없음.
+
+    1) prior_only: 어떤 M 요소의 대응에도 등장하지 않은 P 요소
+       = 기존 논문에는 있는데 내 논문에서 다루지 않은 구성.
+       확인필요 행에 등장한 P도 '다룬 것'으로 보고 빼서, 약점을 과장하지 않는다.
+    2) inferior_results: 동일 조건이 확인된 쌍 중 내 수치가 낮은(열세) 실험.
+
+    verified 는 validate() 결과(또는 예전 validated_result.json), ids 는 assign_ids() 결과.
+    예전 결과 파일에도 쓸 수 있게 mappings / numeric_checks 만 사용한다.
+    """
+    mappings = verified.get("mappings") or []
+    referenced = {pid for m in mappings for pid in (m.get("prior_ids") or [])}
+    uncertain_without_prior = [
+        m["id"] for m in mappings if m.get("final_verdict") == "확인필요" and not m.get("prior_ids")
+    ]
+
+    prior_only = [
+        {
+            "id": p["id"],
+            "text": p["text"],
+            "section": p.get("section"),
+            "reason": "내 논문의 어떤 핵심 기술 요소(M)와도 대응되지 않았습니다.",
+        }
+        for p in ids.get("P", [])
+        if p["id"] not in referenced
+    ]
+
+    rm_text = {r["id"]: r["text"] for r in ids.get("RM", [])}
+    rp_text = {r["id"]: r["text"] for r in ids.get("RP", [])}
+    inferior_results = []
+    for check in verified.get("numeric_checks") or []:
+        if check.get("outcome") != "열세":
+            continue
+        my_id, prior_id = check["my_result_id"], check["prior_result_id"]
+        inferior_results.append({
+            "my_result_id": my_id,
+            "prior_result_id": prior_id,
+            "my_text": rm_text.get(my_id, ""),
+            "prior_text": rp_text.get(prior_id, ""),
+            "dataset": check.get("dataset"),
+            "metric": check.get("my_metric") or check.get("prior_metric"),
+            "my_value": check.get("my_value"),
+            "prior_value": check.get("prior_value"),
+            "difference": check.get("absolute_difference"),
+            "difference_unit": check.get("absolute_difference_unit"),
+            "reason": "동일 조건에서 내 수치가 기존 논문보다 낮습니다.",
+        })
+
+    return {
+        "prior_only": prior_only,
+        "inferior_results": inferior_results,
+        # 대응 판정이 빠진 M이 있으면 prior_only 목록이 실제보다 길 수 있다.
+        "prior_only_complete": not uncertain_without_prior,
+        "uncertain_without_prior": uncertain_without_prior,
+        "counts": {"prior_only": len(prior_only), "inferior_results": len(inferior_results)},
+    }
+
+
 def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compare_result: Mapping[str, Any]) -> dict[str, Any]:
     """세 JSON을 받아 화면에서 바로 쓸 검증 결과를 돌려준다.
 
@@ -1350,7 +1414,7 @@ def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compar
     classify_agrees = final_level != "판정 보류" and classify_level == final_level
 
     counts = Counter(r["final_verdict"] for r in mappings)
-    return {
+    result = {
         "status": report["status"],
         "final_level": final_level,
         "classify_level": classify_level,
@@ -1377,3 +1441,5 @@ def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compar
         "issues": report["issues"],
         "not_checked": report["not_checked"],
     }
+    result["weaknesses"] = derive_weaknesses(result, ids)
+    return result

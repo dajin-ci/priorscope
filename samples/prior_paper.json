@@ -9,19 +9,23 @@
         "컴퓨터비전"
     ],
     "problem": [
-        "Learning a true joint embedding across many modalities is infeasible with existing approaches because they require large quantities of multimodal data where all modalities and combinations co-occur with the same images.",
-        "Existing methods typically align only a single pair or a few visual modality pairs, so the final embeddings are limited to the modality pairs used for training and do not transfer directly across other modality pairs.",
-        "Unlocking zero-shot classification for non-image modalities usually requires explicit paired text supervision for each modality."
+        "Learning a true joint embedding across many modalities requires acquiring all types and combinations of paired data with the same set of images, which is infeasible.",
+        "Final embeddings from prior multimodal methods are limited to the modality pairs used for training, so embeddings like video-audio cannot directly support image-text tasks and vice versa.",
+        "There is an absence of large quantities of multimodal data where all modalities are present together."
     ],
     "core_techniques": [
-        "[3.2] IMAGEBIND uses pairs of modalities (I,M), where I represents images and M is another modality, to learn a single joint embedding. | 이미지를 공통 축으로 사용해 각 모달리티를 하나의 공동 임베딩 공간에 정렬하는 학습 절차",
-        "[3.2] we encode them into normalized embeddings: qi = f(Ii) and ki = g(Mi) where f,g are deep networks. | 이미지와 다른 모달리티를 각각 심층 인코더로 정규화된 임베딩으로 인코딩하는 구조",
-        "[3.2] are optimized using an InfoNCE [54] loss | 이미지-모달리티 쌍 정렬을 위해 InfoNCE 대조학습 손실을 사용하는 학습 기법",
-        "[3.2] we use a symmetric loss LI,M + LM,I. | 양방향 정렬을 위해 대칭 손실을 함께 사용하는 학습 방식",
-        "[3.2] IMAGEBIND uses modalities paired with images, i.e., pairs of the form (I,M) to align each the embeddings from each modality M to those from images. | 모든 모달리티를 이미지와의 쌍으로만 학습해 이미지 임베딩에 정렬하는 바인딩 전략",
-        "[3.2] We observe an emer- gent behavior in the embedding space that aligns two pairs of modalities (M1, M2) even though we only train using the pairs (I,M1) and (I,M2). | 이미지와 각각만 정렬했는데도 보지 않은 모달리티 쌍 사이 정렬이 발생하는 emergent alignment 메커니즘",
-        "[3.3] We use a Transformer architec- ture [73] for all the modality encoders. | 전 모달리티 인코더를 Transformer 계열로 통일한 아키텍처 설계",
-        "[3.3] We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 모달리티 인코더 뒤에 선형 프로젝션 헤드를 붙여 고정 차원 임베딩으로 투영하는 모듈"
+        "[3.2] IMAGEBIND uses pairs of modalities (I,M), where I represents images and M is another modality, to learn a single joint embedding. | 이미지를 기준 축으로 삼아 각 다른 모달리티를 이미지와 정렬해 단일 공동 임베딩을 학습한다.",
+        "[3.2] Given an image Ii and its corresponding obser-<br/>vation in the other modality Mi, we encode them into nor-<br/>malized embeddings: qi = f(Ii) and ki = g(Mi) where<br/>f,g are deep networks. | 이미지와 타 모달리티를 각각 심층 네트워크로 정규화 임베딩으로 인코딩한다.",
+        "[3.2] The embeddings and the encoders are optimized using an InfoNCE [54] loss | 임베딩과 인코더를 InfoNCE 대조학습 손실로 최적화한다.",
+        "[3.2] In practice, we use a symmetric loss LI,M + LM,I. | 양방향 정렬을 위해 대칭 손실을 사용한다.",
+        "[3.2] we only train using the pairs (I,M1) and (I,M2) | 서로 직접 짝지어지지 않은 모달리티들 사이에도 이미지 매개 정렬로 emergent alignment가 나타나도록 학습한다.",
+        "[3.3] We use a Transformer architec-<br/>ture [73] for all the modality encoders. | 모든 모달리티 인코더에 Transformer 아키텍처를 사용한다.",
+        "[3.3] We use the Vision Transformer (ViT) [13] for images. | 이미지 인코더로 ViT를 사용한다.",
+        "[3.3] We follow [22] for encoding audio and convert a 2 second audio sampled at 16kHz into spectrograms using 128 mel-spectrogram bins. | 오디오는 16kHz 2초 구간을 128-bin mel-spectrogram으로 변환해 인코딩한다.",
+        "[3.3] We treat ther-<br/>mal images and depth images as one-channel images | 열영상과 깊이 영상을 1채널 이미지로 처리한다.",
+        "[3.3] We extract the IMU signal consisting of accelerometer and gyroscope measurements across the X, Y, and Z axes. | IMU는 3축 가속도계·자이로스코프 신호를 사용한다.",
+        "[3.3] We add a modality-<br/>specific linear projection head on each encoder to obtain a<br/>fixed size d dimensional embedding | 각 모달리티 인코더 뒤에 선형 projection head를 붙여 고정 차원 임베딩을 만든다.",
+        "[3.3] this setup allows us to also initialize a subset of the encoders using pretrained models, e.g., the image and text encoder using CLIP [60] or OpenCLIP [30]. | 이미지·텍스트 인코더를 CLIP/OpenCLIP 사전학습 모델로 초기화한다."
     ],
     "experiment_results": [
         "IN1K | IMAGEBIND | top-1 accuracy | 77.7 | ↑ | [Table 2]",
@@ -35,11 +39,11 @@
         "ESC | IMAGEBIND | top-1 accuracy | 66.9 | ↑ | [Table 2]",
         "LLVIP | IMAGEBIND | top-1 accuracy | 63.4 | ↑ | [Table 2]",
         "Ego4D | IMAGEBIND | top-1 accuracy | 25.0 | ↑ | [Table 2]",
-        "Clotho | IMAGEBIND | R@1 | 6.0 | ↑ | [Table 3]",
-        "Clotho | IMAGEBIND | R@10 | 28.4 | ↑ | [Table 3]",
-        "AudioCaps | IMAGEBIND | R@1 | 9.3 | ↑ | [Table 3]",
-        "AudioCaps | IMAGEBIND | R@10 | 42.3 | ↑ | [Table 3]",
-        "ESC | IMAGEBIND | Top-1 | 66.9 | ↑ | [Table 3]",
+        "Clotho | IMAGEBIND emergent retrieval | R@1 | 6.0 | ↑ | [Table 3]",
+        "Clotho | IMAGEBIND emergent retrieval | R@10 | 28.4 | ↑ | [Table 3]",
+        "AudioCaps | IMAGEBIND emergent retrieval | R@1 | 9.3 | ↑ | [Table 3]",
+        "AudioCaps | IMAGEBIND emergent retrieval | R@10 | 42.3 | ↑ | [Table 3]",
+        "ESC | IMAGEBIND emergent retrieval/classification | Top-1 | 66.9 | ↑ | [Table 3]",
         "MSR-VTT | IMAGEBIND, A | R@1 | 6.8 | ↑ | [Table 4]",
         "MSR-VTT | IMAGEBIND, A | R@5 | 18.5 | ↑ | [Table 4]",
         "MSR-VTT | IMAGEBIND, A | R@10 | 27.2 | ↑ | [Table 4]",
@@ -50,15 +54,17 @@
     "keywords": [
         "multimodal learning",
         "joint embedding space",
-        "contrastive learning",
-        "zero-shot classification",
         "cross-modal retrieval",
-        "audio-to-image generation"
+        "zero-shot classification",
+        "contrastive learning",
+        "audio-image generation"
     ],
     "citation_info": [
+        "Girdhar et al., arXiv, 2023",
         "Girdhar et al., arXiv, 2023"
     ],
     "limitations": [
+        "[6] Our image alignment loss can be enriched by using other alignment data, for instance other modalities paired with text, or with each other (e.g. audio with IMU).",
         "[6] Our embeddings are trained without a specific downstream task, and thus lag the performance of specialist models.",
         "[6] Our model is a research prototype and cannot be readily used for real world applications ( Appendix F).",
         "[F] joint embedding may also create unintentional associations.",
