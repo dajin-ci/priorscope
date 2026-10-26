@@ -649,7 +649,19 @@ def _check_mapping_evidence(
             )
         elif p_index is not None:
             covered = _scope_ids(scope_text)
-            if not covered or not set(p_index).issubset(covered):
+            unknown = sorted(covered - set(p_index))
+            if unknown:
+                # 존재하지 않는 P를 검토 범위에 적었다면 다른 입력(예전 PDF)을 보고 판정했을 수 있다.
+                _issue(
+                    report,
+                    "NO_MATCH_SCOPE_UNKNOWN",
+                    "review",
+                    f"{path}.evidence",
+                    "없음 판정의 검토 범위에 원본에 없는 P 번호가 있어 다른 입력을 보고 판정했을 수 있습니다.",
+                    item_id=item_id,
+                    actual=unknown,
+                )
+            elif not covered or not set(p_index).issubset(covered):
                 _issue(
                     report,
                     "NO_MATCH_SCOPE_INCOMPLETE",
@@ -1079,29 +1091,86 @@ def _level_of(percent: float) -> str:
     return _LEVEL_NAMES["Low"]
 
 
+# ---------------------------------------------------------------
+# 실험 결과 표기 정규화
+# Studio가 같은 지표를 "top-1 accuracy" / "Top-1", "Recall@1" / "R@1"처럼
+# 다르게 적어도 같은 지표로 묶는다. 화면에는 원문(*_raw)을 그대로 보여준다.
+# 새 표기를 발견하면 아래 사전에만 한 줄 추가하면 된다. (키는 _compact() 결과)
+# ---------------------------------------------------------------
+_METRIC_ALIASES = {
+    "top1accuracy": "top1",
+    "top1acc": "top1",
+    "acc@1": "top1",
+    "top5accuracy": "top5",
+    "top5acc": "top5",
+    "acc@5": "top5",
+    "accuracy": "acc",
+    "averageprecision": "ap",
+    "meanaverageprecision": "map",
+    "f1score": "f1",
+    "f1": "f1",
+}
+_DATASET_ALIASES = {
+    # 예: "imagenet1k": "in1k", "imagenet": "in1k"  (팀에서 확인 후 추가)
+    "audioset": "asa",
+    "as": "asa",
+}
+_RECALL_PATTERN = re.compile(r"^(?:recall|r)@(\d+)$")
+
+# 근거 위치로 인정하는 형식: [Table 2], [Tab. 3a], [표 2], [Fig. 4], [3.2]
+_LOCATION_PATTERN = re.compile(
+    r"^\[\s*(?:(?:table|tab\.?|표|figure|fig\.?|그림)\s*)?\d+(?:\.\d+)*[a-z]?\s*\]$",
+    re.IGNORECASE,
+)
+
+
+def _compact(text: Any) -> str:
+    # 대소문자·공백·하이픈·밑줄·마침표 차이를 없앤다. "Top-1 Acc." -> "top1acc"
+    return re.sub(r"[\s\-_.]+", "", str(text or "")).lower()
+
+
+def _canon_metric(text: Any) -> str:
+    key = _compact(text)
+    recall = _RECALL_PATTERN.match(key)
+    if recall:
+        return f"r@{recall.group(1)}"
+    return _METRIC_ALIASES.get(key, key)
+
+
+def _canon_dataset(text: Any) -> str:
+    key = _compact(text)
+    return _DATASET_ALIASES.get(key, key)
+
+
 def _parse_result_record(entry: Mapping[str, Any]) -> dict[str, Any]:
-    # "데이터셋 | 실험 설정 | 지표 | 수치 | ↑ | [위치]" 문자열을 수치 비교용 레코드로 바꾼다.
+    # "데이터셋 | 방법·설정 | 지표 | 수치 | ↑ | [위치]" 문자열을 수치 비교용 레코드로 바꾼다.
     parts = [part.strip() for part in str(entry["text"]).split("|")]
     record: dict[str, Any] = {"id": entry["id"], "text": entry["text"]}
     if len(parts) < 5:
         return record  # 형식이 다르면 비교 정보 없이 둔다 -> 수치 비교는 '비교 불가'로 처리된다
     dataset, setting, metric, value, direction = parts[:5]
     number_text = value.replace("%", "").replace(",", "").strip()
+    location = parts[5] if len(parts) > 5 else None
+    canon_metric = _canon_metric(metric)
     record.update({
-        "dataset": dataset,
-        "metric": metric,
-        "conditions": {"setting": setting},
+        # 비교에는 정규화된 값을, 화면에는 원문을 쓴다.
+        "dataset": _canon_dataset(dataset),
+        "metric": canon_metric,
+        "dataset_raw": dataset,
+        "metric_raw": metric,
+        # 2열은 "방법 이름"(Fine-tuning (our) / IMAGEBIND)이라 양쪽이 같을 수 없다.
+        # 그래서 동일 조건 여부는 코드가 문자열로 비교하지 않고,
+        # Compare Agent의 result_pairs 판정(동일 조건/조건 다름)으로 따로 처리한다.
+        "setting": setting,
+        "conditions": {},
         "direction": direction,
         "value": number_text,
-        # 같은 데이터셋·지표끼리만 비교하므로, 지표 이름을 단위로 써서 같은 단위로 취급한다.
-        "unit": "%" if "%" in value else metric,
-        "location": parts[5] if len(parts) > 5 else None,
+        # 같은 데이터셋·지표끼리만 비교하므로, 정규화된 지표 이름을 단위로 쓴다.
+        "unit": "%" if "%" in value else canon_metric,
+        "location": location,
+        "location_valid": bool(location) and bool(_LOCATION_PATTERN.match(location)),
     })
     return record
-
-
-def _norm(text: Any) -> str:
-    return re.sub(r"\s+", " ", str(text or "")).strip().lower()
 
 
 def _expected_result_pairs(rm: list[dict[str, Any]], rp: list[dict[str, Any]]) -> list[list[str]]:
@@ -1111,9 +1180,81 @@ def _expected_result_pairs(rm: list[dict[str, Any]], rp: list[dict[str, Any]]) -
         for a in rm
         for b in rp
         if a.get("dataset") and a.get("metric")
-        and _norm(a.get("dataset")) == _norm(b.get("dataset"))
-        and _norm(a.get("metric")) == _norm(b.get("metric"))
+        and a.get("dataset") == b.get("dataset")
+        and a.get("metric") == b.get("metric")
     ]
+
+
+def _duplicate_results(records: list[dict[str, Any]]) -> dict[str, str]:
+    # 데이터셋·지표·수치가 모두 같은 행은 ablation 표에서 반복 추출된 것으로 본다.
+    # 번호(R-M3 등)는 builder와 맞아야 하므로 지우지 않고, "첫 행의 중복"으로 표시만 한다.
+    seen: dict[tuple, str] = {}
+    duplicates: dict[str, str] = {}
+    for record in records:
+        if not record.get("dataset"):
+            continue
+        key = (record["dataset"], record["metric"], record.get("value"))
+        if key in seen:
+            duplicates[record["id"]] = seen[key]
+        else:
+            seen[key] = record["id"]
+    return duplicates
+
+
+def _pair_labels(compare_result: Mapping[str, Any]) -> dict[tuple[str, str], str]:
+    # result_pairs의 2열(동일 조건 / 조건 다름)을 쌍별로 읽는다.
+    labels: dict[tuple[str, str], str] = {}
+    lines = compare_result.get("result_pairs") if isinstance(compare_result, Mapping) else None
+    for line in lines if _is_sequence(lines) else []:
+        if not isinstance(line, str):
+            continue
+        parts = [part.strip() for part in line.split("|")]
+        match = re.fullmatch(r"(R-M\d+)\s*~\s*(R-P\d+)", parts[0]) if parts else None
+        if match:
+            labels[match.groups()] = parts[1] if len(parts) == 3 else ""
+    return labels
+
+
+def _apply_pair_conditions(
+    numeric_checks: list[dict[str, Any]],
+    records: dict[str, dict[str, Any]],
+    labels: dict[tuple[str, str], str],
+    duplicates: dict[str, str],
+) -> None:
+    # 의미 판단(조건이 같은가)은 Compare Agent가, 수치 판단은 코드가 한다.
+    # 원칙대로 강등만 한다: '동일 조건'이 명시되지 않으면 '비교 불가'로 내린다.
+    for check in numeric_checks:
+        my_id, prior_id = check["my_result_id"], check["prior_result_id"]
+        mine, prior = records.get(my_id, {}), records.get(prior_id, {})
+        check.update({
+            "dataset": mine.get("dataset_raw"),
+            "my_metric": mine.get("metric_raw"),
+            "prior_metric": prior.get("metric_raw"),
+            "my_setting": mine.get("setting"),
+            "prior_setting": prior.get("setting"),
+            "my_value": mine.get("value"),
+            "prior_value": prior.get("value"),
+            "agent_condition": labels.get((my_id, prior_id), ""),
+            "warnings": [],
+        })
+        label = check["agent_condition"]
+        if check["outcome"] != "비교 불가" and "동일 조건" not in label:
+            check.update({
+                "outcome": "비교 불가",
+                "reason": (
+                    "Compare Agent가 실험 조건이 다르다고 판단했습니다."
+                    if "조건 다름" in label
+                    else "실험 조건이 같은지 Compare Agent가 명시하지 않았습니다."
+                ),
+                "absolute_difference": None,
+                "absolute_difference_unit": None,
+                "relative_change_percent": None,
+            })
+        for rid, record in ((my_id, mine), (prior_id, prior)):
+            if record and not record.get("location_valid"):
+                check["warnings"].append(f"{rid}의 근거 위치({record.get('location')})를 확인할 수 없습니다.")
+            if rid in duplicates:
+                check["warnings"].append(f"{rid}는 {duplicates[rid]}와 같은 결과의 중복 추출로 보입니다.")
 
 
 def _first(data: Mapping[str, Any], key: str) -> Any:
@@ -1147,6 +1288,11 @@ def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compar
     }
 
     report = validate_comparison(compare_result, source_records, expected_items)
+
+    # 정량 비교 후처리: 동일 조건 여부(에이전트 판정)·근거 위치·중복 추출을 반영한다.
+    record_by_id = {r["id"]: r for r in rm + rp}
+    duplicates = {**_duplicate_results(rm), **_duplicate_results(rp)}
+    _apply_pair_conditions(report["numeric_checks"], record_by_id, _pair_labels(compare_result), duplicates)
 
     # 1) 대응 행별 문제를 모은다 (경로의 element_mapping[i]로 행을 찾는다)
     problems_by_row: dict[int, list[str]] = {}
@@ -1224,6 +1370,10 @@ def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compar
         ],
         "numeric_checks": report["numeric_checks"],
         "expected_result_pairs": expected_items["result_pairs"],
+        "result_warnings": {
+            "duplicates": duplicates,
+            "invalid_locations": [r["id"] for r in rm + rp if r.get("dataset") and not r.get("location_valid")],
+        },
         "issues": report["issues"],
         "not_checked": report["not_checked"],
     }
