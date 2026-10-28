@@ -13,7 +13,7 @@ from pathlib import Path
 
 import streamlit as st
 
-from ids import assign_ids
+from ids import assign_ids, clean_text
 from validator import derive_weaknesses
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -36,15 +36,15 @@ SHORT_LEVEL = {"High Overlap": "High", "Medium Overlap": "Medium", "Low Overlap"
 def _first(data, key):
     value = data.get(key) if isinstance(data, dict) else None
     if isinstance(value, list):
-        return value[0] if value else None
-    return value
+        value = value[0] if value else None
+    return clean_text(value) if isinstance(value, str) else value
 
 
 def _list(data, key):
     value = data.get(key) if isinstance(data, dict) else None
     if isinstance(value, list):
-        return [str(v) for v in value if str(v).strip()]
-    return [str(value)] if value else []
+        return [clean_text(v) for v in value if str(v).strip()]
+    return [clean_text(value)] if value else []
 
 
 def _level_text(verified):
@@ -117,8 +117,8 @@ def render_mapping_table(verified, ids):
             "내 요소": m["text"],
             "대응 P 요소": prior,
             "판정": VERDICT_BADGE.get(m["final_verdict"], m["final_verdict"]),
-            "근거": m["evidence"],
-            "설명": m["explanation"],
+            "근거": clean_text(m["evidence"]),
+            "설명": clean_text(m["explanation"]),
             "강등 사유": " / ".join(m["demoted_reasons"]),
         })
     st.dataframe(rows, hide_index=True)

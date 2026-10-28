@@ -12,6 +12,7 @@
 from __future__ import annotations
 
 import math
+import os
 import re
 from collections import Counter
 from collections.abc import Mapping, Sequence
@@ -580,8 +581,9 @@ def _check_mapping_evidence(
                 "일치·유사 판정에 기존 논문 P 식별번호가 없습니다.",
                 item_id=item_id,
             )
-        m_sections = re.findall(r"M\[([^\]]+)\]", mapping["evidence"])
-        p_sections = re.findall(r"P\[([^\]]+)\]", mapping["evidence"])
+        # "P[3.2,3.3]"처럼 대괄호 하나에 여러 섹션을 쉼표로 적는 경우도 섹션별로 나눈다.
+        m_sections = [s.strip() for group in re.findall(r"M\[([^\]]+)\]", mapping["evidence"]) for s in group.split(",") if s.strip()]
+        p_sections = [s.strip() for group in re.findall(r"P\[([^\]]+)\]", mapping["evidence"]) for s in group.split(",") if s.strip()]
         # P 섹션은 최소 1개 있어야 한다. 여러 P가 같은 섹션이면 섹션 하나로 함께 인용할 수 있다.
         if not m_sections or (mapping["prior_ids"] and not p_sections):
             _issue(
@@ -1076,6 +1078,11 @@ def validate_comparison(
 HIGH_THRESHOLD = 70.0
 MEDIUM_THRESHOLD = 30.0
 
+# 임베딩 유사도 강등 임계값 (멘토링 10/27). eval/calibrate_similarity.py 로 정한 값을 .env 에 넣는다.
+# 정하지 않으면(None) 유사도는 보고만 하고 판정은 바꾸지 않는다.
+_sim_env = os.getenv("SIMILARITY_DEMOTE_THRESHOLD")
+SIMILARITY_DEMOTE_THRESHOLD: float | None = float(_sim_env) if _sim_env else None
+
 # 판정별 점수. 확인필요는 0~1 사이 어디든 될 수 있으므로 범위로 계산한다.
 _VERDICT_SCORE = {"일치": 1.0, "유사": 0.5, "없음": 0.0}
 
@@ -1328,7 +1335,77 @@ def derive_weaknesses(verified: Mapping[str, Any], ids: Mapping[str, Any]) -> di
     }
 
 
-def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compare_result: Mapping[str, Any]) -> dict[str, Any]:
+
+##################################################
+# 임베딩 유사도 교차 검증 (멘토링 10/27)
+##################################################
+
+def _apply_similarity(
+    mappings: list[dict[str, Any]],
+    ids: Mapping[str, Any],
+    similarity: Mapping[str, Any] | None,
+    demote_threshold: float | None,
+    report: dict[str, Any],
+) -> dict[str, Any]:
+    """similarity.py 결과를 M별 판정에 붙이고, 조건이 맞으면 '없음'을 '확인필요'로 강등한다."""
+    threshold = demote_threshold if demote_threshold is not None else SIMILARITY_DEMOTE_THRESHOLD
+    out: dict[str, Any] = {"available": False, "model": None, "threshold": threshold, "demoted": []}
+    if not similarity:
+        _not_checked(report, "SIMILARITY_UNAVAILABLE", "similarity", "임베딩 유사도 결과가 없어 교차 검증을 하지 않았습니다.")
+        return out
+
+    # 다른 실행의 similarity.json 이 섞이면 쓰지 않는다 (번호 짝 검사).
+    m_ids = [m["id"] for m in ids["M"]]
+    p_ids = [p["id"] for p in ids["P"]]
+    if list(similarity.get("m_ids") or []) != m_ids or list(similarity.get("p_ids") or []) != p_ids:
+        _not_checked(report, "SIMILARITY_MISMATCH", "similarity", "유사도 결과의 M·P 번호가 지금 논문 JSON과 달라 사용하지 않았습니다.")
+        out["mismatch"] = True
+        return out
+
+    out.update({"available": True, "model": similarity.get("model"), "stats": similarity.get("stats")})
+    if threshold is None:
+        _not_checked(report, "SIMILARITY_THRESHOLD_UNSET", "similarity", "유사도 임계값이 정해지지 않아 점수만 보고하고 판정은 바꾸지 않았습니다.")
+
+    matrix = similarity.get("matrix") or {}
+    per_m = {row["id"]: row for row in similarity.get("per_m") or []}
+    for mapping in mappings:
+        row = per_m.get(mapping["id"])
+        if not row:
+            continue
+        cited = [matrix.get(mapping["id"], {}).get(pid) for pid in mapping["prior_ids"]]
+        cited = [c for c in cited if c is not None]
+        mapping["similarity"] = {
+            "best_p": row["best_p"],
+            "max_score": row["max_score"],
+            "top": row.get("top", []),
+            "cited_max": max(cited) if cited else None,
+        }
+        if threshold is not None and mapping["final_verdict"] == "없음" and row["max_score"] >= threshold:
+            mapping["final_verdict"] = "확인필요"
+            mapping["demoted_reasons"] = list(mapping["demoted_reasons"]) + [
+                f"LLM은 없음으로 판정했지만 임베딩 유사도가 높습니다 "
+                f"({row['best_p']} {row['max_score']:.3f} ≥ 임계값 {threshold:.3f})."
+            ]
+            out["demoted"].append(mapping["id"])
+            _issue(
+                report,
+                "SIMILARITY_DEMOTED",
+                "review",
+                "similarity",
+                "LLM의 없음 판정과 임베딩 유사도가 어긋나 확인필요로 강등했습니다.",
+                item_id=mapping["id"],
+                actual=row["max_score"],
+            )
+    return out
+
+
+def validate(
+    my_paper: Mapping[str, Any],
+    prior_paper: Mapping[str, Any],
+    compare_result: Mapping[str, Any],
+    similarity: Mapping[str, Any] | None = None,
+    demote_threshold: float | None = None,
+) -> dict[str, Any]:
     """세 JSON을 받아 화면에서 바로 쓸 검증 결과를 돌려준다.
 
     반환값
@@ -1397,6 +1474,14 @@ def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compar
         }
         mappings.append({"id": m["id"], "text": m["text"], "section": m["section"], **row})
 
+    # 2-1) 임베딩 유사도 교차 검증: LLM이 '없음'인데 코드 유사도가 높으면 확인필요로 강등만 한다.
+    sim_report = _apply_similarity(mappings, ids, similarity, demote_threshold, report)
+    if sim_report["demoted"]:
+        # 유사도 강등은 validate_comparison() 이후에 생긴 이슈라 상태를 다시 계산한다.
+        has_error = any(i["severity"] == "error" for i in report["issues"])
+        report["status"] = "FAILED" if has_error else "NEEDS_REVIEW"
+        report["block_final_decision"] = True
+
     # 3) 커버리지 범위와 등급
     total = len(mappings)
     known = sum(_VERDICT_SCORE.get(r["final_verdict"], 0.0) for r in mappings if r["final_verdict"] != "확인필요")
@@ -1441,5 +1526,6 @@ def validate(my_paper: Mapping[str, Any], prior_paper: Mapping[str, Any], compar
         "issues": report["issues"],
         "not_checked": report["not_checked"],
     }
+    result["similarity"] = sim_report
     result["weaknesses"] = derive_weaknesses(result, ids)
     return result

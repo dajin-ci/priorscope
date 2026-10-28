@@ -15,13 +15,28 @@ import re
 SECTION_PATTERN = re.compile(r"^\s*\[([^\]]+)\]")
 
 
+# Studio Parse가 PDF 줄바꿈을 <br/>로 남기는 경우가 있다. 예: "architec-<br/>ture", "ther-<br/>mal"
+_HYPHEN_BREAK = re.compile(r"(\w)-\s*<br\s*/?>\s*(\w)", re.IGNORECASE)
+_BREAK = re.compile(r"\s*<br\s*/?>\s*", re.IGNORECASE)
+_SPACES = re.compile(r"[ \t]{2,}")
+
+
+def clean_text(text):
+    """줄 끝 하이픈으로 끊긴 단어는 붙이고, 나머지 <br/>는 공백으로 바꾼다."""
+    text = _HYPHEN_BREAK.sub(r"\1\2", str(text))
+    text = _BREAK.sub(" ", text)
+    return _SPACES.sub(" ", text).strip()
+
+
 def as_list(value):
-    """Studio Extract 결과는 배열이지만, 혹시 문자열이나 None이 와도 리스트로 맞춘다."""
+    """Studio Extract 결과는 배열이지만, 혹시 문자열이나 None이 와도 리스트로 맞춘다.
+    원소마다 <br/> 같은 PDF 줄바꿈 흔적도 정리한다."""
     if value is None:
         return []
     if isinstance(value, list):
-        return [str(v).strip() for v in value if str(v).strip()]
-    text = str(value).strip()
+        items = [clean_text(v) for v in value]
+        return [v for v in items if v]
+    text = clean_text(value)
     return [text] if text else []
 
 

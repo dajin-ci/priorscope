@@ -6,10 +6,15 @@ Studio를 호출하지 않는다.
 
 사용법 (프로젝트 폴더에서):
     python check_run.py
+    python check_run.py --log "유사 기준 v2 지시문"   # 점검 후 runs_log.csv 에 한 줄 기록
 """
 
+import argparse
+import csv
+import hashlib
 import inspect
 import json
+import os
 import re
 from datetime import datetime
 from pathlib import Path
@@ -22,6 +27,13 @@ FILES = {
     "compare_result": BASE / "result" / "compare_result.json",
     "validated": BASE / "result" / "validated_result.json",
 }
+
+SIMILARITY = BASE / "result" / "similarity.json"
+RUNS_LOG = BASE / "runs_log.csv"
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--log", metavar="메모", help="점검 후 runs_log.csv 에 이번 실행을 기록")
+ARGS = parser.parse_args()
 
 problems = []
 
@@ -46,8 +58,8 @@ print("\n1. 코드 버전")
 import validator  # noqa: E402
 import compare_builder  # noqa: E402
 
-if hasattr(validator, "_canon_metric") and "NO_MATCH_SCOPE_UNKNOWN" in inspect.getsource(validator):
-    ok("validator.py 최신 (지표 정규화 + 검토 범위 검사 포함)")
+if hasattr(validator, "_apply_similarity") and hasattr(validator, "derive_weaknesses"):
+    ok("validator.py 최신 (약점 리포트 + 임베딩 유사도 교차 검증 포함)")
 else:
     bad("validator.py가 예전 버전입니다. 새 파일로 교체하세요.")
 
@@ -122,7 +134,13 @@ else:
 print("\n4. 검증 결과가 지금 파일로 다시 계산한 값과 같은가")
 # ------------------------------------------------------------
 saved = load(FILES["validated"])
-fresh = validator.validate(my, prior, cmp_)
+sim = load(SIMILARITY) if SIMILARITY.exists() else None
+if sim is not None:
+    if sim.get("m_ids") == [x["id"] for x in ids["M"]] and sim.get("p_ids") == [x["id"] for x in ids["P"]]:
+        ok("similarity.json 번호가 지금 논문 JSON과 맞습니다.")
+    else:
+        bad("similarity.json 이 다른 실행의 결과입니다. python similarity.py 를 다시 실행하세요.")
+fresh = validator.validate(my, prior, cmp_, similarity=sim)
 same = (
     saved.get("final_level") == fresh["final_level"]
     and saved.get("coverage", {}).get("min") == fresh["coverage"]["min"]
@@ -142,6 +160,12 @@ print(f"         등급 {fresh['final_level']} | 커버리지 {fresh['coverage']
 print(f"         Classify {fresh['classify_level']} | 교차 검증 {'일치' if fresh['classify_agrees'] else '불일치'}")
 print(f"         판정 {counts} | status {fresh['status']}")
 print(f"         경고 {json.dumps(fresh['result_warnings'], ensure_ascii=False)}")
+sim_info = fresh.get("similarity") or {}
+if sim_info.get("available"):
+    th = sim_info.get("threshold")
+    print(f"         임베딩 유사도 {sim_info.get('model')} | 임계값 {th if th is not None else '미정(보고만)'} | 강등 {sim_info.get('demoted') or '없음'}")
+else:
+    print("         임베딩 유사도 없음 (python similarity.py 로 계산)")
 
 # ------------------------------------------------------------
 print("\n" + "=" * 60)
@@ -150,3 +174,59 @@ if problems:
 else:
     print("모든 파일이 같은 실행의 짝이고 코드도 최신입니다.")
 print("=" * 60 + "\n")
+
+
+# ------------------------------------------------------------
+# 실행 기록 (멘토링 10/27 #7: 지시문 버전 · Config ID · 결과를 함께 남긴다)
+# ------------------------------------------------------------
+def _agent_config_hash():
+    # agent_configs/*.json 내용 해시. 지시문을 바꾸고 다시 내보내면 값이 바뀐다.
+    files = sorted((BASE / "agent_configs").glob("*.json"))
+    if not files:
+        return "-"
+    h = hashlib.sha256()
+    for f in files:
+        h.update(f.name.encode())
+        h.update(f.read_bytes())
+    return h.hexdigest()[:10]
+
+
+if ARGS.log is not None:
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv(BASE / ".env")
+    except ImportError:
+        pass
+    cov = fresh["coverage"]
+    counts = cov["verdict_counts"]
+    row = {
+        "기록시각": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "메모": ARGS.log,
+        "점검": "통과" if not problems else f"문제 {len(problems)}건",
+        "MyConfig": os.getenv("MY_PAPER_CONFIG_ID", ""),
+        "PriorConfig": os.getenv("PRIOR_PAPER_CONFIG_ID", ""),
+        "CompareConfig": os.getenv("COMPARE_CONFIG_ID", ""),
+        "지시문해시": _agent_config_hash(),
+        "M": len(ids["M"]),
+        "P": len(ids["P"]),
+        "R-M": len(ids["RM"]),
+        "R-P": len(ids["RP"]),
+        "일치": counts["일치"],
+        "유사": counts["유사"],
+        "없음": counts["없음"],
+        "확인필요": counts["확인필요"],
+        "커버리지": f"{cov['min']}~{cov['max']}",
+        "등급": fresh["final_level"],
+        "에이전트등급": fresh["classify_level"],
+        "유사도임계값": (fresh.get("similarity") or {}).get("threshold"),
+        "유사도강등": " ".join((fresh.get("similarity") or {}).get("demoted") or []),
+        "status": fresh["status"],
+    }
+    is_new = not RUNS_LOG.exists()
+    with open(RUNS_LOG, "a", encoding="utf-8-sig", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(row))
+        if is_new:
+            writer.writeheader()
+        writer.writerow(row)
+    print(f"실행 기록 추가: {RUNS_LOG.relative_to(BASE)}  ({row['메모']})\n")

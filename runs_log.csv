@@ -1,0 +1,3 @@
+﻿기록시각,메모,점검,MyConfig,PriorConfig,CompareConfig,지시문해시,M,P,R-M,R-P,일치,유사,없음,확인필요,커버리지,등급,에이전트등급,유사도임계값,유사도강등,status
+2026-10-28 16:18,"Instruct 구조 + 새 지시문, 유사도 보고만",통과,3,3,4,-,8,8,6,22,0,1,7,0,6.2~6.2,Low Overlap,Low Overlap,,,PASSED
+2026-10-28 16:21,"Instruct 구조 + 새 지시문, 유사도 보고만",통과,3,3,4,-,8,8,6,22,0,1,7,0,6.2~6.2,Low Overlap,Low Overlap,,,PASSED
