@@ -9,7 +9,8 @@ Step 1. 내 논문   -> My Paper Agent    -> my_paper.json
 Step 2. 기존 논문 -> Prior Paper Agent -> prior_paper.json
 Step 3. compare_builder -> Compare_Input.pdf
 Step 4. Compare Agent   -> compare_result.json
-Step 5. validator       -> validated_result.json
+Step 5. similarity      -> similarity.json (임베딩 유사도, 실패해도 계속)
+Step 6. validator       -> validated_result.json
 
 변수 이름(RESUME_*, JD_*, MATCHING_*)은 스타터 그대로 쓰고,
 config.py와 .env의 값만 PriorScope용으로 바꿨다.
@@ -73,6 +74,16 @@ from file_manager import (
 
 from validator import (
     validate
+)
+
+##################################################
+# 임베딩 유사도 (멘토링 10/27)
+##################################################
+
+from similarity import (
+    UpstageEmbedder,
+    compute_similarity,
+    DEFAULT_OUT as SIMILARITY_RESULT
 )
 
 ##################################################
@@ -290,16 +301,67 @@ def process_matching(
 
 
 ##################################################
-# Validation (PriorScope)
+# Similarity (보조 지표)
 ##################################################
 
-def process_validation():
+def process_similarity():
 
     print()
 
     print("=" * 60)
 
-    print("Step 5. Validation")
+    print("Step 5. Embedding Similarity")
+
+    print("=" * 60)
+
+    try:
+
+        result = compute_similarity(
+
+            load_json(RESUME_JSON),
+
+            load_json(JD_JSON),
+
+            UpstageEmbedder()
+
+        )
+
+        save_json(result, SIMILARITY_RESULT)
+
+        print()
+
+        print(f"Similarity 저장 완료 (M {len(result['m_ids'])} × P {len(result['p_ids'])})")
+
+        print(SIMILARITY_RESULT)
+
+        return result
+
+    except Exception as e:
+
+        # 보조 지표라 멈추지 않는다. 예전 실행의 파일이 남아 섞이지 않도록 지운다.
+        if SIMILARITY_RESULT.exists():
+            SIMILARITY_RESULT.unlink()
+
+        print()
+
+        print("유사도 계산 실패 → 유사도 없이 검증을 계속합니다.")
+
+        print(e)
+
+        return None
+
+
+##################################################
+# Validation (PriorScope)
+##################################################
+
+def process_validation(similarity=None):
+
+    print()
+
+    print("=" * 60)
+
+    print("Step 6. Validation")
 
     print("=" * 60)
 
@@ -311,7 +373,9 @@ def process_validation():
 
             load_json(JD_JSON),
 
-            load_json(MATCHING_RESULT)
+            load_json(MATCHING_RESULT),
+
+            similarity=similarity
 
         )
 
@@ -369,6 +433,8 @@ def print_result():
     print(MATCHING_PDF)
 
     print(MATCHING_RESULT)
+
+    print(SIMILARITY_RESULT)
 
     print(VALIDATED_RESULT)
 
@@ -466,10 +532,16 @@ def main():
         return
 
     ##################################################
+    # Similarity
+    ##################################################
+
+    similarity = process_similarity()
+
+    ##################################################
     # Validation
     ##################################################
 
-    validated = process_validation()
+    validated = process_validation(similarity)
 
     if validated is None:
 
