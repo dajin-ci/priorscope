@@ -1,0 +1,454 @@
+{
+  "kind": "studio.workflow-config-draft",
+  "schemaVersion": 4,
+  "exportedAt": "2026-10-30T13:32:12.504Z",
+  "exportedFrom": {
+    "workflowId": "agt_VXeqFo5T6iNrz3a7zb8wqZ",
+    "workflowName": "Compare Agent",
+    "configId": "cfg_C8T7DttAizFQqXNdyL3GnY",
+    "configVer": 6
+  },
+  "workflowConfig": {
+    "workflow_name": "Compare Agent",
+    "pipelineType": "instruct",
+    "documentParseConfiguration": {
+      "modelName": "document-parse",
+      "mode": "standard",
+      "ocrMode": "force",
+      "lang": "",
+      "chartRecognition": false,
+      "coordinates": true,
+      "mergeMultipageTables": false,
+      "outputFormats": [
+        "html",
+        "text"
+      ],
+      "base64Encoding": [
+        "figure"
+      ]
+    },
+    "documentClassifyConfiguration": {
+      "modelName": "",
+      "schema": {
+        "type": "json_schema",
+        "json_schema": {
+          "name": "document-classify",
+          "schema": {
+            "type": "string",
+            "oneOf": [
+              {
+                "const": "High Overlap",
+                "description": "내 논문의 핵심 기술 요소(M) 대부분, 대략 70% 이상이 기존 논문의 요소(P)와 같거나 거의 같다. 핵심 방법 자체가 기존 논문에 이미 있어 차별성 보강이 반드시 필요한 경우"
+              },
+              {
+                "const": "Medium Overlap",
+                "description": "M 요소 중 대략 30~70%가 P와 대응된다. 같은 요소는 1개, 비슷한 요소는 0.5개로 센다. 기존 논문의 방법을 일부 가져다 쓰지만 내 논문만의 핵심 구성이 분명히 있는 경우"
+              },
+              {
+                "const": "Low Overlap",
+                "description": "M 요소 중 P와 대응되는 것이 대략 30% 미만이다. 기존 논문의 모델이나 기법을 도구로 사용만 하거나, 분야·개념만 비슷하고 핵심 구성은 다른 경우"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "informationExtractConfiguration": {
+      "modelName": "",
+      "schemas": [
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "overlap_level": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "앞 단계에서 정한 등급을 그대로 쓴다. High Overlap, Medium Overlap, Low Overlap 중 하나."
+                  },
+                  "description": ""
+                },
+                "llm_score": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "description": "단일. 내 논문 요소가 기존 논문과 겹치는 정도 0~100. 높을수록 많이 겹침"
+                  },
+                  "description": ""
+                },
+                "summary": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "두 논문의 관계 2~3문장. 두 논문은 '제안 논문'과 '기존 논문'(영문 'our work', 'the prior work')으로 부르고 'the my paper'는 쓰지 않는다."
+                  },
+                  "description": ""
+                },
+                "element_mapping": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "M 요소마다 한 줄. 형식: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 설명\n대응 없으면: M3 ↔ - | 없음 | 검토 범위 P1~Pn | 설명\n판정은 일치·유사·없음·확인필요 중 하나. 다른 용어·언어로 쓴 같은 기술도 대응으로 본다. 확신 없으면 없음이 아니라 확인필요.\nTransformer 사용, 손실 함수 학습처럼 일반 기법 수준 공통점만 있으면 없음. 내 논문이 기존 논문의 사전학습 모델·인코더를 그대로 쓰면 그 P도 대응에 포함."
+                  },
+                  "description": ""
+                },
+                "result_pairs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "데이터셋과 지표가 같은 쌍만 'R-M1 ~ R-P2 | 동일 조건 | 설명'으로 쓴다. 표기가 달라도(SQuAD 2.0과 SQuAD v2.0) 같으면 쌍. 2열엔 반드시 '동일 조건' 또는 '조건 다름'.\n모델·방법 이름(RoBERTa, BERTLARGE (Single))은 조건이 아니다. 조건은 dev/test 분할, single/ensemble, 추가 학습 데이터(TriviaQA 등) 세 가지만 비교하고, 하나라도 다르면 조건 다름.\n추가 데이터는 적혀 있지 않으면 쓰지 않은 것으로 보고, 'w/o data augmentation'도 쓰지 않은 것과 같다. dev/test나 single/ensemble을 확인할 수 없으면 조건 다름."
+                  },
+                  "description": ""
+                },
+                "caution_points": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "심사자가 기존 논문과 같다고 지적할 수 있는 지점. 원소 하나에 지점 하나를 담고, 형식은 [M번호 ↔ P번호] 지적될 내용, 보강 방법이다. 대응하는 P가 여러 개면 P2,P4처럼 쉼표로 잇는다. element_mapping에서 '일치'로 판정한 M은 등급과 상관없이 반드시 포함한다. 해당하는 지점이 없으면 빈 배열로 두고 억지로 채우지 않는다.\n\n일치·유사로 판정한 M을 모두 포함한다. 그 밖에 두 논문이 같은 용어를 쓰는 요소, 그리고 result_pairs에서 '동일 조건'인 쌍도 포함한다. 같은 조건의 결과는 수치가 직접 비교되기 때문이다."
+                  },
+                  "description": ""
+                },
+                "differentiation_suggestions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "내 논문 본문에 그대로 넣을 수 있는 차별성 서술, 정확히 3개. 원소 하나에 서술 하나만 담는다. 각 서술은 비교 자료의 Language에 적힌 언어로 쓴 1~2문장이다. M·P 번호는 서술에 넣지 않는다. 판단 기준은 분류 등급이 아니라 element_mapping의 판정이다. 근거 없는 우월성 표현('더 우수하다', '최초로')은 쓰지 않는다.\n\n이 쌍은 핵심 요소 대부분이 겹친다. element_mapping에서 일치·유사로 판정한 M 요소를 하나씩 골라, 기존 논문과 실제로 다른 점(문제 설정, 적용 조건, 데이터 범위, 학습 절차, 목적 가운데 하나)을 구체적으로 쓴다. 비교 자료에서 차이를 찾을 수 없으면 지어내지 말고, 해당 요소의 차별성 근거를 본문에 보강해야 한다고 적는다."
+                  },
+                  "description": ""
+                },
+                "related_work_draft": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "내 논문 언어로 쓴 1~2문장. 기존 논문의 citation_info를 인용한다. 두 논문은 'our work'와 'the prior work'(국문 '제안 논문', '기존 논문')로 부른다."
+                  },
+                  "description": ""
+                }
+              }
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "schemaLayout": {
+            "version": 1,
+            "columns": [
+              {
+                "name": "overlap_level",
+                "source": "root"
+              },
+              {
+                "name": "llm_score",
+                "source": "root"
+              },
+              {
+                "name": "summary",
+                "source": "root"
+              },
+              {
+                "name": "element_mapping",
+                "source": "root"
+              },
+              {
+                "name": "result_pairs",
+                "source": "root"
+              },
+              {
+                "name": "caution_points",
+                "source": "root"
+              },
+              {
+                "name": "differentiation_suggestions",
+                "source": "root"
+              },
+              {
+                "name": "related_work_draft",
+                "source": "root"
+              }
+            ]
+          },
+          "manyRows": true,
+          "manyRowsThreshold": 50,
+          "manyRowsMaxRowsPerBatch": 400,
+          "manyRowsMaxConcurrent": 5
+        },
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract_Low",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "overlap_level": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "단일. 분류 결과. High Overlap, Medium Overlap, Low Overlap 중 하나"
+                  },
+                  "description": ""
+                },
+                "llm_score": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "description": "단일. 내 논문 요소가 기존 논문과 겹치는 정도 0~100. 높을수록 많이 겹침"
+                  },
+                  "description": ""
+                },
+                "summary": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "두 논문의 관계 2~3문장. 두 논문은 '제안 논문'과 '기존 논문'(영문 'our work', 'the prior work')으로 부르고 'the my paper'는 쓰지 않는다."
+                  },
+                  "description": ""
+                },
+                "element_mapping": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "M 요소마다 한 줄. 형식: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 설명\n대응 없으면: M3 ↔ - | 없음 | 검토 범위 P1~Pn | 설명\n판정은 일치·유사·없음·확인필요 중 하나. 다른 용어·언어로 쓴 같은 기술도 대응으로 본다. 확신 없으면 없음이 아니라 확인필요.\nTransformer 사용, 손실 함수 학습처럼 일반 기법 수준 공통점만 있으면 없음. 내 논문이 기존 논문의 사전학습 모델·인코더를 그대로 쓰면 그 P도 대응에 포함."
+                  },
+                  "description": ""
+                },
+                "result_pairs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "데이터셋과 지표가 같은 쌍만 'R-M1 ~ R-P2 | 동일 조건 | 설명'으로 쓴다. 지표 표기가 달라도(Top-1과 top-1 accuracy) 같은 지표면 쌍. 2열엔 반드시 '동일 조건' 또는 '조건 다름'. 학습 방식(zero-shot/fine-tuning)·학습 데이터·평가 분할이 다르면 조건 다름. 확신 없으면 조건 다름."
+                  },
+                  "description": ""
+                },
+                "caution_points": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "심사자가 기존 논문과 같다고 지적할 수 있는 지점. 원소 하나에 지점 하나를 담고, 형식은 [M번호 ↔ P번호] 지적될 내용, 보강 방법이다. 대응하는 P가 여러 개면 P2,P4처럼 쉼표로 잇는다. element_mapping에서 '일치'로 판정한 M은 등급과 상관없이 반드시 포함한다. 해당하는 지점이 없으면 빈 배열로 두고 억지로 채우지 않는다.\n\n일치·유사로 판정한 M을 모두 포함한다. 그 밖에 두 논문이 같은 용어를 쓰는 요소, 그리고 result_pairs에서 '동일 조건'인 쌍도 포함한다. 같은 조건의 결과는 수치가 직접 비교되기 때문이다."
+                  },
+                  "description": ""
+                },
+                "differentiation_suggestions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "내 논문 본문에 그대로 넣을 수 있는 차별성 서술, 정확히 3개. 원소 하나에 서술 하나만 담는다. 각 서술은 비교 자료의 Language에 적힌 언어로 쓴 1~2문장이다. M·P 번호는 서술에 넣지 않는다. 판단 기준은 분류 등급이 아니라 element_mapping의 판정이다. 근거 없는 우월성 표현('더 우수하다', '최초로')은 쓰지 않는다.\n\n이 쌍은 핵심 요소 대부분이 겹친다. element_mapping에서 일치·유사로 판정한 M 요소를 하나씩 골라, 기존 논문과 실제로 다른 점(문제 설정, 적용 조건, 데이터 범위, 학습 절차, 목적 가운데 하나)을 구체적으로 쓴다. 비교 자료에서 차이를 찾을 수 없으면 지어내지 말고, 해당 요소의 차별성 근거를 본문에 보강해야 한다고 적는다."
+                  },
+                  "description": ""
+                },
+                "related_work_draft": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "내 논문 언어로 쓴 1~2문장. 기존 논문의 citation_info를 인용한다. 두 논문은 'our work'와 'the prior work'(국문 '제안 논문', '기존 논문')로 부른다."
+                  },
+                  "description": ""
+                }
+              }
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "schemaLayout": {
+            "version": 1,
+            "columns": [
+              {
+                "name": "overlap_level",
+                "source": "root"
+              },
+              {
+                "name": "llm_score",
+                "source": "root"
+              },
+              {
+                "name": "summary",
+                "source": "root"
+              },
+              {
+                "name": "element_mapping",
+                "source": "root"
+              },
+              {
+                "name": "result_pairs",
+                "source": "root"
+              },
+              {
+                "name": "caution_points",
+                "source": "root"
+              },
+              {
+                "name": "differentiation_suggestions",
+                "source": "root"
+              },
+              {
+                "name": "related_work_draft",
+                "source": "root"
+              }
+            ]
+          },
+          "manyRows": true,
+          "manyRowsThreshold": 50,
+          "manyRowsMaxRowsPerBatch": 400,
+          "manyRowsMaxConcurrent": 5
+        },
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract_Medium",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "overlap_level": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "단일. 분류 결과. High Overlap, Medium Overlap, Low Overlap 중 하나"
+                  },
+                  "description": ""
+                },
+                "llm_score": {
+                  "type": "array",
+                  "items": {
+                    "type": "number",
+                    "description": "단일. 내 논문 요소가 기존 논문과 겹치는 정도 0~100. 높을수록 많이 겹침"
+                  },
+                  "description": ""
+                },
+                "summary": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "두 논문의 관계 2~3문장. 두 논문은 '제안 논문'과 '기존 논문'(영문 'our work', 'the prior work')으로 부르고 'the my paper'는 쓰지 않는다."
+                  },
+                  "description": ""
+                },
+                "element_mapping": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "M 요소마다 한 줄. 형식: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 설명\n대응 없으면: M3 ↔ - | 없음 | 검토 범위 P1~Pn | 설명\n판정은 일치·유사·없음·확인필요 중 하나. 다른 용어·언어로 쓴 같은 기술도 대응으로 본다. 확신 없으면 없음이 아니라 확인필요.\nTransformer 사용, 손실 함수 학습처럼 일반 기법 수준 공통점만 있으면 없음. 내 논문이 기존 논문의 사전학습 모델·인코더를 그대로 쓰면 그 P도 대응에 포함."
+                  },
+                  "description": ""
+                },
+                "result_pairs": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "데이터셋과 지표가 같은 쌍만 'R-M1 ~ R-P2 | 동일 조건 | 설명'으로 쓴다. 지표 표기가 달라도(Top-1과 top-1 accuracy) 같은 지표면 쌍. 2열엔 반드시 '동일 조건' 또는 '조건 다름'. 학습 방식(zero-shot/fine-tuning)·학습 데이터·평가 분할이 다르면 조건 다름. 확신 없으면 조건 다름."
+                  },
+                  "description": ""
+                },
+                "caution_points": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "심사자가 기존 논문과 같다고 지적할 수 있는 지점. 원소 하나에 지점 하나를 담고, 형식은 [M번호 ↔ P번호] 지적될 내용, 보강 방법이다. 대응하는 P가 여러 개면 P2,P4처럼 쉼표로 잇는다. element_mapping에서 '일치'로 판정한 M은 등급과 상관없이 반드시 포함한다. 해당하는 지점이 없으면 빈 배열로 두고 억지로 채우지 않는다.\n\n일치·유사로 판정한 M을 모두 포함한다. 그 밖에 두 논문이 같은 용어를 쓰는 요소, 그리고 result_pairs에서 '동일 조건'인 쌍도 포함한다. 같은 조건의 결과는 수치가 직접 비교되기 때문이다."
+                  },
+                  "description": ""
+                },
+                "differentiation_suggestions": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "내 논문 본문에 그대로 넣을 수 있는 차별성 서술, 정확히 3개. 원소 하나에 서술 하나만 담는다. 각 서술은 비교 자료의 Language에 적힌 언어로 쓴 1~2문장이다. M·P 번호는 서술에 넣지 않는다. 판단 기준은 분류 등급이 아니라 element_mapping의 판정이다. 근거 없는 우월성 표현('더 우수하다', '최초로')은 쓰지 않는다.\n\n이 쌍은 핵심 요소 대부분이 겹친다. element_mapping에서 일치·유사로 판정한 M 요소를 하나씩 골라, 기존 논문과 실제로 다른 점(문제 설정, 적용 조건, 데이터 범위, 학습 절차, 목적 가운데 하나)을 구체적으로 쓴다. 비교 자료에서 차이를 찾을 수 없으면 지어내지 말고, 해당 요소의 차별성 근거를 본문에 보강해야 한다고 적는다."
+                  },
+                  "description": ""
+                },
+                "related_work_draft": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "내 논문 언어로 쓴 1~2문장. 기존 논문의 citation_info를 인용한다. 두 논문은 'our work'와 'the prior work'(국문 '제안 논문', '기존 논문')로 부른다."
+                  },
+                  "description": ""
+                }
+              }
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "schemaLayout": {
+            "version": 1,
+            "columns": [
+              {
+                "name": "overlap_level",
+                "source": "root"
+              },
+              {
+                "name": "llm_score",
+                "source": "root"
+              },
+              {
+                "name": "summary",
+                "source": "root"
+              },
+              {
+                "name": "element_mapping",
+                "source": "root"
+              },
+              {
+                "name": "result_pairs",
+                "source": "root"
+              },
+              {
+                "name": "caution_points",
+                "source": "root"
+              },
+              {
+                "name": "differentiation_suggestions",
+                "source": "root"
+              },
+              {
+                "name": "related_work_draft",
+                "source": "root"
+              }
+            ]
+          },
+          "manyRows": true,
+          "manyRowsThreshold": 50,
+          "manyRowsMaxRowsPerBatch": 400,
+          "manyRowsMaxConcurrent": 5
+        }
+      ],
+      "categorySchemaMapping": {}
+    },
+    "instructConfiguration": {
+      "nodes": [
+        {
+          "name": "지시-1",
+          "modelName": "",
+          "prompt": "입력 문서는 내 논문(M, R-M)과 기존 논문(P, R-P) 비교 자료다. 문서의 번호만 쓴다.\n1) M마다 한 줄씩 대응을 쓴다: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 이유. 대응 없으면 M3 ↔ - | 없음 | 검토 범위 P1~Pn | 이유. 판정은 일치·유사·없음·확인필요. 확신 없으면 확인필요.\n2) 데이터셋·지표가 같은 실험 쌍을 R-M1 ~ R-P2 | 동일 조건 또는 조건 다름 | 이유 로 쓴다.\n3) 1)의 판정을 근거로 등급을 정한다. High Overlap: 핵심 요소 대부분이 이미 있음. Medium Overlap: 일부 겹치나 고유 구성 있음. Low Overlap: 분야만 비슷함. 등급과 이유를 M 번호를 들어 2~3문장으로 쓴다.\n"
+        }
+      ],
+      "connectionMapping": {
+        "지시-1": {
+          "targetType": "parse"
+        }
+      }
+    },
+    "pipelineEdges": [
+      {
+        "id": "e0",
+        "source": {
+          "nodeType": "parse"
+        },
+        "target": {
+          "nodeType": "instruct",
+          "name": "지시-1"
+        }
+      },
+      {
+        "id": "e1",
+        "source": {
+          "nodeType": "instruct",
+          "name": "지시-1"
+        },
+        "target": {
+          "nodeType": "extract",
+          "name": "Extract"
+        }
+      }
+    ]
+  }
+}

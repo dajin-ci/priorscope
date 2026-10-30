@@ -746,7 +746,7 @@ def _check_numeric_pair(
     for field in ("dataset", "metric"):
         a, b = mine.get(field), prior.get(field)
         if not isinstance(a, str) or not a.strip() or not isinstance(b, str) or not b.strip():
-            checked["reason"] = f"{field} 정보가 비어 있습니다."
+            checked["reason"] = "데이터셋을 확인할 수 없습니다." if field == "dataset" else "지표를 확인할 수 없습니다."
             _issue(report, "RESULT_CONDITION_UNAVAILABLE", "review", f"source_records.{field}", checked["reason"], item_id=checked_ids)
             return checked
         if a.strip() != b.strip():
@@ -1154,15 +1154,72 @@ def _canon_dataset(text: Any) -> str:
     return _DATASET_ALIASES.get(key, key)
 
 
+# ---------------------------------------------------------------
+# 실험 조건 (10/30): 조건을 칸으로 나눠 코드가 비교한다.
+# 9열 형식: 데이터셋 | 방법 | 분할 | 구성 | 추가 데이터 | 지표 | 수치 | 방향 | [위치]
+# 값이 정해진 목록에 없으면 "확인 불가"로 두고 비교하지 않는다 (애매하면 비교 불가).
+# ---------------------------------------------------------------
+_SPLIT_ALIASES = {"dev": "dev", "development": "dev", "validation": "dev", "val": "dev", "test": "test"}
+_CONFIG_ALIASES = {"single": "single", "sgl": "single", "singlemodel": "single",
+                   "ensemble": "ensemble", "ens": "ensemble"}
+_NO_EXTRA = {"없음", "-", "none", "no", "n/a", "na", "x"}
+_SPLIT_LABEL = {"split": "분할", "config": "모델 구성", "extra": "추가 데이터"}
+
+
+_UNKNOWN_MARKS = {"", "?", "-", "n/a", "unknown", "확인불가", "확인 불가"}
+
+
+def _is_unknown(text: Any) -> bool:
+    return str(text or "").strip().lower() in _UNKNOWN_MARKS
+
+
+def _canon_split(text: Any) -> str | None:
+    return _SPLIT_ALIASES.get(_compact(text))
+
+
+def _canon_config(text: Any) -> str | None:
+    return _CONFIG_ALIASES.get(_compact(text))
+
+
+def _canon_extra(text: Any) -> str | None:
+    raw = str(text or "").strip()
+    if not raw:
+        return None  # 빈 칸은 '없음'과 다르다. 확인 불가로 둔다.
+    lowered = raw.lower()
+    if lowered in _NO_EXTRA or lowered.startswith("w/o") or lowered.startswith("without"):
+        return "none"
+    return _compact(raw)
+
+
 def _parse_result_record(entry: Mapping[str, Any]) -> dict[str, Any]:
     # "데이터셋 | 방법·설정 | 지표 | 수치 | ↑ | [위치]" 문자열을 수치 비교용 레코드로 바꾼다.
     parts = [part.strip() for part in str(entry["text"]).split("|")]
     record: dict[str, Any] = {"id": entry["id"], "text": entry["text"]}
-    if len(parts) < 5:
+    if len(parts) >= 9:
+        # 9열 구조 형식: 조건을 코드가 비교한다.
+        dataset, method, split, config, extra, metric, value, direction = parts[:8]
+        location = parts[8]
+        record["structured"] = True
+        record["condition"] = {
+            "split": _canon_split(split),
+            "config": _canon_config(config),
+            "extra": _canon_extra(extra),
+        }
+        record["condition_raw"] = {"split": split, "config": config, "extra": extra}
+        setting = f"{method} · {split} · {config} · 추가 데이터 {extra or '-'}"
+    elif len(parts) >= 5:
+        # 6열 예전 형식: 조건 판단은 Compare Agent 판정을 따른다.
+        dataset, setting, metric, value, direction = parts[:5]
+        location = parts[5] if len(parts) > 5 else None
+        record["structured"] = False
+    else:
         return record  # 형식이 다르면 비교 정보 없이 둔다 -> 수치 비교는 '비교 불가'로 처리된다
-    dataset, setting, metric, value, direction = parts[:5]
     number_text = value.replace("%", "").replace(",", "").strip()
-    location = parts[5] if len(parts) > 5 else None
+    # "?"나 "-"는 확인 불가다. 정규화하면 "?" == "?"로 짝지어지므로 빈 값으로 둔다.
+    if _is_unknown(dataset):
+        dataset = ""
+    if _is_unknown(metric):
+        metric = ""
     canon_metric = _canon_metric(metric)
     record.update({
         # 비교에는 정규화된 값을, 화면에는 원문을 쓴다.
@@ -1227,14 +1284,59 @@ def _pair_labels(compare_result: Mapping[str, Any]) -> dict[tuple[str, str], str
     return labels
 
 
+def _condition_problem(mine: Mapping[str, Any], prior: Mapping[str, Any]) -> str | None:
+    """조건이 같으면 None, 아니면 비교 불가 사유."""
+    for key, label in _SPLIT_LABEL.items():
+        a, b = mine["condition"].get(key), prior["condition"].get(key)
+        raw_a, raw_b = mine["condition_raw"].get(key) or "-", prior["condition_raw"].get(key) or "-"
+        if a is None or b is None:
+            return f"{label}을(를) 확인할 수 없습니다 (내 논문 '{raw_a}', 기존 논문 '{raw_b}')."
+        if a != b:
+            return f"{label}이(가) 다릅니다 (내 논문 '{raw_a}', 기존 논문 '{raw_b}')."
+    return None
+
+
+def _make_incomparable(check: dict[str, Any], reason: str) -> None:
+    check.update({
+        "outcome": "비교 불가",
+        "reason": reason,
+        "absolute_difference": None,
+        "absolute_difference_unit": None,
+        "relative_change_percent": None,
+    })
+
+
+def _add_code_pairs(
+    numeric_checks: list[dict[str, Any]],
+    expected_pairs: list[list[str]],
+    records: dict[str, dict[str, Any]],
+    report: dict[str, Any],
+) -> None:
+    """Compare Agent가 빠뜨린 쌍 중, 구조 형식이고 조건이 같은 쌍을 코드가 추가한다."""
+    listed = {(c["my_result_id"], c["prior_result_id"]) for c in numeric_checks}
+    rm_index = {k: v for k, v in records.items() if k.startswith("R-M")}
+    rp_index = {k: v for k, v in records.items() if k.startswith("R-P")}
+    for my_id, prior_id in expected_pairs:
+        if (my_id, prior_id) in listed:
+            continue
+        mine, prior = records.get(my_id, {}), records.get(prior_id, {})
+        if not (mine.get("structured") and prior.get("structured")):
+            continue
+        if _condition_problem(mine, prior):
+            continue  # 조건이 다른 쌍까지 추가하면 표가 길어지기만 한다
+        check = _check_numeric_pair((my_id, prior_id), rm_index, rp_index, {}, report, len(numeric_checks))
+        check["added_by_code"] = True
+        numeric_checks.append(check)
+
+
 def _apply_pair_conditions(
     numeric_checks: list[dict[str, Any]],
     records: dict[str, dict[str, Any]],
     labels: dict[tuple[str, str], str],
     duplicates: dict[str, str],
 ) -> None:
-    # 의미 판단(조건이 같은가)은 Compare Agent가, 수치 판단은 코드가 한다.
-    # 원칙대로 강등만 한다: '동일 조건'이 명시되지 않으면 '비교 불가'로 내린다.
+    # 9열 구조 형식: 조건(분할·구성·추가 데이터)을 코드가 비교한다. 확인 불가면 비교 불가.
+    # 6열 예전 형식: Compare Agent가 '동일 조건'을 명시한 쌍만 비교하고 나머지는 비교 불가로 내린다.
     for check in numeric_checks:
         my_id, prior_id = check["my_result_id"], check["prior_result_id"]
         mine, prior = records.get(my_id, {}), records.get(prior_id, {})
@@ -1250,7 +1352,17 @@ def _apply_pair_conditions(
             "warnings": [],
         })
         label = check["agent_condition"]
-        if check["outcome"] != "비교 불가" and "동일 조건" not in label:
+        if mine.get("structured") and prior.get("structured"):
+            check["condition_judge"] = "code"
+            if check["outcome"] != "비교 불가":
+                problem = _condition_problem(mine, prior)
+                if problem:
+                    _make_incomparable(check, problem)
+                elif "조건 다름" in label:
+                    # 조건 판단은 코드 규칙이 맡는다. 에이전트 의견은 경고로만 남긴다.
+                    check["warnings"].append("Compare Agent는 조건 다름으로 판단했습니다. 원문 표에서 한 번 확인해 보세요.")
+        elif check["outcome"] != "비교 불가" and "동일 조건" not in label:
+            check["condition_judge"] = "agent"
             check.update({
                 "outcome": "비교 불가",
                 "reason": (
@@ -1438,7 +1550,9 @@ def validate(
     # 정량 비교 후처리: 동일 조건 여부(에이전트 판정)·근거 위치·중복 추출을 반영한다.
     record_by_id = {r["id"]: r for r in rm + rp}
     duplicates = {**_duplicate_results(rm), **_duplicate_results(rp)}
+    _add_code_pairs(report["numeric_checks"], expected_items["result_pairs"], record_by_id, report)
     _apply_pair_conditions(report["numeric_checks"], record_by_id, _pair_labels(compare_result), duplicates)
+    report["numeric_checks"].sort(key=lambda c: (int(c["my_result_id"][3:]), int(c["prior_result_id"][3:])))
 
     # 1) 대응 행별 문제를 모은다 (경로의 element_mapping[i]로 행을 찾는다)
     problems_by_row: dict[int, list[str]] = {}

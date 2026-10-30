@@ -2,3 +2,4 @@
 2026-10-28 16:18,"Instruct 구조 + 새 지시문, 유사도 보고만",통과,3,3,4,-,8,8,6,22,0,1,7,0,6.2~6.2,Low Overlap,Low Overlap,,,PASSED
 2026-10-28 16:21,"Instruct 구조 + 새 지시문, 유사도 보고만",통과,3,3,4,-,8,8,6,22,0,1,7,0,6.2~6.2,Low Overlap,Low Overlap,,,PASSED
 2026-10-28 16:27,"Instruct 구조 + 새 지시문, 유사도 보고만",통과,3,3,4,-,8,8,6,22,0,1,7,0,6.2~6.2,Low Overlap,Low Overlap,,,PASSED
+2026-10-30 22:32,"실험 결과 9칸 구조화, 조건 판단을 코드로 이전",통과,6,6,6,8a6bff123a,9,8,30,28,0,3,6,0,16.7~16.7,Low Overlap,Medium Overlap,,,NEEDS_REVIEW

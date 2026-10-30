@@ -1,0 +1,179 @@
+{
+  "kind": "studio.workflow-config-draft",
+  "schemaVersion": 4,
+  "exportedAt": "2026-10-30T13:31:59.540Z",
+  "exportedFrom": {
+    "workflowId": "agt_T5j7ExBnMLQF63VAmxKhWC",
+    "workflowName": "Prior Paper Agent",
+    "configId": "cfg_dM3X8fjNNfzRKuab6kc8hQ",
+    "configVer": 6
+  },
+  "workflowConfig": {
+    "workflow_name": "Prior Paper Agent",
+    "pipelineType": "extract",
+    "documentParseConfiguration": {
+      "modelName": "document-parse",
+      "mode": "standard",
+      "ocrMode": "force",
+      "lang": "",
+      "chartRecognition": false,
+      "coordinates": true,
+      "mergeMultipageTables": false,
+      "outputFormats": [
+        "html",
+        "text"
+      ],
+      "base64Encoding": [
+        "figure"
+      ]
+    },
+    "informationExtractConfiguration": {
+      "modelName": "",
+      "schemas": [
+        {
+          "type": "json_schema",
+          "json_schema": {
+            "name": "Extract-1",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "title": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "단일. 논문 제목을 원문 그대로"
+                  },
+                  "description": ""
+                },
+                "language": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "단일. 본문 언어. ko 또는 en 중 하나만"
+                  },
+                  "description": ""
+                },
+                "research_field": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "단일. 연구 분야를 짧게 (예: 자연어처리, 컴퓨터비전)"
+                  },
+                  "description": ""
+                },
+                "problem": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "이 논문이 해결하려는 문제 또는 기존 방법의 한계. 원소 하나에 하나씩"
+                  },
+                  "description": ""
+                },
+                "core_techniques": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "제안 방법의 핵심 기술 요소. 원소 하나에는 기법·모듈·학습 절차를 하나만 담는다. 쉼표나 세미콜론으로 여러 개를 합치지 않는다. 형식은 [섹션번호] 원문 표현 | 한국어 설명. 원문 표현은 논문의 원래 언어를 그대로 쓴다"
+                  },
+                  "description": ""
+                },
+                "experiment_results": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "제안 방법의 최종 결과만. 주요 결과 표만 쓰고 ablation·분석 표는 제외.\n형식(9칸): 데이터셋 | 방법 이름 | 분할 | 구성 | 추가 데이터 | 지표 | 수치 | ↑ 또는 ↓ | [위치]\n분할은 dev 또는 test, 구성은 single 또는 ensemble, 추가 데이터는 없음 또는 데이터 이름(TriviaQA). 표에서 확인 못 하면 ?로 쓴다.\n표의 결과를 빠짐없이 한 줄씩: 하위 과제마다, 지표마다, 평균도 따로. GLUE 등은 데이터셋 칸에 하위 과제명(MNLI-m, SST-2), 지표 칸에 실제 지표(Acc., MCC). 지표는 표 설명에서 확인하고 추측하지 않는다.\n예: SQuAD v2.0 | RoBERTa | dev | single | 없음 | F1 | 89.4 | ↑ | [Table 6]\n위치는 실제 표·섹션 번호만. 없는 값을 만들지 않는다."
+                  },
+                  "description": ""
+                },
+                "keywords": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "핵심 키워드 3~6개. 원소 하나에 하나씩"
+                  },
+                  "description": ""
+                },
+                "citation_info": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "단일. 인용 정보. 형식은 저자(제1저자 et al.), 학회 또는 저널, 연도"
+                  },
+                  "description": ""
+                },
+                "limitations": {
+                  "type": "array",
+                  "items": {
+                    "type": "string",
+                    "description": "저자가 스스로 밝힌 한계. 형식은 [섹션번호] 내용. 없으면 비워 둔다"
+                  },
+                  "description": ""
+                }
+              }
+            }
+          },
+          "mode": "standard",
+          "modelName": "",
+          "schemaLayout": {
+            "version": 1,
+            "columns": [
+              {
+                "name": "title",
+                "source": "root"
+              },
+              {
+                "name": "language",
+                "source": "root"
+              },
+              {
+                "name": "research_field",
+                "source": "root"
+              },
+              {
+                "name": "problem",
+                "source": "root"
+              },
+              {
+                "name": "core_techniques",
+                "source": "root"
+              },
+              {
+                "name": "experiment_results",
+                "source": "root"
+              },
+              {
+                "name": "keywords",
+                "source": "root"
+              },
+              {
+                "name": "citation_info",
+                "source": "root"
+              },
+              {
+                "name": "limitations",
+                "source": "root"
+              }
+            ]
+          },
+          "manyRows": true,
+          "manyRowsThreshold": 50,
+          "manyRowsMaxRowsPerBatch": 400,
+          "manyRowsMaxConcurrent": 5
+        }
+      ],
+      "categorySchemaMapping": {}
+    },
+    "pipelineEdges": [
+      {
+        "id": "e0",
+        "source": {
+          "nodeType": "parse"
+        },
+        "target": {
+          "nodeType": "extract",
+          "name": "Extract-1"
+        }
+      }
+    ]
+  }
+}
