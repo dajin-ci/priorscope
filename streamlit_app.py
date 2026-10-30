@@ -15,6 +15,7 @@ import streamlit as st
 
 from ids import assign_ids, clean_text
 from validator import derive_weaknesses
+from run_storage import cleanup_old_runs, delete_run, retention_hours
 
 BASE_DIR = Path(__file__).resolve().parent
 SAMPLES_DIR = BASE_DIR / "samples"
@@ -62,6 +63,11 @@ def _level_text(verified):
         return "High" if p >= th["high"] else "Medium" if p >= th["medium"] else "Low"
 
     return f"{level(cov['min'])}~{level(cov['max'])}", "보류"
+
+
+def _hours_text():
+    hours = retention_hours()
+    return f"{hours:g}시간"
 
 
 def _input_id(*contents):
@@ -305,7 +311,37 @@ def render_result(bundle, key_prefix):
 # Tabs
 ##################################################
 
+def render_privacy_notice():
+    st.info(
+        "업로드한 논문은 분석을 위해 Upstage API로 전송됩니다. "
+        f"서버에 저장된 PDF와 분석 결과는 {_hours_text()} 뒤 자동 삭제되며, "
+        "결과 화면 아래 버튼으로 바로 삭제할 수도 있습니다. "
+        "공개 전 논문이라면 소속 기관의 보안 규정을 먼저 확인해 주세요.",
+        icon="🔒",
+    )
+
+
+def render_delete_button(bundle):
+    """이번 실행의 서버 파일(runs/<run_id>/)을 바로 지운다. 화면의 결과와 다운로드는 그대로 남는다."""
+    run_dir = bundle.get("run_dir")
+    if not run_dir:
+        return
+    st.divider()
+    if st.session_state.get("deleted_run") == run_dir:
+        st.success("서버에 저장된 이번 분석 파일(논문 PDF, 결과 JSON)을 삭제했습니다. 이 화면을 닫으면 결과도 사라지니 필요하면 먼저 다운로드하세요.")
+        return
+    st.caption(f"서버에 저장된 이번 분석 파일은 {_hours_text()} 뒤 자동 삭제됩니다.")
+    if st.button("🗑️ 이번 분석 파일 지금 삭제", key="delete_run"):
+        if delete_run(run_dir):
+            st.session_state["deleted_run"] = run_dir
+            st.rerun()
+        else:
+            st.error("삭제하지 못했습니다. 이미 삭제되었거나 실행 폴더가 아닙니다.")
+
+
 def tab_new_analysis():
+    render_privacy_notice()
+
     left, right = st.columns(2)
     my_file = left.file_uploader("투고할 내 논문 PDF", type=["pdf"], key="my_pdf")
     prior_file = right.file_uploader("비교할 기존 논문 PDF", type=["pdf"], key="prior_pdf")
@@ -365,6 +401,7 @@ def tab_new_analysis():
     if result and result[0] == current_id:
         st.divider()
         render_result(result[1], "new")
+        render_delete_button(result[1])
 
 
 def tab_sample():
@@ -386,6 +423,14 @@ def tab_sample():
 
 def main():
     st.set_page_config(page_title="PriorScope", page_icon="📄", layout="wide")
+
+    # 보관 기간이 지난 실행 폴더 정리. 화면이 열릴 때마다 부르지 않도록 세션당 한 번만 한다.
+    if not st.session_state.get("runs_cleaned"):
+        try:
+            cleanup_old_runs()
+        except Exception:  # noqa: BLE001
+            pass
+        st.session_state["runs_cleaned"] = True
     st.title("PriorScope · 논문 차별성 사전 점검")
     st.caption("내 논문의 핵심 기술 요소가 기존 논문에 이미 있는지, 근거 위치와 함께 판정합니다.")
 
@@ -396,7 +441,10 @@ def main():
         tab_sample()
 
     st.divider()
-    st.caption("사전 점검용이며 심사·표절 판정을 대체하지 않습니다.")
+    st.caption(
+        "사전 점검용이며 심사·표절 판정을 대체하지 않습니다. "
+        f"업로드한 논문과 결과는 서버에 {_hours_text()} 보관 후 자동 삭제됩니다."
+    )
 
 
 if __name__ == "__main__":

@@ -4,17 +4,16 @@ service.py
 PriorScope 화면용 실행 함수 (설계서 2장, 6장)
 
 - 실행마다 runs/<run_id>/ 폴더를 만들어 결과 5개를 저장한다 (동시 실행 시 섞이지 않음).
+- 폴더 생성·보관 기간 정리·삭제는 run_storage.py가 맡는다 (멘토링 #2 기밀성).
 - 단계가 실패하면 StepError로 즉시 멈춘다. 이전 결과로 대신 채우지 않는다.
 - 임베딩 유사도(멘토링 10/27)는 보조 지표라, 실패해도 멈추지 않고 '유사도 없이 검증'한 사실을 결과에 남긴다.
 """
 
 import hashlib
 import json
-import secrets
-from datetime import datetime
 from pathlib import Path
 
-from config import BASE_DIR, FONT_PATH, validate_config
+from config import FONT_PATH, validate_config
 from upload import upload_file
 from resume_agent import analyze_resume
 from jd_agent import analyze_jd
@@ -23,8 +22,7 @@ from compare_builder import create_compare_input
 from validator import validate
 from ids import as_list
 from similarity import UpstageEmbedder, compute_similarity
-
-RUNS_DIR = BASE_DIR / "runs"
+from run_storage import cleanup_old_runs, new_run_dir
 
 
 class StepError(Exception):
@@ -34,13 +32,6 @@ class StepError(Exception):
         super().__init__(f"[{step}] {message}")
         self.step = step
         self.message = message
-
-
-def new_run_dir() -> Path:
-    run_id = f"{datetime.now():%Y%m%d-%H%M%S}-{secrets.token_hex(3)}"
-    run_dir = RUNS_DIR / run_id
-    run_dir.mkdir(parents=True, exist_ok=False)
-    return run_dir
 
 
 def _save_json(data, path: Path):
@@ -81,6 +72,12 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
         validate_config()
     except ValueError as exc:
         raise StepError("환경 설정", str(exc)) from exc
+
+    # 보관 기간이 지난 다른 실행 폴더를 먼저 정리한다 (실패해도 분석은 계속).
+    try:
+        cleanup_old_runs()
+    except Exception:  # noqa: BLE001
+        pass
 
     run_dir = new_run_dir()
     my_path = run_dir / "My_Paper.pdf"
