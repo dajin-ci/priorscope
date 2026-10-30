@@ -750,7 +750,7 @@ def _check_numeric_pair(
             _issue(report, "RESULT_CONDITION_UNAVAILABLE", "review", f"source_records.{field}", checked["reason"], item_id=checked_ids)
             return checked
         if a.strip() != b.strip():
-            checked["reason"] = f"데이터셋 또는 지표 {field}가 다릅니다."
+            checked["reason"] = "데이터셋이 다릅니다." if field == "dataset" else "지표가 다릅니다."
             _issue(report, "RESULT_CONDITION_MISMATCH", "review", f"source_records.{field}", checked["reason"], item_id=checked_ids)
             return checked
 
@@ -1144,8 +1144,13 @@ def _canon_metric(text: Any) -> str:
     return _METRIC_ALIASES.get(key, key)
 
 
+# "SQuAD v2.0" / "SQuAD 2.0"처럼 소수점 버전 앞의 v만 지운다.
+# "ImageNetV2"처럼 v가 이름의 일부인 경우(단어 경계 없음, 소수점 없음)는 건드리지 않는다.
+_DATASET_VERSION_V = re.compile(r"\bv(?=\d+\.\d)", re.IGNORECASE)
+
+
 def _canon_dataset(text: Any) -> str:
-    key = _compact(text)
+    key = _compact(_DATASET_VERSION_V.sub("", str(text or "")))
     return _DATASET_ALIASES.get(key, key)
 
 
