@@ -1,12 +1,12 @@
 {
   "kind": "studio.workflow-config-draft",
   "schemaVersion": 4,
-  "exportedAt": "2026-10-30T13:31:59.540Z",
+  "exportedAt": "2026-11-02T14:10:10.528Z",
   "exportedFrom": {
     "workflowId": "agt_T5j7ExBnMLQF63VAmxKhWC",
     "workflowName": "Prior Paper Agent",
-    "configId": "cfg_dM3X8fjNNfzRKuab6kc8hQ",
-    "configVer": 6
+    "configId": "cfg_MPpPhaTRos4bMQPTyYVMLa",
+    "configVer": 7
   },
   "workflowConfig": {
     "workflow_name": "Prior Paper Agent",
@@ -108,12 +108,14 @@
                     "description": "저자가 스스로 밝힌 한계. 형식은 [섹션번호] 내용. 없으면 비워 둔다"
                   },
                   "description": ""
+                },
+                "contributions": {
+                  "type": "string",
+                  "description": "저자가 주장하는 기여점. 형식은 [섹션번호] 내용"
                 }
               }
             }
           },
-          "mode": "standard",
-          "modelName": "",
           "schemaLayout": {
             "version": 1,
             "columns": [
@@ -152,16 +154,24 @@
               {
                 "name": "limitations",
                 "source": "root"
+              },
+              {
+                "name": "contributions",
+                "source": "root"
               }
             ]
           },
+          "mode": "standard",
+          "modelName": "",
+          "nodeMode": "extract",
           "manyRows": true,
           "manyRowsThreshold": 50,
           "manyRowsMaxRowsPerBatch": 400,
           "manyRowsMaxConcurrent": 5
         }
       ],
-      "categorySchemaMapping": {}
+      "categorySchemaMapping": {},
+      "confidenceThreshold": 0.9676
     },
     "pipelineEdges": [
       {
