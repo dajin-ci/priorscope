@@ -6,30 +6,30 @@
         28
     ],
     "summary": [
-        "The my paper uses ImageBind as a pretrained multimodal representation space for open-vocabulary audio-visual event localization, while the prior paper focuses on learning the ImageBind joint embedding itself across many modalities. The main overlap is the use of the ImageBind multimodal space and Transformer-based encoding, but the task, dataset, evaluation protocol, and downstream localization framework are different."
+        "Both papers involve multimodal representations spanning audio and visual information, and the my paper explicitly builds on the pretrained ImageBind space as one component. However, the prior paper focuses on learning a general joint embedding space across modalities, whereas the my paper studies open-vocabulary audio-visual event localization, introduces a new benchmark and metrics, and adds task-specific temporal modeling and fine-tuning baselines."
     ],
     "element_mapping": [
-        "M1 ↔ - | 없음 | 검토 범위 P1~P12 | OV-AVEBench는 개방어휘 AVEL용 세그먼트 수준 수동 주석 데이터셋 구축이고, 기존 논문은 새로운 AVEL 데이터셋이나 세그먼트 주석 데이터셋 구축을 다루지 않는다.",
-        "M2 ↔ - | 없음 | 검토 범위 P1~P12 | 정확도와 segment-level/event-level F1을 포함한 AVEL 평가 지표 정립은 기존 논문의 공동 임베딩 학습 기법과 대응되지 않는다.",
-        "M3 ↔ P1,P2,P12 | 유사 | M[1] / P[3.2],[3.3] | 내 논문은 사전학습 ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출하고, 기존 논문은 이미지 기준의 단일 공동 임베딩과 각 모달리티 인코더 및 사전학습 초기화를 제시한다. 표현 공간 활용이라는 점에서 대응되지만 목적은 다운스트림 적용과 표현 학습으로 다르다.",
-        "M4 ↔ P2 | 유사 | M[1] / P[3.2] | 내 논문은 오디오-텍스트와 비주얼-텍스트 특징 유사도의 일치성을 비교해 학습 없이 예측하고, 기존 논문은 모달리티들을 같은 임베딩 공간에 인코딩한다. 공통적으로 교차 모달 유사도를 활용하지만, 하나는 다운스트림 추론 규칙이고 다른 하나는 표현 학습 구성이다.",
-        "M5 ↔ P6 | 유사 | M[1] / P[3.3] | 내 논문은 오디오/비주얼 모달리티 내부의 시간 관계를 인코딩하는 경량 temporal layer를 도입하고, 기존 논문은 모든 모달리티 인코더에 Transformer 아키텍처를 사용한다. Transformer 계열 구조를 쓴다는 점은 비슷하지만 목적과 배치 수준이 다르다.",
-        "M6 ↔ P6 | 유사 | M[3.2] / P[3.3] | temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 기존 논문의 Transformer encoder 사용과 구조적으로 유사하다. 다만 내 논문은 다운스트림 temporal modeling용 추가 층이고, 기존 논문은 각 모달리티의 기본 인코더 아키텍처이다.",
-        "M7 ↔ P3,P4 | 유사 | M[3.2] / P[3.2] | 내 논문은 융합된 오디오-비주얼 이벤트 확률에 대해 cross entropy loss로 미세조정하고, 기존 논문은 임베딩과 인코더를 InfoNCE 및 대칭 손실로 최적화한다. 둘 다 학습 손실 최적화를 사용하지만 손실 종류와 학습 목표가 다르다."
+        "M1 ↔ - | 없음 | 검토 범위 P1~P12 | OV-AVEBench는 개방어휘 AVEL용 세그먼트 수준 수동 주석 데이터셋 구축에 관한 요소이며, P1~P12에는 해당 다운스트림 데이터셋 구축 요소가 없다.",
+        "M2 ↔ - | 없음 | 검토 범위 P1~P12 | 정확도 외에 segment-level/event-level F1을 포함한 AVEL 평가 지표 정립은 평가 프로토콜 요소이며, P1~P12에는 이에 대응하는 기술 요소가 없다.",
+        "M3 ↔ P1,P2,P12 | 유사 | M[1] / P[3.2],[3.3] | 사전학습 ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출한다는 점에서, 이미지 기준의 단일 공동 임베딩 학습과 모달리티별 인코딩 및 사전학습 인코더 활용을 다룬 기존 요소들과 관련된다. 다만 M3는 이를 다운스트림에서 활용하는 것이고 P들은 그 공간을 학습하는 방법 자체다.",
+        "M4 ↔ P1,P2 | 유사 | M[1] / P[3.2] | 오디오·텍스트와 비주얼·텍스트 특징 유사도를 비교해 예측하는 baseline은 공통 임베딩 공간에서 서로 다른 모달리티 간 유사도를 활용한다는 점에서 유사하다. 다만 M4는 학습 없이 다운스트림 예측에 사용하는 방식이고, P1,P2는 그러한 정렬 공간을 학습하는 방식이다.",
+        "M5 ↔ P6 | 유사 | M[1] / P[3.3] | 오디오/비주얼 모달리티 내부의 시간 관계를 인코딩하는 경량 temporal layer는 Transformer 아키텍처를 사용한다는 점에서 관련된다. 다만 M5는 AVEL용 시간 관계 인코딩 모듈이고, P6는 각 모달리티 인코더의 일반 아키텍처 선택이다.",
+        "M6 ↔ P6 | 유사 | M[3.2] / P[3.3] | temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 Transformer architecture를 사용한다는 점에서 대응된다. 그러나 M6는 다운스트림 temporal layer의 구현이고, P6는 modality encoder 전반의 구조다.",
+        "M7 ↔ P3,P4 | 유사 | M[3.2] / P[3.2] | 융합된 오디오-비주얼 이벤트 확률에 대해 교차엔트로피로 미세조정하는 것은 손실 함수를 통한 최적화라는 점에서 관련되지만, P3,P4는 공동 임베딩 학습을 위한 InfoNCE 및 대칭 손실이고 M7은 다운스트림 분류 미세조정 손실이다."
     ],
     "result_pairs": [],
     "caution_points": [
-        "[M3 ↔ P1,P2,P12] ImageBind의 통합 임베딩 공간과 사전학습 표현을 그대로 활용한다는 점 때문에 기존 ImageBind 기반 접근의 단순 적용으로 보일 수 있다, open-vocabulary AVEL이라는 다운스트림 문제 정의와 seen/unseen localization 및 explicit category prediction 요구를 본문에서 분명히 대비해 보강하는 것이 좋다.",
-        "[M4 ↔ P2] 공통 임베딩 공간에서 오디오·비주얼·텍스트 유사도를 비교해 예측한다는 설명은 기존의 cross-modal embedding 활용과 같은 기법으로 오해될 수 있다, 학습 없는 consistency-based inference rule이 표현 학습 자체와 다르다는 점을 단계별로 명확히 서술하는 것이 좋다.",
-        "[M5 ↔ P6] Transformer 기반 모듈 사용만 보면 기존 논문의 modality encoder와 동일한 구성으로 읽힐 수 있다, 경량 temporal layer가 모달리티 내부의 시간 관계를 추가로 인코딩하는 후단 구성임을 아키텍처 도식과 함께 구분해 보강하는 것이 좋다.",
-        "[M6 ↔ P6] 표준 Transformer 블록 스택이라는 표현은 기존 논문의 Transformer architecture와 직접적으로 겹쳐 보일 수 있다, 블록의 역할이 범용 모달리티 인코더가 아니라 temporal refinement layer라는 점과 입력·출력 위치를 구체화해 보강하는 것이 좋다."
+        "[M3 ↔ P1,P2,P12] ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출한다는 서술은 기존 공동 임베딩 공간을 그대로 활용한 것으로 보여 핵심 표현이 겹친다고 지적될 수 있다, 본문에서 이는 사전학습 표현의 활용 단계이며 공동 임베딩 자체의 학습 기여는 아니라는 점을 명확히 구분해 설명한다.",
+        "[M4 ↔ P1,P2] 모달리티 간 유사도를 비교해 예측한다는 설명은 공동 임베딩에서의 정렬 기반 추론과 같은 기법으로 오해될 수 있다, 학습 없는 consistency comparison이 다운스트림 baseline이며 기존 논문의 기여는 정렬 공간 학습이라는 점을 분리해 적는다.",
+        "[M5 ↔ P6] Transformer 기반 temporal layer라는 표현만 보면 기존 모달리티 인코더의 Transformer 사용과 동일한 설계처럼 보일 수 있다, 시간 관계 인코딩을 위한 경량 추가층이라는 역할과 위치를 구체적으로 밝혀 오해를 줄인다.",
+        "[M6 ↔ P6] 표준 Transformer 블록 스택 구현은 범용 Transformer encoder 재사용으로 읽혀 차별성이 약하다는 지적을 받을 수 있다, 해당 블록이 어떤 입력 표현과 시간 축 문제를 다루는지 AVEL 맥락에서 명시해 기술적 역할을 보강한다."
     ],
     "differentiation_suggestions": [
-        "While the compared work studies how to learn a shared embedding across many modalities, our work studies open-vocabulary audio-visual event localization, where both seen and unseen events must be localized in test videos and assigned explicit category labels.",
-        "Methodologically, our approach uses the pretrained ImageBind space as a fixed multimodal foundation and builds inference and temporal modeling strategies on top of it, rather than learning the joint embedding space itself.",
-        "A distinctive component of our study is the OV-AVEBench benchmark with segment-level manual event annotations and evaluation metrics that include segment-level and event-level F1 scores."
+        "The prior paper studies how to learn a general joint embedding space across modalities, whereas our work focuses on the open-vocabulary audio-visual event localization setting with seen and unseen events at test time.",
+        "Rather than learning a new multimodal embedding with contrastive alignment losses, our method uses the pretrained ImageBind space as a feature foundation and builds task-specific prediction through similarity-based inference and temporal modeling for AVEL.",
+        "Our study also contributes the OV-AVEBench dataset with segment-level manual event annotations and establishes evaluation metrics that include segment-level and event-level F1-scores."
     ],
     "related_work_draft": [
-        "IMAGEBIND studies a general-purpose approach for learning a single embedding space that aligns multiple modalities through image-centered pairing, whereas our work uses that pretrained multimodal space as a foundation for open-vocabulary audio-visual event localization with explicit event prediction and localization."
+        "IMAGEBIND represents a different line of work that learns a single joint embedding across multiple modalities through image-centered alignment, while our approach uses the pretrained multimodal space for open-vocabulary audio-visual event localization with task-specific temporal modeling and evaluation on a dedicated benchmark."
     ]
 }

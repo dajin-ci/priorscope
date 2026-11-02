@@ -1,0 +1,73 @@
+{
+    "title": [
+        "RoBERTa: A Robustly Optimized BERT Pretraining Approach"
+    ],
+    "language": [
+        "en"
+    ],
+    "research_field": [
+        "자연어처리"
+    ],
+    "problem": [
+        "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+        "It is challenging to determine which aspects of existing self-training methods contribute the most because tuning is limited by computational cost and training data varies in size across methods.",
+        "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+        "Previously overlooked design choices raise questions about the source of recently reported improvements in post-BERT methods."
+    ],
+    "core_techniques": [
+        "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+        "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+        "[1] training on longer sequences | 더 긴 시퀀스로 학습하는 방법",
+        "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+        "[5] dynamic mask-ing | 동적 마스킹",
+        "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+        "[5] large mini-batches | 대규모 미니배치 학습",
+        "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계",
+        "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법"
+    ],
+    "experiment_results": [
+        "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]",
+        "SQuAD v1.1 | RoBERTa | dev | single | 없음 | F1 | 94.6 | ↑ | [Table 6]",
+        "SQuAD v2.0 | RoBERTa | dev | single | 없음 | EM | 86.5 | ↑ | [Table 6]",
+        "SQuAD v2.0 | RoBERTa | dev | single | 없음 | F1 | 89.4 | ↑ | [Table 6]",
+        "SQuAD 2.0 | RoBERTa | test | single | 없음 | ? | 86.8 | ↑ | [Table 6]",
+        "SQuAD 2.0 | RoBERTa | test | single | 없음 | ? | 89.8 | ↑ | [Table 6]",
+        "RACE | RoBERTa | test | single | 없음 | Accuracy | 83.2 | ↑ | [Table 7]",
+        "RACE-Middle | RoBERTa | test | single | 없음 | Accuracy | 86.5 | ↑ | [Table 7]",
+        "RACE-High | RoBERTa | test | single | 없음 | Accuracy | 81.3 | ↑ | [Table 7]",
+        "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "QNLI | RoBERTa | dev | single | 없음 | ? | 94.7 | ↑ | [Table 5]",
+        "QQP | RoBERTa | dev | single | 없음 | ? | 92.2 | ↑ | [Table 5]",
+        "RTE | RoBERTa | dev | single | 없음 | ? | 86.6 | ↑ | [Table 5]",
+        "SST | RoBERTa | dev | single | 없음 | ? | 96.4 | ↑ | [Table 5]",
+        "MRPC | RoBERTa | dev | single | 없음 | ? | 90.9 | ↑ | [Table 5]",
+        "CoLA | RoBERTa | dev | single | 없음 | ? | 68.0 | ↑ | [Table 5]",
+        "STS | RoBERTa | dev | single | 없음 | ? | 92.4 | ↑ | [Table 5]",
+        "WNLI | RoBERTa | dev | single | 없음 | ? | 91.3 | ↑ | [Table 5]",
+        "MNLI | RoBERTa | test | ensemble | 없음 | ? | 90.8 | ↑ | [Table 5]",
+        "MNLI | RoBERTa | test | ensemble | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "QNLI | RoBERTa | test | ensemble | 없음 | ? | 98.9 | ↑ | [Table 5]",
+        "QQP | RoBERTa | test | ensemble | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "RTE | RoBERTa | test | ensemble | 없음 | ? | 88.2 | ↑ | [Table 5]",
+        "SST | RoBERTa | test | ensemble | 없음 | ? | 96.7 | ↑ | [Table 5]",
+        "MRPC | RoBERTa | test | ensemble | 없음 | ? | 92.3 | ↑ | [Table 5]",
+        "CoLA | RoBERTa | test | ensemble | 없음 | ? | 67.8 | ↑ | [Table 5]",
+        "STS | RoBERTa | test | ensemble | 없음 | ? | 92.2 | ↑ | [Table 5]",
+        "WNLI | RoBERTa | test | ensemble | 없음 | ? | 89.0 | ↑ | [Table 5]",
+        "GLUE Avg | RoBERTa | test | ensemble | 없음 | Avg | 88.5 | ↑ | [Table 5]"
+    ],
+    "keywords": [
+        "RoBERTa",
+        "BERT pretraining",
+        "masked language modeling",
+        "dynamic masking",
+        "next sentence prediction",
+        "byte-level BPE"
+    ],
+    "contributions": [
+        "[1] We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance.",
+        "[1] We use a novel dataset, CC-NEWS, and confirm that using more data for pretraining further improves performance on downstream tasks.",
+        "[1] Our training improvements show that masked language model pretraining, under the right design choices, is competitive with all other recently published methods."
+    ]
+}

@@ -54,6 +54,9 @@ JD_CONFIG_ID = os.getenv("PRIOR_PAPER_CONFIG_ID")
 MATCHING_AGENT_ID = os.getenv("COMPARE_AGENT_ID")
 MATCHING_CONFIG_ID = os.getenv("COMPARE_CONFIG_ID")
 
+# 적합성 사전 분류: Studio Compare Agent와 독립된 구조화 출력 호출.
+SUITABILITY_MODEL = os.getenv("SUITABILITY_MODEL", "solar-pro4")
+
 ##################################################
 # Project Directory
 ##################################################

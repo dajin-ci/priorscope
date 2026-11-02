@@ -3,7 +3,7 @@ service.py
 
 PriorScope 화면용 실행 함수 (설계서 2장, 6장)
 
-- 실행마다 runs/<run_id>/ 폴더를 만들어 결과 5개를 저장한다 (동시 실행 시 섞이지 않음).
+- 실행마다 runs/<run_id>/ 폴더를 만들어 이번 경로의 결과를 저장한다 (동시 실행 시 섞이지 않음).
 - 폴더 생성·보관 기간 정리·삭제는 run_storage.py가 맡는다 (멘토링 #2 기밀성).
 - 단계가 실패하면 StepError로 즉시 멈춘다. 이전 결과로 대신 채우지 않는다.
 - 임베딩 유사도(멘토링 10/27)는 보조 지표라, 실패해도 멈추지 않고 '유사도 없이 검증'한 사실을 결과에 남긴다.
@@ -20,9 +20,10 @@ from jd_agent import analyze_jd
 from matching_agent import analyze_matching
 from compare_builder import create_compare_input
 from validator import validate
-from ids import as_list
 from similarity import UpstageEmbedder, compute_similarity
 from run_storage import cleanup_old_runs, new_run_dir
+from suitability import assess_suitability
+from comparison_report import build_report, apply_scope_policy
 
 
 class StepError(Exception):
@@ -59,7 +60,8 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
     """
     내 논문 PDF bytes, 기존 논문 PDF bytes → 결과 dict
 
-    반환: run_dir, my_paper, prior_paper, compare_result, similarity, verified
+    반환: run_dir, my_paper, prior_paper, suitability, report, compare_result, similarity, verified
+    부적합/판단 보류 경로에서는 compare_result, similarity, verified가 None이다.
     """
 
     on_step = on_step or (lambda name: None)
@@ -95,22 +97,32 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
     prior_paper = _require_dict(step, _run_step(step, on_step, lambda: analyze_jd(upload_file(prior_path))))
     _save_json(prior_paper, run_dir / "prior_paper.json")
 
-    for name, paper in (("내 논문", my_paper), ("기존 논문", prior_paper)):
-        if not as_list(paper.get("core_techniques")):
-            raise StepError("입력 확인", f"{name}이(가) 논문으로 인식되지 않았습니다 (핵심 기술 요소 0개).")
+    # 추출 직후 적합성을 판단한다. 부적합/정보 부족은 일반 비교로 보내지 않는다.
+    on_step("3단계 · 비교 적합성 판단")
+    suitability = assess_suitability(my_paper, prior_paper)
+    _save_json(suitability, run_dir / "suitability.json")
+    if not suitability["comparison_allowed"]:
+        report = build_report(suitability)
+        _save_json(report, run_dir / "report.json")
+        on_step("완료")
+        return {
+            "run_dir": str(run_dir), "my_paper": my_paper, "prior_paper": prior_paper,
+            "suitability": suitability, "compare_result": None, "similarity": None,
+            "verified": None, "report": report,
+        }
 
     # 3. 비교용 PDF
-    step = "3단계 · 비교용 PDF 생성"
+    step = "4단계 · 비교용 PDF 생성"
     compare_pdf = run_dir / "Compare_Input.pdf"
-    _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH))
+    _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH, suitability=suitability))
 
     # 4. 비교 분석
-    step = "4단계 · 비교 분석"
+    step = "5단계 · 비교 분석"
     compare_result = _require_dict(step, _run_step(step, on_step, lambda: analyze_matching(upload_file(compare_pdf))))
     _save_json(compare_result, run_dir / "compare_result.json")
 
     # 5. 임베딩 유사도 (보조 지표: 실패해도 계속)
-    step = "5단계 · 임베딩 유사도"
+    step = "6단계 · 임베딩 유사도"
     on_step(step)
     similarity, similarity_error = None, None
     try:
@@ -122,11 +134,14 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
         similarity_error = f"{type(exc).__name__}: {exc}"
 
     # 6. 검증
-    step = "6단계 · 코드 검증"
+    step = "7단계 · 코드 검증"
     verified = _run_step(step, on_step, lambda: validate(my_paper, prior_paper, compare_result, similarity=similarity))
     if similarity_error:
         verified.setdefault("similarity", {})["error"] = similarity_error
+    verified = apply_scope_policy(verified, suitability)
     _save_json(verified, run_dir / "validated_result.json")
+    report = build_report(suitability, verified)
+    _save_json(report, run_dir / "report.json")
 
     on_step("완료")
 
@@ -137,4 +152,6 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
         "compare_result": compare_result,
         "similarity": similarity,
         "verified": verified,
+        "suitability": suitability,
+        "report": report,
     }

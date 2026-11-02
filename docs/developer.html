@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="PriorScope의 개발 기준, 설계 결정, 검증 규칙과 개선 이력을 기록합니다.">
+<title>PriorScope 개발자 기술 문서</title>
+<style>
+:root{
+  --bg:#FFFFFF; --paper:#FFFFFF; --ink:#18212F; --muted:#586274; --rule:#D8DDE5; --soft:#EBEEF3;
+  --accent:#2445C8; --accent-soft:#E6EBFB;
+  --v-match:#B3261E; --v-match-bg:#FBE7E5;
+  --v-sim:#9A5B00; --v-sim-bg:#FDF0D9;
+  --v-none:#1F7A47; --v-none-bg:#E2F3E8;
+  --v-check:#6A3FB8; --v-check-bg:#EFE8FB;
+  --code-bg:#F0F2F6;
+  color-scheme: light;
+}
+@media not all{
+  :root:not([data-theme="light"]){
+    --bg:#11161F; --paper:#171D28; --ink:#E5E9F0; --muted:#9AA4B5; --rule:#2C3443; --soft:#1F2633;
+    --accent:#8EA6FF; --accent-soft:#222C4A;
+    --v-match:#FF8E86; --v-match-bg:#3A1F1E;
+    --v-sim:#F2BE62; --v-sim-bg:#3A2D14;
+    --v-none:#77D39C; --v-none-bg:#17332A;
+    --v-check:#C6A8FF; --v-check-bg:#2B2242;
+    --code-bg:#1D2431;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#11161F; --paper:#171D28; --ink:#E5E9F0; --muted:#9AA4B5; --rule:#2C3443; --soft:#1F2633;
+  --accent:#8EA6FF; --accent-soft:#222C4A;
+  --v-match:#FF8E86; --v-match-bg:#3A1F1E;
+  --v-sim:#F2BE62; --v-sim-bg:#3A2D14;
+  --v-none:#77D39C; --v-none-bg:#17332A;
+  --v-check:#C6A8FF; --v-check-bg:#2B2242;
+  --code-bg:#1D2431;
+  color-scheme: dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;font-size:16px;line-height:1.75;word-break:keep-all;overflow-wrap:break-word}
+code,pre,.mono{font-family:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace}
+a{color:var(--accent)}
+a:focus-visible,summary:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:4px}
+
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:48px;max-width:1180px;margin:0 auto;padding:40px 24px 80px}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 24px);align-self:start;font-size:14px;line-height:1.5}
+nav.toc p{margin:0 0 10px;font-weight:600}
+nav.toc ol{list-style:none;margin:0;padding:0;border-left:1px solid var(--rule)}
+nav.toc li a{display:block;padding:5px 0 5px 14px;color:var(--muted);text-decoration:none}
+nav.toc li a:hover{color:var(--ink)}
+main{max-width:800px;min-width:0}
+@media (max-width:920px){.layout{grid-template-columns:1fr;gap:16px}nav.toc{position:static}nav.toc ol{display:flex;flex-wrap:wrap;gap:4px 14px;border:0}nav.toc li a{padding:2px 0}}
+
+header.hero{margin-bottom:56px}
+.hero h1{font-size:clamp(34px,5vw,48px);line-height:1.15;margin:0 0 16px;font-weight:700;letter-spacing:-0.01em}
+.hero .lede{font-size:19px;color:var(--muted);max-width:640px;margin:0 0 28px}
+
+/* 대표 요소: 판정 4색 리본 */
+.verdict-strip{display:grid;grid-template-columns:repeat(4,1fr);border-radius:10px;overflow:hidden;border:1px solid var(--rule)}
+.verdict-strip div{padding:14px 16px;background:var(--paper);border-left:6px solid}
+.verdict-strip strong{display:block;font-size:17px}
+.verdict-strip span{font-size:13.5px;color:var(--muted);line-height:1.5;display:block}
+.vs-match{border-color:var(--v-match)!important}.vs-match strong{color:var(--v-match)}
+.vs-sim{border-color:var(--v-sim)!important}.vs-sim strong{color:var(--v-sim)}
+.vs-none{border-color:var(--v-none)!important}.vs-none strong{color:var(--v-none)}
+.vs-check{border-color:var(--v-check)!important}.vs-check strong{color:var(--v-check)}
+@media (max-width:640px){.verdict-strip{grid-template-columns:1fr 1fr}}
+
+section{margin:0 0 64px}
+h2{font-size:28px;line-height:1.3;margin:0 0 8px;font-weight:700}
+.sec-intro{color:var(--muted);margin:0 0 24px}
+h3{font-size:19px;margin:36px 0 10px;font-weight:600}
+h4{font-size:16px;margin:24px 0 8px;font-weight:600}
+p{margin:0 0 14px}
+ul{padding-left:20px;margin:0 0 14px}
+li{margin:4px 0}
+
+.panel{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:20px 22px;margin:16px 0}
+.note{background:var(--accent-soft);border-radius:8px;padding:14px 18px;margin:16px 0;font-size:15px}
+.note strong{color:var(--accent)}
+
+.v{display:inline-block;padding:0 8px;border-radius:5px;font-size:14px;font-weight:600;line-height:1.7;white-space:nowrap}
+.v-match{background:var(--v-match-bg);color:var(--v-match)}
+.v-sim{background:var(--v-sim-bg);color:var(--v-sim)}
+.v-none{background:var(--v-none-bg);color:var(--v-none)}
+.v-check{background:var(--v-check-bg);color:var(--v-check)}
+.tag{display:inline-block;font-size:12.5px;padding:0 7px;border-radius:4px;border:1px solid var(--rule);color:var(--muted);vertical-align:2px;margin-left:6px;line-height:1.6}
+
+code{background:var(--code-bg);padding:1px 5px;border-radius:4px;font-size:.88em}
+pre{background:var(--code-bg);border-radius:8px;padding:14px 16px;overflow-x:auto;font-size:13.5px;line-height:1.6;margin:10px 0 16px}
+pre code{background:none;padding:0;font-size:inherit}
+
+.table-wrap{overflow-x:auto;margin:12px 0 18px;border:1px solid var(--rule);border-radius:10px;background:var(--paper)}
+table{border-collapse:collapse;width:100%;font-size:14.5px;line-height:1.55}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--rule);vertical-align:top}
+th{background:var(--soft);font-weight:600;white-space:nowrap}
+tr:last-child td{border-bottom:0}
+td code{white-space:nowrap}
+
+/* 파이프라인 */
+.pipeline{list-style:none;padding:0;margin:20px 0;counter-reset:step}
+.pipeline li{position:relative;display:grid;grid-template-columns:44px 1fr;gap:14px;margin:0;padding:0 0 22px}
+.pipeline li::before{counter-increment:step;content:counter(step);width:34px;height:34px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);color:var(--accent);display:grid;place-items:center;font-weight:700;font-size:15px}
+.pipeline li::after{content:"";position:absolute;left:17px;top:36px;bottom:0;width:2px;background:var(--rule)}
+.pipeline li:last-child::after{display:none}
+.pipeline .who{font-weight:600}
+.pipeline .kind{font-size:12.5px;color:var(--muted);margin-left:6px}
+.pipeline .io{font-size:14px;color:var(--muted);margin-top:2px}
+.pipeline .io code{font-size:12.5px}
+
+details{background:var(--paper);border:1px solid var(--rule);border-radius:10px;margin:10px 0;padding:0 18px}
+details[open]{padding-bottom:12px}
+summary{cursor:pointer;padding:14px 0;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px;align-items:baseline}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--muted);font-weight:400;font-size:20px;line-height:1}
+details[open] summary::after{content:"−"}
+summary .sum-sub{font-weight:400;color:var(--muted);font-size:14px;margin-left:8px}
+.file-group{margin:8px 0 24px}
+
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media (max-width:640px){.cols{grid-template-columns:1fr}}
+
+.timeline{border-left:2px solid var(--rule);margin:16px 0 0 6px;padding-left:22px}
+.timeline .t{position:relative;margin-bottom:22px}
+.timeline .t::before{content:"";position:absolute;left:-29px;top:8px;width:12px;height:12px;border-radius:50%;background:var(--accent)}
+.timeline .d{font-weight:700}
+.timeline p{margin:2px 0 0;color:var(--ink)}
+
+footer{color:var(--muted);font-size:14px;border-top:1px solid var(--rule);padding-top:20px}
+</style>
+<style>
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:2px;color:var(--accent);margin-bottom:18px}.meta{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 24px}.meta .tag{margin:0}.section-no{font:12px Consolas,monospace;letter-spacing:1px;color:var(--accent);display:block;margin-bottom:8px}.brand{font-size:20px;font-weight:700}.subbrand{font-size:12px;color:var(--muted);margin-bottom:24px}.nav-foot{border-top:1px solid var(--rule);padding-top:16px;margin-top:24px;color:var(--muted);font-size:12px}.status{display:inline-block;white-space:nowrap;padding:1px 7px;font-size:12px;line-height:1.7;border-radius:4px;font-weight:600}.implemented{color:var(--v-none);background:var(--v-none-bg)}.proposed{color:var(--v-check);background:var(--v-check-bg)}.pending{color:var(--v-sim);background:var(--v-sim-bg)}.decision-id{font:12px Consolas,monospace;color:var(--muted);white-space:nowrap}.decision summary{gap:10px;justify-content:flex-start}.decision summary::after{margin-left:auto}.decision .body{font-size:14px;padding-bottom:6px}.decision dl{display:grid;grid-template-columns:74px 1fr;gap:9px 14px;margin:0}.decision dt{color:var(--muted)}.decision dd{margin:0}.filters{display:flex;gap:10px;margin:18px 0 8px}.filters input{min-width:0;flex:1}.filters input,.filters select{font:inherit;font-size:14px;color:var(--ink);background:var(--paper);padding:9px 12px;border:1px solid var(--rule);border-radius:7px}.small{font-size:13px;color:var(--muted)}.toolbar{display:flex;gap:8px;margin-top:14px}.toolbar button{font:inherit;font-size:12px;border:1px solid var(--rule);background:var(--paper);color:var(--muted);border-radius:5px;padding:4px 9px;cursor:pointer}.formula{border-left:3px solid var(--accent);background:var(--soft);padding:14px 18px;line-height:2;margin:18px 0}.cols .panel{margin:0}.cols .panel h3{margin-top:0}.cols .panel p:last-child{margin-bottom:0}.verdict-strip{grid-template-columns:repeat(3,1fr)}.skip{position:absolute;top:-80px;left:15px;z-index:5;padding:8px;background:var(--paper)}.skip:focus{top:10px}input:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.toc a[aria-current="location"]{color:var(--accent);background:var(--accent-soft);border-radius:0 5px 5px 0}[hidden]{display:none!important}
+@media(max-width:640px){.decision summary{flex-wrap:wrap;gap:6px}.decision dl{grid-template-columns:1fr;gap:2px}.decision dd{margin-bottom:10px}.filters{flex-wrap:wrap}.filters input{flex-basis:100%}.verdict-strip{grid-template-columns:1fr}.nav-foot{display:none}}
+@media print{.layout{display:block;padding:0;max-width:none}main{max-width:none}.toc,.filters,.toolbar,.skip{display:none}.hero h1{font-size:32px}.panel,.decision{break-inside:avoid}a{color:inherit}}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">본문으로 이동</a>
+<div class="layout">
+<nav class="toc" aria-label="목차">
+<div class="brand">PriorScope</div><div class="subbrand">개발자 기술 문서</div>
+<ol>
+<li><a href="#overview">01 · 목적과 범위</a></li>
+<li><a href="#workflow">02 · 실행 워크플로우</a></li>
+<li><a href="#suitability">02A · 비교 적합성과 레포트</a></li>
+<li><a href="#decisions">03 · 개발 기준과 설계 결정</a></li>
+<li><a href="#validation">04 · 판정과 검증 규칙</a></li>
+<li><a href="#contracts">05 · 데이터와 코드 구조</a></li>
+<li><a href="#scenarios">06 · 예외 시나리오</a></li>
+<li><a href="#evaluation">07 · 테스트와 신뢰도</a></li>
+<li><a href="#history">08 · 개선 이력</a></li>
+<li><a href="#maintenance">09 · 문서 갱신 기준</a></li>
+</ol>
+<div class="nav-foot">기준일 · 2026.10.31<br>현재 작업 폴더의 코드 기준
+<div class="toolbar"><button id="expand" type="button">모두 펼치기</button></div></div>
+</nav>
+<main id="content">
+<header class="hero">
+<p class="eyebrow">ENGINEERING NOTES / 01</p>
+<h1>PriorScope<br>개발자 기술 문서</h1>
+<p class="lede">무엇을 만들었는지, 왜 그렇게 정했는지,<br>어디까지 검증했는지를 함께 기록합니다.</p>
+<div class="meta"><span class="tag">최초 작성 · 2026.10.31</span><span class="tag">기준 · 구현 · 개선 이력</span><span class="tag">계속 갱신하는 문서</span></div>
+<div class="verdict-strip">
+<div class="vs-sim"><strong>기준과 이유</strong><span>판정 방식과 설계 선택의 근거</span></div>
+<div class="vs-none"><strong>구현 상태</strong><span>현재 코드에서 확인되는 동작</span></div>
+<div class="vs-check"><strong>검증과 남은 일</strong><span>확인한 범위와 추가 검증 과제</span></div>
+</div>
+</header>
+
+<section id="overview">
+<span class="section-no">01 / OVERVIEW</span><h2>목적과 범위</h2>
+<p class="sec-intro">논문 두 편의 기술 요소를 비교하고, 사용자가 직접 검토할 근거를 제공합니다.</p>
+<div class="cols">
+<div class="panel"><h3>사용자가 얻는 것</h3><p>핵심 기술 요소의 대응표, 근거 위치, 비교 가능한 실험 수치, 사람이 다시 확인해야 할 항목입니다.</p></div>
+<div class="panel"><h3>판단의 범위</h3><p>선택한 기존 논문 한 편과의 비교입니다. 전체 선행연구에 대한 신규성이나 표절 여부를 확정하지 않습니다.</p></div>
+</div>
+<div class="note"><strong>문서를 읽는 기준</strong><br><span class="status implemented">구현 확인</span>은 현재 코드에 동작이 있다는 뜻입니다. 평가 통과를 의미하지 않습니다. <span class="status proposed">제안</span>은 아직 확정·구현되지 않은 방향입니다.</div>
+</section>
+
+<section id="workflow">
+<span class="section-no">02 / WORKFLOW</span><h2>실행 워크플로우</h2>
+<p class="sec-intro">입력 점검 후 두 논문을 추출하고 비교 적합성을 판단합니다. 허용 경로만 이후 비교·검증을 실행합니다. 근거: <a href="../service.py">service.py</a></p>
+<div class="panel"><strong>실행 전 점검</strong><p>두 PDF의 SHA-256 해시가 같으면 중단합니다. 필수 환경설정을 확인하고 실행별 폴더를 생성합니다.</p></div>
+<ol class="pipeline">
+<li><div><span class="who">내 논문 분석</span><span class="kind">My Paper Agent</span><div class="io">핵심 기술과 실험 결과를 추출합니다.<br><code>My_Paper.pdf</code> → <code>my_paper.json</code></div></div></li>
+<li><div><span class="who">기존 논문 분석</span><span class="kind">Prior Paper Agent</span><div class="io">비교 대상 논문을 같은 방식으로 구조화합니다. 해결 문제나 핵심 기술이 부족하면 다음 단계에서 판단 보류 레포트를 제공합니다.<br><code>Prior_Paper.pdf</code> → <code>prior_paper.json</code></div></div></li>
+<li><div><span class="who">비교 적합성 판단</span><span class="kind">Solar + Python</span><div class="io">해결 문제·범위·핵심 방법의 관계와 양쪽 추출 근거를 검사하고 5개 경로 중 하나를 선택합니다.<br><code>suitability.json</code> · 부적합/보류는 <code>report.json</code> 저장 후 종료</div></div></li>
+<li><div><span class="who">비교용 PDF 생성</span><span class="kind">Python</span><div class="io">기술과 실험 결과에 공통 번호를 부여합니다.<br>두 논문 JSON → <code>Compare_Input.pdf</code></div></div></li>
+<li><div><span class="who">요소별 비교 분석</span><span class="kind">Compare Agent</span><div class="io">기술 대응, 판정, 설명과 근거 위치를 생성합니다.<br><code>Compare_Input.pdf</code> → <code>compare_result.json</code></div></div></li>
+<li><div><span class="who">임베딩 유사도 계산</span><span class="kind">보조 지표</span><div class="io">기술 요소 간 의미 유사도를 계산합니다. 실패해도 코드 검증을 진행하고 오류를 기록합니다.<br>기술 요소 → <code>similarity.json</code> (성공 시)</div></div></li>
+<li><div><span class="who">코드 검증과 결과 구성</span><span class="kind">Validator</span><div class="io">대응 형식·번호·근거·수치를 점검하고 커버리지 범위와 확인 필요 항목을 구성합니다.<br>분석 결과 → <code>validated_result.json</code> + 최종 <code>report.json</code></div></div></li>
+</ol>
+</section>
+
+
+<section id="suitability">
+<span class="section-no">02A / SUITABILITY</span><h2>비교 적합성과 레포트 분기</h2>
+<p class="sec-intro">분야 이름보다 해결 문제와 구체적인 방법의 연결을 먼저 봅니다. 실험 비교 가능 여부는 별도로 판단합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>판단 축</th><th>관계</th><th>근거</th></tr></thead><tbody>
+<tr><td>해결 문제·목적</td><td>같음 / 관련됨 / 다름 / 확인 불가</td><td>문제·기여점 추출 항목</td></tr>
+<tr><td>연구 범위·대상</td><td>대응 가능 / 일부 공통 / 다름 / 확인 불가</td><td>입출력·대상·전제 조건이 드러나는 추출 항목</td></tr>
+<tr><td>핵심 방법</td><td>구체적 연결 / 범용 기반만 공통 / 다름 / 확인 불가</td><td>핵심 기술 추출 항목</td></tr>
+<tr><td>평가 조건</td><td>실험 쌍별 비교 가능 / 비교 불가</td><td>기존 코드 검증의 데이터셋·지표·분할·구성·추가 데이터·단위 검사</td></tr>
+</tbody></table></div>
+<div class="table-wrap"><table><thead><tr><th>경로</th><th>조건</th><th>최종 레포트</th></tr></thead><tbody>
+<tr><td><code>research</code><br>연구 내용 비교</td><td>문제가 같고 범위가 대응함</td><td>요소 대응·차별점 후보·보완 후보·조건별 실험 비교·겹침 지표</td></tr>
+<tr><td><code>partial</code><br>공통 범위만 비교</td><td>문제가 같으나 범위가 다르거나 일부 공통. 또는 관련 문제이며 범위를 판단할 수 있음</td><td>공통 범위의 관계 검토와 비교 제한. 전체 연구 등급·차별점·약점 목록은 제외</td></tr>
+<tr><td><code>method</code><br>방법론 중심 비교</td><td>문제는 다르지만 구체적 방법이 연결됨</td><td>방법 대응과 적용 대상 차이. 전체 등급·차별점·약점·성능 우위는 제외</td></tr>
+<tr><td><code>unsuitable</code><br>비교 부적합 안내</td><td>문제가 다르고 방법은 다르거나 범용 기반만 공통</td><td>양쪽 문제·방법의 근거, 비교 한계, 적절한 비교 대상 선택 안내</td></tr>
+<tr><td><code>insufficient</code><br>판단 보류</td><td>경로 결정에 필요한 정보·근거가 없거나 분석 응답이 실패함</td><td>부족한 정보와 재분석 안내</td></tr>
+</tbody></table></div>
+<div class="note"><strong>독창성 오판 방지</strong><br>무관한 논문과 겹치지 않는다는 이유로 독창성이 높다고 표시하지 않습니다.
+문제가 달라도 구체적인 방법이 연결되면 방법론 비교를 허용합니다. 실험 조건이 다르다는 이유만으로 기술 비교 전체를 차단하지 않습니다.</div>
+<h3>근거 확인과 오류 처리</h3>
+<p>Solar는 축별 관계·이유·양쪽 인용을 구조화된 JSON으로 반환합니다. Python이 허용 관계, 필드, 0부터 시작하는 항목 번호와 인용 문자열의 일치를 검사합니다.
+문제 판정은 제목만, 방법 판정은 연구 분야만 인용할 수 없습니다. 검증 실패 축은 확인 불가로 바꾸고 경로를 다시 계산합니다.
+의미 판단은 모델의 책임이며 인용 문자열 일치가 의미적 타당성을 증명하지는 않습니다.</p>
+<p>해결 문제 또는 핵심 기술이 비어 있으면 API를 호출하지 않고 보류합니다. 적합성 API의 오류·응답 잘림·잘못된 JSON도 정상 비교로 대체하지 않습니다.
+부적합/보류에서는 비교 PDF·Compare Agent·임베딩·비교 검증 호출을 생략합니다.</p>
+<h3>화면·저장·실행 기준</h3>
+<ul><li><code>report.json</code>: 경로별 요약, 표시 정책, 실험 비교 가능 여부, 다음 행동과 한계. 검증 결과를 기준으로 구성합니다.</li>
+<li><code>validated_result.json</code>: 부분/방법론 경로에서는 전체 등급을 적용 안 함으로 저장하고 전체 커버리지 상하한을 비웁니다. 방법론 경로의 수치 비교 목록도 비웁니다.</li>
+<li>원본 <code>compare_result.json</code>은 진단 자료로 보존합니다. 연구 비교 경로의 AI 서술은 검증 반영 전 초안으로 별도 접어 표시합니다.</li>
+<li>적합성 정보가 없는 이전 샘플은 재분석 안내를 표시합니다. 샘플을 열 때 새 API 호출은 하지 않습니다.</li>
+<li>CLI도 웹과 같은 <code>run_compare_service()</code>를 사용합니다. 결과는 <code>runs/&lt;run_id&gt;/</code>에 저장되며 이전 <code>output/</code>·<code>result/</code>를 덮어쓰지 않습니다.</li>
+</ul>
+<pre><code>python app.py
+python check_run.py --run-dir runs/&lt;run_id&gt;</code></pre>
+<p>적합성 모델의 기본값은 <code>solar-pro4</code>이며 <code>SUITABILITY_MODEL</code> 환경변수로 변경할 수 있습니다.
+동일한 Upstage API 키로 별도 Chat 호출을 한 번 추가합니다. Studio Agent 설정을 다시 배포할 필요는 없습니다.
+<a href="https://console.upstage.ai/api/chat">Upstage 공식 Chat API</a>의 구조화 출력 계약을 사용합니다.</p>
+<div class="note"><strong>현재 한계</strong><br>적합성은 추출본으로 판단하므로 PDF 추출 누락을 발견하지 못할 수 있습니다.
+실제 논문 쌍에 대한 분류 정확도와 원문 근거의 충분성은 아직 평가하지 않았습니다.
+부분 비교는 요소별 공통 범위를 자동 확정하지 않고 대응표를 검토 자료로 제공합니다.</div>
+</section>
+
+<section id="decisions">
+<span class="section-no">03 / DECISIONS</span><h2>개발 기준과 설계 결정</h2>
+<p class="sec-intro">결정마다 배경, 적용 방식, 확인 근거와 남은 검증을 함께 남깁니다.</p>
+<div class="filters"><input id="search" type="search" aria-label="설계 결정 검색" placeholder="기준, 이유, 파일명으로 검색"><select id="status" aria-label="설계 결정 상태"><option value="all">모든 상태</option><option value="implemented">구현 확인</option><option value="proposed">제안</option></select></div>
+<p id="result-count" class="small" aria-live="polite">설계 결정 8개</p>
+<!-- DECISIONS: 새 결정은 다음 DEC 번호로 추가하고, 기존 결정은 ID를 유지해 갱신한다. -->
+<details class="decision" id="DEC-001" data-status="implemented" open><summary><span class="decision-id">DEC-001</span><span>실행마다 결과 저장 공간을 분리한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl><dt>배경</dt><dd>동시 실행이나 재실행에서 다른 논문의 결과가 섞이면 비교 근거를 신뢰하기 어렵습니다.</dd><dt>적용</dt><dd><code>runs/&lt;run_id&gt;/</code>에 입력 PDF, 분석 결과와 임베딩 캐시를 함께 저장합니다.</dd><dt>근거</dt><dd><a href="../service.py">service.py</a> · <a href="../run_storage.py">run_storage.py</a></dd><dt>남은 검증</dt><dd>배포 환경에서 여러 사용자의 동시 실행과 결과 접근 범위를 확인해야 합니다.</dd></dl></div></details>
+<details class="decision" id="DEC-002" data-status="implemented"><summary><span class="decision-id">DEC-002</span><span>필수 단계 실패 시 분석을 중단한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl><dt>배경</dt><dd>실패를 이전 결과나 임시 값으로 채우면 다른 실행의 결과가 정상 결과처럼 보일 수 있습니다.</dd><dt>적용</dt><dd>필수 단계의 예외를 <code>StepError</code>로 전달합니다. 임베딩 유사도는 보조 지표이므로 오류를 기록하고 검증을 계속합니다.</dd><dt>근거</dt><dd><a href="../service.py">service.py</a>의 <code>_run_step()</code>과 유사도 단계</dd><dt>남은 검증</dt><dd>각 단계의 API 오류와 비정상 응답에서 화면 안내를 확인해야 합니다.</dd></dl></div></details>
+<details class="decision" id="DEC-003" data-status="implemented"><summary><span class="decision-id">DEC-003</span><span>번호 부여 규칙을 한 곳에서 관리한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl><dt>배경</dt><dd>비교 입력과 검증 코드의 번호가 다르면 근거와 실제 요소의 연결이 어긋납니다.</dd><dt>적용</dt><dd><code>ids.py</code>의 <code>assign_ids()</code>를 공유합니다. 같은 JSON과 배열 순서에는 같은 번호를 부여합니다.</dd><dt>근거</dt><dd><a href="../ids.py">ids.py</a> · <a href="../compare_builder.py">compare_builder.py</a> · <a href="../validator.py">validator.py</a></dd><dt>제약</dt><dd>추출 항목이나 순서가 바뀐 다른 실행까지 같은 의미의 ID를 보장하지는 않습니다.</dd></dl></div></details>
+<details class="decision" id="DEC-004" data-status="implemented"><summary><span class="decision-id">DEC-004</span><span>근거가 불충분하면 확인필요로 처리한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl><dt>배경</dt><dd>형식 오류나 누락이 있는 판정을 그대로 집계하면 결과를 과신하게 됩니다.</dd><dt>적용</dt><dd>행별 검증 문제가 있거나 대응 행이 빠진 M 요소는 <code>확인필요</code>로 처리합니다. 에이전트의 원래 판정과 처리 이유를 함께 보존합니다.</dd><dt>근거</dt><dd><a href="../validator.py">validator.py</a>의 <code>validate()</code></dd><dt>제약</dt><dd>코드가 형식과 참조를 검사해도 논문의 의미나 근거의 진실성까지 보장하지는 않습니다.</dd></dl></div></details>
+<details class="decision" id="DEC-005" data-status="implemented"><summary><span class="decision-id">DEC-005</span><span>불확실성을 커버리지 범위로 표시한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl><dt>배경</dt><dd>확인필요 요소를 모두 0점이나 1점으로 확정하면 비교 결과가 한쪽으로 치우칩니다.</dd><dt>적용</dt><dd>확인된 점수로 하한을, 확인필요를 최대 1점씩 포함해 상한을 계산합니다. 두 끝점의 등급이 다르면 판정을 보류합니다.</dd><dt>근거</dt><dd><a href="../validator.py">validator.py</a>의 커버리지 계산</dd><dt>남은 검증</dt><dd>일치 1점·유사 0.5점과 등급 경계 30%·70%의 타당성은 평가 데이터로 검토해야 합니다.</dd></dl></div></details>
+<details class="decision" id="DEC-006" data-status="implemented"><summary><span class="decision-id">DEC-006</span><span>입력과 캐시에 보관 기간을 적용한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl><dt>배경</dt><dd>미공개 논문과 분석 결과를 불필요하게 장기간 남기지 않기 위한 조치입니다.</dd><dt>적용</dt><dd>로컬 실행 폴더의 기본 보관 시간은 24시간입니다. 정리 함수가 호출될 때 만료 폴더를 삭제하며 임베딩 캐시도 같은 폴더에 둡니다.</dd><dt>근거</dt><dd><a href="../run_storage.py">run_storage.py</a> · <a href="../service.py">service.py</a></dd><dt>제약</dt><dd>정확히 24시간 뒤에 실행되는 예약 삭제는 아닙니다. 외부 API에 업로드된 파일의 보관·삭제 정책은 별도 확인이 필요합니다.</dd></dl></div></details>
+<details class="decision" id="DEC-007" data-status="implemented"><summary><span class="decision-id">DEC-007</span><span>비교 적합성에 따라 분석과 레포트를 분기한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl>
+<dt>배경</dt><dd>주제가 무관해 겹침이 적은 결과를 높은 독창성으로 오해할 수 있습니다.</dd>
+<dt>선택 이유</dt><dd>해결 문제·범위·구체적인 방법의 연결로 경로를 정하고, 실험 비교 조건을 별도로 판단합니다.</dd>
+<dt>적용</dt><dd>두 논문의 추출 후 Solar 구조화 판단을 실행합니다. 인용 참조 검사 후 연구 비교·부분 비교·방법론 비교·부적합·보류로 나눕니다. 부적합/보류는 후속 비교를 호출하지 않습니다.</dd>
+<dt>근거</dt><dd><a href="../suitability.py">suitability.py</a> · <a href="../comparison_report.py">comparison_report.py</a> · <a href="../service.py">service.py</a> · <a href="../streamlit_app.py">streamlit_app.py</a></dd>
+<dt>검증</dt><dd>5개 경로, 인용 위조·잘못된 참조·잘린 응답·API 실패, 후속 호출 생략, 화면 표시 정책과 CLI 공유 경로를 API 대체 테스트로 확인합니다. 실행 결과는 아래 테스트 항목에 기록합니다.</dd>
+<dt>제약</dt><dd>추출본 인용 검사는 PDF 원문 검증이 아닙니다. 실제 분류 정확도는 별도 평가가 필요합니다. 같은 PDF·개정판 식별과 OCR 품질 판별은 후속 과제입니다.</dd>
+<dt>변경일</dt><dd>2026.10.31 · 이전 제안 상태에서 구현으로 변경</dd>
+</dl></div></details>
+
+<details class="decision" id="DEC-008" data-status="implemented"><summary><span class="decision-id">DEC-008</span><span>비교 화면의 본문 폭과 좌우 여백을 조정한다</span><span class="status implemented">구현 확인</span></summary><div class="body"><dl>
+<dt>배경</dt><dd>비교 화면의 내용이 좌우 가장자리에 붙어 보여 긴 설명과 표를 읽기 어렵다는 사용자 피드백입니다.</dd>
+<dt>적용</dt><dd>본문을 최대 1440px로 제한하고 가운데 정렬합니다. 좌우 패딩은 1.25rem~4rem 범위에서 화면 폭의 4%로 조정합니다. 640px 이하에서는 좌우 1rem을 적용합니다.</dd>
+<dt>변경 전후</dt><dd>기존에는 Streamlit의 wide 기본 레이아웃을 사용했습니다. 변경 후에는 본문 최대 폭·가운데 정렬·화면 크기별 좌우 패딩을 명시해 내용이 가장자리에 붙어 보이는 문제를 줄입니다.</dd>
+<dt>사용자 피드백</dt><dd>좌우 여백 개선 방향에 대한 긍정적인 회신과 기술 페이지 반영 요청을 받았습니다. 화면 폭별 시각 검증은 별도 확인 대상입니다.</dd>
+<dt>근거</dt><dd><a href="../streamlit_app.py">streamlit_app.py</a>의 <code>PAGE_STYLES</code>와 <code>main()</code>. 실제 Streamlit 본문 컨테이너의 <code>data-testid</code>를 대상으로 스타일을 적용합니다.</dd>
+<dt>검증</dt><dd>Python 구문과 스타일 호출 위치를 확인했습니다. 실제 브라우저에서 화면 폭별 시각 검증은 미수행입니다. 이 변경으로 새 테스트는 추가하지 않았습니다.</dd>
+<dt>제약</dt><dd>Streamlit의 DOM 식별자를 사용하므로 프레임워크 업데이트 시 스타일 적용 여부를 다시 확인해야 합니다.</dd>
+<dt>변경일</dt><dd>2026.10.31</dd>
+</dl></div></details>
+
+<p id="empty" class="note" hidden>검색 조건에 맞는 설계 결정이 없습니다.</p>
+</section>
+
+<section id="validation">
+<span class="section-no">04 / VALIDATION</span><h2>판정과 검증 규칙</h2><p class="sec-intro">에이전트의 비교 결과를 코드로 점검하고 계산 결과와 불확실성을 함께 제공합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>요소별 판정</th><th>의미</th><th>집계</th></tr></thead><tbody><tr><td><span class="v v-match">일치</span></td><td>기존 논문에 같은 기술 요소가 있다고 판정</td><td>1점</td></tr><tr><td><span class="v v-sim">유사</span></td><td>관련 아이디어나 변형된 기술 요소가 있다고 판정</td><td>0.5점</td></tr><tr><td><span class="v v-none">없음</span></td><td>선택한 기존 논문에서 대응 요소를 찾지 못했다고 판정</td><td>0점</td></tr><tr><td><span class="v v-check">확인필요</span></td><td>누락·검증 문제·불충분한 근거 등으로 재검토 필요</td><td>0~1점 범위</td></tr></tbody></table></div>
+<div class="formula">하한 = 확인된 점수 합 ÷ 전체 M 요소 수 × 100<br>상한 = (확인된 점수 합 + 확인필요 개수) ÷ 전체 M 요소 수 × 100</div>
+<p>예를 들어 4개 요소가 일치·유사·없음·확인필요이면 커버리지는 <strong>37.5~62.5%</strong>입니다. 현재 등급 경계는 30%와 70%이며 범위가 등급 경계를 넘으면 <strong>판정 보류</strong>로 표시합니다.</p>
+<div class="note"><strong>수치의 의미</strong><br>커버리지는 추출된 기술 요소의 대응 정도입니다. 표절률, 신규성 확률, 논문 전체의 유사도 비율로 해석하지 않습니다.</div>
+<h3>검증 결과에서 함께 볼 항목</h3><ul><li><code>status</code> · <code>issues</code> · <code>not_checked</code>: 검증 상태, 문제와 검사하지 못한 범위</li><li><code>mappings</code> · <code>uncertain_items</code>: 요소별 판정, 근거와 재확인 이유</li><li><code>numeric_checks</code>: 데이터셋과 지표가 대응하는 실험 수치의 비교</li><li><code>classify_agrees</code>: 에이전트 등급과 코드 계산 등급의 일치 여부</li></ul>
+<p class="small">등급 수치만으로 결과의 유효성을 판단하지 않고 검증 상태와 경고를 함께 확인해야 합니다.</p>
+</section>
+
+<section id="contracts">
+<span class="section-no">05 / DATA &amp; CODE</span><h2>데이터와 코드 구조</h2><p class="sec-intro">중간 산출물을 보존해 어느 단계에서 결과가 달라졌는지 확인할 수 있게 합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>식별자</th><th>대상</th><th>규칙</th></tr></thead><tbody><tr><td><code>M1, M2, …</code></td><td>내 논문의 핵심 기술</td><td><code>core_techniques</code> 순서</td></tr><tr><td><code>P1, P2, …</code></td><td>기존 논문의 핵심 기술</td><td><code>core_techniques</code> 순서</td></tr><tr><td><code>R-M1, R-M2, …</code></td><td>내 논문의 실험 결과</td><td><code>experiment_results</code> 순서</td></tr><tr><td><code>R-P1, R-P2, …</code></td><td>기존 논문의 실험 결과</td><td><code>experiment_results</code> 순서</td></tr></tbody></table></div>
+<h3>주요 산출물</h3><p>새 실행은 <code>suitability.json</code>과 <code>report.json</code>을 추가 저장합니다. 부적합/보류 경로는 이후 비교 산출물이 없습니다.</p><div class="table-wrap"><table><thead><tr><th>파일</th><th>역할</th></tr></thead><tbody><tr><td><code>my_paper.json</code><br><code>prior_paper.json</code></td><td>두 논문의 핵심 기술과 실험 결과 추출본</td></tr><tr><td><code>Compare_Input.pdf</code></td><td>공통 번호를 포함한 비교 입력</td></tr><tr><td><code>compare_result.json</code></td><td>에이전트의 비교 결과</td></tr><tr><td><code>similarity.json</code></td><td>임베딩 유사도 결과. 계산 성공 시 저장</td></tr><tr><td><code>validated_result.json</code></td><td>코드 검증 결과, 커버리지와 확인 필요 항목</td></tr></tbody></table></div>
+<p class="small">입력 PDF와 임베딩 캐시도 실행 폴더에 보관합니다. 중도 실패한 실행에는 일부 파일만 남을 수 있습니다.</p>
+<h3>코드별 책임</h3><p><a href="../suitability.py">suitability.py</a>는 의미 판단 요청·근거 참조 검사·경로 선택을, <a href="../comparison_report.py">comparison_report.py</a>는 경로별 표시·저장 정책과 최종 레포트를 담당합니다.</p><div class="table-wrap"><table><thead><tr><th>코드</th><th>담당</th></tr></thead><tbody><tr><td><a href="../service.py">service.py</a></td><td>입력 점검, 단계 실행, 결과 저장과 오류 전달</td></tr><tr><td><a href="../ids.py">ids.py</a><br><a href="../compare_builder.py">compare_builder.py</a></td><td>텍스트 정리, 공통 번호 부여와 비교용 PDF 생성</td></tr><tr><td><a href="../validator.py">validator.py</a></td><td>대응과 근거 점검, 수치 비교, 커버리지와 등급 계산</td></tr><tr><td><a href="../similarity.py">similarity.py</a></td><td>기술 요소 임베딩과 유사도 계산</td></tr><tr><td><a href="../run_storage.py">run_storage.py</a></td><td>실행 폴더 생성, 보관 기간 정리와 실행 삭제</td></tr><tr><td><a href="../config.py">config.py</a></td><td>환경변수 로딩과 필수 설정 확인</td></tr></tbody></table></div>
+</section>
+
+<section id="scenarios">
+<span class="section-no">06 / EXCEPTIONS</span><h2>예외 시나리오</h2><p class="sec-intro">현재 처리하는 상황과 앞으로 설계할 상황을 구분합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>상황</th><th>현재 동작 / 검토 방향</th><th>상태</th></tr></thead><tbody>
+<tr><td>완전히 같은 PDF 두 개</td><td>해시가 같으면 분석 시작 전에 중단</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>해결 문제·핵심 기술 정보 부족</td><td>판단 보류 레포트와 재분석 안내. 정보 부족을 곧바로 비논문 문서로 단정하지 않음</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>필수 단계에서 예외 발생</td><td>해당 단계의 오류를 전달하고 중단</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>임베딩 API 실패</td><td>유사도 없이 검증을 진행하고 오류를 결과에 기록</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>대응 누락·행별 검증 문제</td><td>해당 요소를 확인필요로 처리하고 커버리지 범위에 반영</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>커버리지가 등급 경계를 넘음</td><td>코드 계산 등급을 판정 보류로 처리</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>연구 주제가 서로 다름</td><td>구체적 방법이 연결되면 방법론 비교. 범용 기반만 공통이거나 방법도 다르면 부적합 안내</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>적합성 API·형식·인용 오류</td><td>비교 허용으로 대체하지 않고 판단 보류 레포트 제공</td><td><span class="status implemented">구현 확인</span></td></tr>
+<tr><td>스캔·표·OCR 품질 저하</td><td>추출 품질 판별과 재업로드 안내 기준 마련</td><td><span class="status pending">추가 검토</span></td></tr>
+<tr><td>확인필요가 대부분인 결과</td><td>요소 단위 처리와 별개로 보고서 전체 제공·보류 기준 마련</td><td><span class="status proposed">제안</span></td></tr>
+</tbody></table></div>
+</section>
+
+<section id="evaluation">
+<span class="section-no">07 / EVIDENCE</span><h2>테스트와 신뢰도</h2><p class="sec-intro">검증 코드가 있다는 사실과 실제 평가에서 성능이 확인됐다는 사실을 구분합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>확인 대상</th><th>근거 파일</th><th>최신 검증 상태</th></tr></thead><tbody><tr><td>결과 정규화·구조화</td><td><a href="../tests/test_result_normalization.py">test_result_normalization.py</a><br><a href="../tests/test_structured_results.py">test_structured_results.py</a></td><td>전체 71개 테스트 실행에 포함 · 통과</td></tr><tr><td>실행 폴더 보관과 삭제</td><td><a href="../tests/test_run_storage.py">test_run_storage.py</a></td><td>전체 71개 테스트 실행에 포함 · 통과</td></tr><tr><td>임베딩 유사도</td><td><a href="../tests/test_similarity.py">test_similarity.py</a></td><td>전체 71개 테스트 실행에 포함 · 통과</td></tr><tr><td>사람이 작성하는 정답 라벨</td><td><a href="../eval/labeling.py">eval/labeling.py</a></td><td>독립 라벨 양식 생성·불일치 병합 도구 확인</td></tr><tr><td>유사도 임계값 검토</td><td><a href="../eval/calibrate_similarity.py">eval/calibrate_similarity.py</a></td><td>파일 존재 확인 · 채택 임계값과 평가 결과 미확인</td></tr></tbody></table></div>
+<h3>2026.10.31 · 적합성 분기 변경 검증</h3>
+<p><code>python -m pytest tests -q</code> · <strong id="suitability-test-result">71개 통과 · 2.97초 · 외부 API 호출 없음</strong></p>
+<p><a href="../tests/test_suitability.py">test_suitability.py</a> · <a href="../tests/test_suitability_workflow.py">test_suitability_workflow.py</a>:
+관계 조합·5개 경로·잘못된 인용·정보 부족·API 실패·응답 형식·전체 등급 제한·실험 비교 분리·후속 호출 생략·화면 표시 분기·CLI 경로를 확인합니다.</p>
+<p class="small">테스트에서 API 응답과 화면 렌더러는 대체합니다. 실제 Solar/Studio API의 계정 권한·모델 제공 여부·실제 논문에 대한 의미 분류 정확도와 브라우저 렌더링은 검증하지 않았습니다. Windows 제한 환경의 기본 임시폴더 접근을 피하기 위해 쓰기 가능한 임시 경로를 TEMP/TMP 및 pytest --basetemp로 지정해 실행했습니다. Streamlit AppTest는 루프백 소켓 생성 단계에서 대기하여 중단했고, 화면 항목의 호출 여부와 다운로드 내용은 렌더러 대체 테스트로 검증했습니다.</p>
+<h3>다음 평가에서 남길 항목</h3><ul><li>입력 논문 쌍과 선정 이유, 주제 적합성 정답</li><li>독립 라벨러의 판정, 불일치 항목과 해결 방식</li><li>코드·에이전트 설정 버전, 실행 결과와 실패 원인</li><li>정상 사례와 예외 사례 각각의 성공 기준 및 관측 결과</li></ul>
+<div class="note"><strong>현재 한계</strong><br>이 페이지는 코드와 파일 구조를 확인해 작성했습니다. 논문 비교 정확도, OCR 정확도, 운영 안정성의 측정값은 아직 이 문서에 등록되지 않았습니다.</div>
+</section>
+
+<section id="history">
+<span class="section-no">08 / CHANGELOG</span><h2>개선 이력</h2><p class="sec-intro">개발 날짜를 추정하지 않고 확인된 변경이나 문서화 시점을 기록합니다.</p>
+<!-- HISTORY: 새 기록을 위에 추가하고, 결정 변경 시 DEC ID를 함께 기록한다. -->
+<div class="timeline"><div class="t"><span class="d">2026.10.31 · 비교 화면 좌우 여백 개선</span><p><strong>DEC-008 · 본문 최대 폭과 반응형 여백 적용</strong><br>본문을 가운데 정렬하고 최대 1440px로 제한했습니다. 넓은 화면의 좌우 패딩을 화면 크기에 따라 조정하고, 작은 화면에서는 1rem을 유지합니다. 구문과 설치된 Streamlit의 스타일 적용 대상 확인을 마쳤습니다. 사용자 피드백을 반영해 변경 전후와 여백 기준을 기술 문서에 기록했습니다. 화면 폭별 시각 검증은 별도 확인 대상입니다.</p></div><div class="t"><span class="d">2026.10.31 · 비교 적합성 분기 구현</span><p><strong>DEC-007 · 무조건 비교에서 조건별 레포트로 변경</strong><br>
+해결 문제·범위·핵심 방법에 따른 5개 경로, 추출 근거 참조 검사, 부적합/보류의 조기 종료, 부분/방법론의 등급 제한과 실험 비교 분리를 적용했습니다.
+최종 레포트 다운로드와 웹·CLI 공통 실행을 추가했습니다. API 대체 테스트 결과와 미검증 범위를 함께 기록했습니다.</p></div><div class="t"><span class="d">2026.10.31 · 최초 문서화</span><p><strong>개발자 기술 문서를 별도로 생성</strong><br>기존 전체 정리 문서의 흰 배경·파란 강조·좌측 목차·표 중심 구성을 참고했습니다. 현재 코드에서 확인한 설계 결정 6개와 주제 불일치 보고서 분기 제안 1개를 구분해 등록했습니다.</p></div></div>
+</section>
+
+<section id="maintenance">
+<span class="section-no">09 / MAINTENANCE</span><h2>문서 갱신 기준</h2><p class="sec-intro">앞으로 기준을 정하거나 기능을 개선할 때 같은 형식으로 이어서 기록합니다.</p>
+<div class="table-wrap"><table><thead><tr><th>변경 상황</th><th>문서에 반영할 내용</th></tr></thead><tbody><tr><td>새 기준을 논의함</td><td>제안 상태로 배경·후보 기준·확정할 항목 기록</td></tr><tr><td>기준을 확정함</td><td>확정 상태와 결정 이유 기록. 코드 반영 전에는 구현 확인으로 바꾸지 않음</td></tr><tr><td>기능을 구현함</td><td>동작·해당 코드·변경 전후·남은 제약 기록</td></tr><tr><td>검증을 실행함</td><td>입력·명령 또는 방법·실제 결과·검사하지 못한 범위 기록</td></tr><tr><td>기존 결정을 바꿈</td><td>기존 DEC ID를 유지해 현재 기준을 고치고 개선 이력에 변경 이유와 이전 기준 기록</td></tr></tbody></table></div>
+<div class="panel"><h3 style="margin-top:0">기록 항목</h3><p>결정 ID · 제목 · 상태 · 배경 · 선택 이유 · 적용 내용 · 근거 파일 · 검증 결과 · 한계 · 변경일</p><p class="small">기존 항목은 중복 추가하지 않고 갱신합니다. 실행하지 않은 검증을 통과로 표시하거나 아이디어를 구현 완료로 기록하지 않습니다.</p></div>
+<p class="small">현재는 독립 HTML 문서입니다. 대화나 코드 변경을 상시 감지하는 자동 갱신 기능은 연결되지 않았습니다.</p>
+</section>
+<footer><p>PriorScope · 개발자 기술 문서 · 기준일 2026.10.31<br>출처: 현재 작업 폴더의 Python 코드와 테스트·평가 파일. 기존 전체 정리 HTML은 시각적 구성의 참고 자료로 사용했습니다.</p></footer>
+</main>
+</div>
+<script>
+const records=Array.from(document.querySelectorAll('.decision'));
+const search=document.getElementById('search');
+const status=document.getElementById('status');
+function filterRecords(){const q=search.value.trim().toLocaleLowerCase('ko');let count=0;for(const r of records){r.hidden=!((!q||r.textContent.toLocaleLowerCase('ko').includes(q))&&(status.value==='all'||r.dataset.status===status.value));if(!r.hidden)count++;}document.getElementById('result-count').textContent='설계 결정 '+count+'개 / 전체 '+records.length+'개';document.getElementById('empty').hidden=count!==0;}
+search.addEventListener('input',filterRecords);status.addEventListener('change',filterRecords);
+document.getElementById('expand').addEventListener('click',event=>{const visible=records.filter(r=>!r.hidden);const open=visible.some(r=>!r.open);visible.forEach(r=>r.open=open);event.currentTarget.textContent=open?'모두 접기':'모두 펼치기';});
+if('IntersectionObserver' in window){const links=Array.from(document.querySelectorAll('.toc a'));const active=new Set();const observer=new IntersectionObserver(entries=>{entries.forEach(entry=>{if(entry.isIntersecting)active.add(entry.target.id);else active.delete(entry.target.id);});const first=Array.from(document.querySelectorAll('main section')).find(s=>active.has(s.id));if(first)links.forEach(link=>{if(link.hash==='#'+first.id)link.setAttribute('aria-current','location');else link.removeAttribute('aria-current');});},{rootMargin:'-5% 0px -45% 0px'});document.querySelectorAll('main section').forEach(s=>observer.observe(s));}
+let printState=[];window.addEventListener('beforeprint',()=>{printState=records.map(r=>r.open);records.forEach(r=>{r.open=true;r.hidden=false;});});window.addEventListener('afterprint',()=>{records.forEach((r,i)=>r.open=printState[i]);filterRecords();});
+</script>
+</body>
+</html>

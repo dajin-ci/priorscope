@@ -33,7 +33,22 @@ RUNS_LOG = BASE / "runs_log.csv"
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--log", metavar="메모", help="점검 후 runs_log.csv 에 이번 실행을 기록")
+parser.add_argument("--run-dir", type=Path, help="새 서비스의 runs/<run_id> 결과 폴더")
 ARGS = parser.parse_args()
+if ARGS.run_dir is not None:
+    run_dir = ARGS.run_dir.resolve()
+    FILES = {key: run_dir / path.name for key, path in FILES.items()}
+    SIMILARITY = run_dir / "similarity.json"
+    gate = json.loads((run_dir / "suitability.json").read_text(encoding="utf-8-sig"))
+    if not gate["comparison_allowed"]:
+        from comparison_report import build_report
+        report = json.loads((run_dir / "report.json").read_text(encoding="utf-8-sig"))
+        skipped = ("compare_input", "compare_result", "validated")
+        clean = not any(FILES[key].exists() for key in skipped)
+        valid = report == build_report(gate)
+        print(f"비교 경로: {gate['label']} | 후속 분석 생략: {clean} | 레포트 일치: {valid}")
+        raise SystemExit(0 if clean and valid else 1)
+
 
 problems = []
 
@@ -74,14 +89,14 @@ print("\n2. 파일 존재와 생성 순서")
 missing = [name for name, path in FILES.items() if not path.exists()]
 if missing:
     for name in missing:
-        bad(f"{FILES[name].relative_to(BASE)} 가 없습니다.")
+        bad(f"{os.path.relpath(FILES[name], BASE)} 가 없습니다.")
     print("\n결과 파일이 없어 점검을 멈춥니다. python app.py 를 먼저 실행하세요.")
     raise SystemExit(1)
 
 times = {name: path.stat().st_mtime for name, path in FILES.items()}
 for name, path in FILES.items():
     stamp = datetime.fromtimestamp(times[name]).strftime("%m-%d %H:%M")
-    print(f"         {stamp}  {path.relative_to(BASE)}")
+    print(f"         {stamp}  {os.path.relpath(path, BASE)}")
 
 order = [
     ("my_paper", "compare_input"),
@@ -141,6 +156,9 @@ if sim is not None:
     else:
         bad("similarity.json 이 다른 실행의 결과입니다. python similarity.py 를 다시 실행하세요.")
 fresh = validator.validate(my, prior, cmp_, similarity=sim)
+if ARGS.run_dir is not None:
+    from comparison_report import apply_scope_policy
+    fresh = apply_scope_policy(fresh, gate)
 same = (
     saved.get("final_level") == fresh["final_level"]
     and saved.get("coverage", {}).get("min") == fresh["coverage"]["min"]

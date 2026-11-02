@@ -15,6 +15,8 @@ import streamlit as st
 
 from ids import assign_ids, clean_text
 from validator import derive_weaknesses
+from suitability import AXIS_LABELS, deferred_assessment
+from comparison_report import build_report
 from run_storage import cleanup_old_runs, delete_run, retention_hours
 
 BASE_DIR = Path(__file__).resolve().parent
@@ -28,6 +30,28 @@ SAMPLE_FILES = {
 
 VERDICT_BADGE = {"일치": "🔴 일치", "유사": "🟠 유사", "없음": "🟢 없음", "확인필요": "🟡 확인필요"}
 SHORT_LEVEL = {"High Overlap": "High", "Medium Overlap": "Medium", "Low Overlap": "Low"}
+
+# 넓은 화면의 가독성을 위해 본문 폭을 제한하고, 화면 폭에 맞춰 여백을 조정한다.
+PAGE_STYLES = """
+<style>
+[data-testid="stMainBlockContainer"] {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 1440px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: clamp(1.25rem, 4vw, 4rem);
+    padding-right: clamp(1.25rem, 4vw, 4rem);
+}
+@media (max-width: 640px) {
+    [data-testid="stMainBlockContainer"] {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+}
+</style>
+"""
+
 
 
 ##################################################
@@ -136,12 +160,12 @@ def render_novel_overlap(verified):
 
     left, right = st.columns(2)
     with left:
-        st.subheader("내 논문 고유 요소 (차별점)")
+        st.subheader("비교 논문에서 대응되지 않은 요소 (차별점 후보)")
         if novel:
             for m in novel:
                 st.text(f"{m['id']}. {m['text']}")
         else:
-            st.info("검증을 통과한 고유 요소가 없습니다.")
+            st.info("대응 없음으로 남은 요소가 없습니다.")
     with right:
         st.subheader("기존 논문과 겹치는 요소")
         if overlap:
@@ -265,46 +289,100 @@ def render_uncertain(verified):
                 st.caption(f"사유: {reason}")
 
 
+def render_suitability(suitability):
+    st.subheader("비교 적합성")
+    relation_labels = {
+        "same": "같음", "related": "관련 있음", "different": "다름",
+        "unknown": "확인 불가", "comparable": "대응 가능", "partial": "일부 공통",
+        "specific_shared": "구체적 방법 연결", "generic_only": "범용 기반만 공통",
+    }
+    rows = []
+    for key, axis in suitability["axes"].items():
+        rows.append({"판단 기준": AXIS_LABELS[key],
+                     "관계": relation_labels.get(axis["relation"], axis["relation"]),
+                     "이유": axis["reason"]})
+    st.dataframe(rows, hide_index=True)
+    for warning in suitability.get("warnings", []):
+        st.warning(warning)
+    with st.expander("적합성 판단 근거 (추출본)"):
+        st.caption("추출본의 인용 일치를 검사했습니다. PDF 원문에 대한 의미 검증은 별도로 필요합니다.")
+        for key, axis in suitability["axes"].items():
+            st.markdown(f"**{AXIS_LABELS[key]}**")
+            for label, field in (("내 논문", "my_evidence"), ("기존 논문", "prior_evidence")):
+                for evidence in axis[field]:
+                    st.text(f"{label} · {evidence['field']}[{evidence['index']}]")
+                    st.text(evidence["source_text"])
+
+
 def render_result(bundle, key_prefix):
-    verified = bundle["verified"]
-    compare = bundle["compare_result"]
+    suitability = bundle.get("suitability")
+    if suitability is None:
+        st.warning("적합성 판정 도입 전의 저장 결과입니다. 현재 기준의 레포트를 받으려면 다시 분석해 주세요.")
+        suitability = deferred_assessment("저장된 결과에 비교 적합성 판단과 근거가 없습니다.")
+    verified = bundle.get("verified")
+    # 표시 정책은 저장된 플래그가 아닌 현재 코드에서 다시 결정한다.
+    report = build_report(suitability, verified)
+    st.subheader(report["title"])
+    st.info(report["summary"])
+    render_suitability(suitability)
+
     ids = assign_ids(bundle["my_paper"], bundle["prior_paper"])
+    if verified is not None:
+        if verified.get("status") != "PASSED":
+            st.warning("코드 검증에 재확인할 항목이 있습니다. 검증 상세와 근거를 확인하세요.")
+        if report["show_overall_grade"]:
+            render_badges(verified)
+            st.caption("커버리지는 추출 요소의 겹침 지표이며 신뢰도나 독창성 확률이 아닙니다.")
+        if report["show_mappings"]:
+            st.divider()
+            if suitability["route"] != "research":
+                st.caption("요소 대응은 공통 범위·방법의 관계를 검토하기 위한 자료입니다. 전체 연구의 차별성으로 해석하지 마세요.")
+            render_mapping_table(verified, ids)
+        if report["show_novelty_candidates"]:
+            render_novel_overlap(verified)
+            st.caption("대응 없음은 선택한 비교 논문의 추출 범위에 한정됩니다. 원문을 다시 확인하세요.")
+        if report["show_weaknesses"]:
+            render_weakness(verified, ids)
+        if report["show_numeric"]:
+            st.subheader(f"실험 비교 가능 여부 · {report['numeric']['status']}")
+            render_numeric(verified, ids)
+        else:
+            st.info("이 경로에서는 연구 간 성능 우위를 제시하지 않습니다.")
+        if report["show_mappings"]:
+            render_uncertain(verified)
+        with st.expander(f"검증 상세 (status: {verified['status']}, 이슈 {len(verified['issues'])}건)"):
+            st.dataframe(
+                [{"코드": i["code"], "심각도": i["severity"], "항목": i.get("item_id") or "",
+                  "설명": i["message"]} for i in verified["issues"]], hide_index=True,
+            )
+        if suitability["route"] == "research" and verified.get("status") != "FAILED":
+            with st.expander("AI 서술 초안 (검증 결과 반영 전)"):
+                st.warning("아래는 AI 원출력입니다. 수치·조건·등급이 최종 검증과 다를 수 있어 원문 확인 후 사용해야 합니다.")
+                render_report(bundle.get("compare_result") or {})
 
-    render_badges(verified)
-    st.divider()
-    render_mapping_table(verified, ids)
-    render_novel_overlap(verified)
-    st.divider()
-    render_weakness(verified, ids)
-    st.divider()
-    render_numeric(verified, ids)
-    st.divider()
-    render_report(compare)
-    st.divider()
-    render_uncertain(verified)
-
-    with st.expander(f"검증 상세 (status: {verified['status']}, 이슈 {len(verified['issues'])}건)"):
-        st.dataframe(
-            [{"코드": i["code"], "심각도": i["severity"], "항목": i.get("item_id") or "", "설명": i["message"]}
-             for i in verified["issues"]],
-            hide_index=True,
+    st.subheader("다음 행동")
+    for action in report["next_actions"]:
+        st.text(f"• {action}")
+    with st.expander("비교 범위와 제한"):
+        for limitation in report["limitations"]:
+            st.text(f"• {limitation}")
+    st.download_button(
+        "최종 레포트 JSON 다운로드",
+        json.dumps({"suitability": suitability, "report": report, "verified": verified},
+                   ensure_ascii=False, indent=2),
+        file_name="report.json", mime="application/json", key=f"{key_prefix}_dl_report",
+    )
+    if verified is not None and suitability["comparison_allowed"]:
+        st.download_button(
+            "검증 결과 JSON 다운로드", json.dumps(verified, ensure_ascii=False, indent=2),
+            file_name="verified_result.json", mime="application/json", key=f"{key_prefix}_dl_verified",
         )
-
-    d1, d2 = st.columns(2)
-    d1.download_button(
-        "verified_result.json 다운로드",
-        json.dumps(verified, ensure_ascii=False, indent=2),
-        file_name="verified_result.json",
-        mime="application/json",
-        key=f"{key_prefix}_dl_verified",
-    )
-    d2.download_button(
-        "compare_result.json 다운로드",
-        json.dumps(compare, ensure_ascii=False, indent=2),
-        file_name="compare_result.json",
-        mime="application/json",
-        key=f"{key_prefix}_dl_compare",
-    )
+        with st.expander("원본 AI 출력 다운로드"):
+            st.caption("검증·범위 제한 전의 진단 자료입니다. 최종 레포트와 구분해 사용하세요.")
+            st.download_button(
+                "원본 compare_result.json", json.dumps(bundle.get("compare_result"), ensure_ascii=False, indent=2),
+                file_name="compare_result.json", mime="application/json", key=f"{key_prefix}_dl_compare",
+            )
 
 
 ##################################################
@@ -413,6 +491,9 @@ def tab_sample():
             return
         bundle[key] = json.loads(path.read_text(encoding="utf-8"))
 
+    suitability_path = SAMPLES_DIR / "suitability.json"
+    if suitability_path.exists():
+        bundle["suitability"] = json.loads(suitability_path.read_text(encoding="utf-8"))
     st.caption("미리 실행해 둔 결과입니다. 에이전트를 호출하지 않습니다.")
     render_result(bundle, "sample")
 
@@ -423,6 +504,7 @@ def tab_sample():
 
 def main():
     st.set_page_config(page_title="PriorScope", page_icon="📄", layout="wide")
+    st.html(PAGE_STYLES)
 
     # 보관 기간이 지난 실행 폴더 정리. 화면이 열릴 때마다 부르지 않도록 세션당 한 번만 한다.
     if not st.session_state.get("runs_cleaned"):
@@ -432,7 +514,7 @@ def main():
             pass
         st.session_state["runs_cleaned"] = True
     st.title("PriorScope · 논문 차별성 사전 점검")
-    st.caption("내 논문의 핵심 기술 요소가 기존 논문에 이미 있는지, 근거 위치와 함께 판정합니다.")
+    st.caption("두 논문의 비교 적합성을 먼저 판단한 뒤, 공통 범위와 근거에 맞는 레포트를 제공합니다.")
 
     new_tab, sample_tab = st.tabs(["새로 분석", "샘플 결과 보기"])
     with new_tab:

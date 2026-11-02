@@ -1,0 +1,69 @@
+{
+    "title": [
+        "IMAGEBIND: One Embedding Space To Bind Them All"
+    ],
+    "language": [
+        "en"
+    ],
+    "research_field": [
+        "컴퓨터비전"
+    ],
+    "problem": [
+        "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.",
+        "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together.",
+        "Acquiring all types and combinations of paired data with the same set of images is infeasible."
+    ],
+    "core_techniques": [
+        "[3.2] aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함",
+        "[3.2] We use large-scale web datasets with (image, text) pairings | 대규모 웹 기반 이미지-텍스트 페어 데이터를 활용함",
+        "[3.2] we use the natural, self-supervised pairing of other modalities - audio, depth, thermal, and In- tertial Measurement Unit (IMU) - with images | 오디오·깊이·열·IMU와 이미지의 자연적 자기지도 페어링을 사용함",
+        "[3.2] are optimized using an InfoNCE [54] loss | 모달리티-이미지 정렬을 위해 InfoNCE 대조학습 손실을 사용함",
+        "[3.2] we use a symmetric loss LI,M + LM,I | 양방향 대칭 손실로 두 모달리티 정렬을 학습함",
+        "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+        "[3.3] We use separate encoders for images, text, audio, ther- mal images, depth images, and IMU | 모달리티별로 분리된 인코더를 사용함",
+        "[3.3] We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함"
+    ],
+    "experiment_results": [
+        "IN1K | IMAGEBIND | Acc. | 77.7 | ↑ | [Table 2]",
+        "P365 | IMAGEBIND | Acc. | 45.4 | ↑ | [Table 2]",
+        "K400 | IMAGEBIND | Acc. | 50.0 | ↑ | [Table 2]",
+        "MSR-VTT | IMAGEBIND | Recall@1 | 36.1 | ↑ | [Table 2]",
+        "NYU-D | IMAGEBIND | Acc. | 54.0 | ↑ | [Table 2]",
+        "SUN-D | IMAGEBIND | Acc. | 35.1 | ↑ | [Table 2]",
+        "AS-A | IMAGEBIND | mAP | 17.6 | ↑ | [Table 2]",
+        "VGGS | IMAGEBIND | Acc. | 27.8 | ↑ | [Table 2]",
+        "ESC | IMAGEBIND | Acc. | 66.9 | ↑ | [Table 2]",
+        "LLVIP | IMAGEBIND | Acc. | 63.4 | ↑ | [Table 2]",
+        "Ego4D | IMAGEBIND | Acc. | 25.0 | ↑ | [Table 2]",
+        "Clotho | IMAGEBIND | R@1 | 6.0 | ↑ | [Table 3]",
+        "Clotho | IMAGEBIND | R@10 | 28.4 | ↑ | [Table 3]",
+        "AudioCaps | IMAGEBIND | R@1 | 9.3 | ↑ | [Table 3]",
+        "AudioCaps | IMAGEBIND | R@10 | 42.3 | ↑ | [Table 3]",
+        "ESC | IMAGEBIND | Top-1 | 66.9 | ↑ | [Table 3]",
+        "MSR-VTT 1K-A | IMAGEBIND, A | R@1 | 6.8 | ↑ | [Table 4]",
+        "MSR-VTT 1K-A | IMAGEBIND, A | R@5 | 18.5 | ↑ | [Table 4]",
+        "MSR-VTT 1K-A | IMAGEBIND, A | R@10 | 27.2 | ↑ | [Table 4]",
+        "MSR-VTT 1K-A | IMAGEBIND, A+V | R@1 | 36.8 | ↑ | [Table 4]",
+        "MSR-VTT 1K-A | IMAGEBIND, A+V | R@5 | 61.8 | ↑ | [Table 4]",
+        "MSR-VTT 1K-A | IMAGEBIND, A+V | R@10 | 70.0 | ↑ | [Table 4]"
+    ],
+    "keywords": [
+        "multimodal learning",
+        "joint embedding space",
+        "cross-modal retrieval",
+        "zero-shot classification",
+        "contrastive learning",
+        "audio-to-image generation"
+    ],
+    "citation_info": [
+        "Girdhar et al., arXiv, 2023"
+    ],
+    "limitations": [
+        "[6] Our embeddings are trained without a specific downstream task, and thus lag the performance of specialist models.",
+        "[6] Our model is a research prototype and cannot be readily used for real world applications ( Appendix F).",
+        "[F] joint embedding models, including IMAGEBIND must be studied carefully with a lens towards measuring such associations, and their implications.",
+        "[F] IMAGEBIND leverages the image-text embeddings learned by a pretrained model on large web-based data which has biases as documented in different studies [60].",
+        "[F] These joint embeddings are thus limited to the concepts present in the datasets.",
+        "[F] the thermal datasets we used are limited to outdoor street scenes, while the depth datasets are limited to indoor scenes."
+    ]
+}
