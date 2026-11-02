@@ -53,3 +53,12 @@ result/
 *.log
 runs/
 data/
+
+
+# ==========================================================
+# Evaluation results (eval/evaluate.py)
+# 리포트와 판정 JSON 은 커밋하고, 다시 만들 수 있는 큰 파일만 뺀다.
+# ==========================================================
+
+eval/results/**/Compare_Input.pdf
+eval/results/**/embedding_cache.json
