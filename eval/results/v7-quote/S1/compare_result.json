@@ -1,0 +1,40 @@
+{
+  "overlap_level": [
+    "Low Overlap"
+  ],
+  "llm_score": [
+    24
+  ],
+  "summary": [
+    "제안 논문은 unseen 이벤트까지 명시적으로 예측하는 Open-Vocabulary AVEL 문제와 이를 위한 데이터셋·평가 체계를 다룬다. 기존 논문은 이미지, 텍스트, 오디오, 깊이, 열, IMU를 하나의 공유 임베딩 공간에 정렬하는 표현 학습 자체를 목표로 하며, AVEL을 직접 목표로 하지는 않는다. 두 논문은 제안 논문이 기존 논문의 ImageBind 공간을 특징 추출에 활용한다는 점에서만 부분적으로 맞닿아 있다."
+  ],
+  "element_mapping": [
+    "M1 ↔ - | 없음 | 검토 범위 P1~P8 | M1은 seen·unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 OV-AVEL 문제 정식화인데, P1~P8은 여러 모달리티를 하나의 공유 임베딩 공간에 정렬하는 표현 학습과 인코더 설계를 설명할 뿐 특정 AVEL 문제나 open-vocabulary 이벤트 국소화 문제 정식화는 제시하지 않는다.",
+    "M2 ↔ - | 없음 | 검토 범위 P1~P8 | M2는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 OV-AVEBench 데이터셋 구축인데, P2·P3은 대규모 웹 이미지-텍스트 및 이미지-기타 모달리티 페어 데이터를 사용한다는 내용만 있고 AVEL용 데이터셋 구축이나 segment-level 주석 데이터셋은 제시하지 않는다.",
+    "M3 ↔ - | 없음 | 검토 범위 P1~P8 | M3는 정확도와 segment-level/event-level F1을 포함한 평가 지표 정립인데, P1~P8은 학습 방법과 아키텍처에 관한 설명이며 AVEL용 표준 평가 지표를 정의하지 않는다.",
+    "M4 ↔ P1,P6,P7,P8 | 유사 | M[1] / P[3.2],[3.3] | M4는 사전학습된 ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출하는 요소이고, P1은 각 모달리티를 이미지 임베딩에 정렬해 전체 모달리티 공통 공간이 형성됨을 설명하며 P6~P8은 이를 위한 인코더와 프로젝션 설계를 제시한다. 다만 M4는 그 공간을 다운스트림 특징 추출에 활용하는 것이고, P1·P6·P7·P8은 그 공간 자체의 학습 방법이라는 점에서 유사 수준이다.",
+    "M5 ↔ - | 없음 | 검토 범위 P1~P8 | M5는 오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교해 예측하는 학습 없는 베이스라인인데, P1~P8에는 텍스트와의 두 유사도를 비교해 AVEL 예측을 수행하는 추론 규칙이 없다.",
+    "M6 ↔ - | 없음 | 검토 범위 P1~P8 | M6는 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입이다. P6의 Transformer 아키텍처 사용은 범용 인코더 설계 수준의 공통점에 그치므로, schema 기준상 일반 기법 수준 공통점만으로는 대응으로 보기 어렵다.",
+    "M7 ↔ - | 없음 | 검토 범위 P1~P8 | M7은 temporal layer를 표준 Transformer 블록 스택으로 구현하는 구체 설계인데, P6도 Transformer 아키텍처를 사용하지만 적용 위치와 목적이 다른 일반적 공통점에 해당하므로 직접 대응으로 보기 어렵다.",
+    "M8 ↔ - | 없음 | 검토 범위 P1~P8 | M8은 seen 클래스 열만 사용한 정답과 예측 사이 cross entropy로 미세조정하는 OV-AVEL용 학습 설정인데, P4·P5를 포함한 기존 논문의 학습은 모달리티-이미지 정렬을 위한 InfoNCE 및 대칭 손실이 중심이며 seen-class 선택 기반의 분류형 미세조정은 제시되지 않는다."
+  ],
+  "result_pairs": [
+    "R-M1 ~ R-P1,R-P2,R-P3,R-P5,R-P6,R-P8,R-P9,R-P10,R-P11,R-P16 | 조건 다름 | 공통 지표는 Avg./Acc./Top-1 계열처럼 일부 유사해 보일 수 있으나 데이터셋이 OV-AVEBench와 IN1K, P365, K400, NYU-D, SUN-D, VGGS, ESC, LLVIP, Ego4D로 서로 달라 같은 조건의 쌍이 아니다.",
+    "R-M2 ~ R-P1,R-P2,R-P3,R-P5,R-P6,R-P8,R-P9,R-P10,R-P11,R-P16 | 조건 다름 | R-M2는 OV-AVEBench의 seen 분할 Avg.이고, 기존 논문 결과들은 서로 다른 데이터셋의 Acc./Top-1 결과이므로 데이터셋과 조건이 다르다.",
+    "R-M3 ~ R-P1,R-P2,R-P3,R-P5,R-P6,R-P8,R-P9,R-P10,R-P11,R-P16 | 조건 다름 | R-M3는 OV-AVEBench의 unseen 분할 Avg.이고, 기존 논문 결과들은 다른 데이터셋에서의 분류 정확도 계열 결과라 동일 조건이 아니다.",
+    "R-M4 ~ R-P1,R-P2,R-P3,R-P5,R-P6,R-P8,R-P9,R-P10,R-P11,R-P16 | 조건 다름 | R-M4는 OV-AVEBench에서 fine-tuning한 Avg. 결과이고, 기존 논문 결과들은 서로 다른 데이터셋의 분류 정확도 계열 결과이므로 같은 데이터셋·조건 비교가 아니다.",
+    "R-M5 ~ R-P1,R-P2,R-P3,R-P5,R-P6,R-P8,R-P9,R-P10,R-P11,R-P16 | 조건 다름 | R-M5는 OV-AVEBench seen 분할의 fine-tuning Avg. 결과이고, 기존 논문에는 같은 데이터셋·분할의 결과가 없다.",
+    "R-M6 ~ R-P1,R-P2,R-P3,R-P5,R-P6,R-P8,R-P9,R-P10,R-P11,R-P16 | 조건 다름 | R-M6는 OV-AVEBench unseen 분할의 fine-tuning Avg. 결과이고, 기존 논문에는 동일 데이터셋과 지표의 결과가 보고되지 않았다."
+  ],
+  "caution_points": [
+    "[M4 ↔ P1,P6,P7,P8] 제안 논문이 pretrained ImageBind의 unified multimodal space를 직접 활용하므로, 심사자는 기존 논문의 핵심 표현 공간과 인코더 설계에 의존한다고 볼 수 있다. 보강 방법으로는 제안 논문이 해당 공간을 AVEL의 segment-level localization과 seen/unseen explicit prediction에 어떻게 재해석하는지 목적과 적용 조건의 차이를 본문에 분명히 적는 것이 좋다."
+  ],
+  "differentiation_suggestions": [
+    "Our work uses the pretrained ImageBind space as a feature source for audio-visual event localization, whereas the prior work focuses on learning a general joint embedding space itself rather than a localization task. The two papers therefore differ in their problem setting and immediate objective.",
+    "Our work targets explicit prediction of seen and unseen event categories in test videos, while the prior work does not formulate open-vocabulary audio-visual event localization as its task. This difference should be stated clearly to separate the downstream task from the pretraining framework.",
+    "Our work introduces a dataset with segment-level manual event annotations and evaluates localization with accuracy, segment-level F1, and event-level F1, whereas the prior work does not present an AVEL benchmark with this annotation and evaluation setup. This clarifies that the data scope and evaluation protocol are specific to our work."
+  ],
+  "related_work_draft": [
+    "The prior work (Girdhar et al., arXiv, 2023) learns a unified embedding space that aligns images with text, audio, depth, thermal, and IMU modalities. In contrast, our work uses this pretrained multimodal space for open-vocabulary audio-visual event localization, with a focus on explicit seen/unseen event prediction and segment-level evaluation."
+  ]
+}

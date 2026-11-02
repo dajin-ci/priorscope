@@ -1,0 +1,115 @@
+{
+  "created_at": "2026-11-02T23:17:19",
+  "metrics": {
+    "provisional": true,
+    "samples": 2,
+    "route_accuracy": 0.0,
+    "route_accuracy_disputed": null,
+    "route_accuracy_vs_sheet": 0.0,
+    "gate_leak_rate": null,
+    "over_block_rate": 1.0,
+    "axis_accuracy": {
+      "problem": 0.5,
+      "scope": 0.0,
+      "method": 0.5
+    },
+    "axis_accuracy_vs_sheet": {
+      "problem": 0.5,
+      "scope": 0.0,
+      "method": 0.5
+    },
+    "elements_scored": 0,
+    "false_novelty_rate": null,
+    "false_novelty_rate_agent": null,
+    "element_accuracy": null,
+    "uncertain_rate": null,
+    "grade_agreement": null,
+    "grade_held": 0
+  },
+  "targets": {
+    "false_novelty_rate": null,
+    "element_accuracy": null,
+    "route_accuracy": false,
+    "gate_leak_rate": null,
+    "grade_agreement": null
+  },
+  "samples": [
+    {
+      "sample": "S1",
+      "provisional": true,
+      "route_pred": "insufficient",
+      "route_truth": [
+        "partial"
+      ],
+      "route_correct": false,
+      "route_disputed": false,
+      "route_correct_vs_sheet": false,
+      "gate_leak": false,
+      "over_block": true,
+      "axes": {
+        "problem": {
+          "pred": "related",
+          "truth": "related",
+          "truth_from_sheet": "related",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "unknown",
+          "truth": "partial",
+          "truth_from_sheet": "partial",
+          "correct": false,
+          "correct_vs_sheet": false
+        },
+        "method": {
+          "pred": "specific_shared",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": true,
+          "correct_vs_sheet": true
+        }
+      },
+      "elements": null,
+      "grade": null
+    },
+    {
+      "sample": "S2",
+      "provisional": true,
+      "route_pred": "insufficient",
+      "route_truth": [
+        "research"
+      ],
+      "route_correct": false,
+      "route_disputed": false,
+      "route_correct_vs_sheet": false,
+      "gate_leak": false,
+      "over_block": true,
+      "axes": {
+        "problem": {
+          "pred": "related",
+          "truth": "same",
+          "truth_from_sheet": "same",
+          "correct": false,
+          "correct_vs_sheet": false
+        },
+        "scope": {
+          "pred": "unknown",
+          "truth": "comparable",
+          "truth_from_sheet": "comparable",
+          "correct": false,
+          "correct_vs_sheet": false
+        },
+        "method": {
+          "pred": "unknown",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": false,
+          "correct_vs_sheet": false
+        }
+      },
+      "elements": null,
+      "grade": null
+    }
+  ],
+  "results_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/eval/results/v7"
+}

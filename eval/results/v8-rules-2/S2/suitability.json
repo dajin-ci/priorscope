@@ -1,0 +1,209 @@
+{
+  "version": "3",
+  "route": "research",
+  "label": "연구 내용 비교",
+  "axes": {
+    "problem": {
+      "relation": "same",
+      "reason": "두 논문 모두 언어 모델 사전학습(pretraining) 방법의 설계와 그 효과를 비교·개선하는 문제를 다룬다. RoBERTa는 BERT를 포함한 기존 자기지도 학습 방법들이 계산 비용, 비공개 데이터셋 크기 차이, 하이퍼파라미터 민감성 때문에 신중하게 비교되기 어렵고, BERT가 상당히 과소훈련(undertrained)되어 이후 개선분의 출처 해석이 어렵다는 점을 문제로 제시한다. BERT는 단방향 언어 모델에 의존해 양방향 문맥을 효과적으로 활용하지 못하는 표현 학습의 한계를 문제로 제시한다. 두 문제의 초점은 다르지만, '사전학습 방법과 학습 절차/데이터 설계가 다운스트림 성능에 미치는 영향'을 규명하고 더 나은 사전학습 접근을 찾는다는 점에서 같은 해결 문제/목적 범주에 있다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+          "source_text": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+          "source_text": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+          "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context.",
+          "source_text": "Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "comparable",
+      "reason": "두 논문 모두 자연어처리를 위한 언어 모델 사전학습과 그 다운스트림 태스크 전이를 연구 대상으로 하며, 입출력 및 전제 조건이 비교 가능한 범위에 있다. BERT는 WordPiece 임베딩, MLM, NSP, [CLS]/[SEP] 등을 사용하는 양방향 Transformer 인코더 기반 사전학습과 종단간 미세조정을 제시하고, RoBERTa는 BERT의 설계 선택지를 재검토해 NSP 제거, 더 긴 시퀀스, 동적 마스킹, 더 큰 BPE, 더 큰 미니배치, 더 많은 데이터(CC-NEWS) 등 대안적 사전학습 전략을 제안한다. 두 논문 모두 GLUE, SQuAD, RTE, MRPC, CoLA 등 공통 다운스트림 태스크에서 성능을 평가하므로, 연구 내용 비교에 입출력/연구 대상/전제 조건이 대응한다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+          "source_text": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+          "source_text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법"
+        },
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]",
+          "source_text": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]"
+        },
+        {
+          "field": "experiment_results",
+          "index": 9,
+          "quote": "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+          "source_text": "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+          "index_corrected_from": 12
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+          "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+        },
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+          "source_text": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]"
+        },
+        {
+          "field": "experiment_results",
+          "index": 10,
+          "quote": "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]",
+          "source_text": "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]"
+        }
+      ]
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "RoBERTa의 핵심 기법들은 BERT의 구체적 사전학습 구성요소를 직접 재검토·변형·확장한 관계에 있다. BERT가 제시한 MLM 목표, NSP 과제, WordPiece 임베딩, [CLS]/[SEP] 기반 통합 아키텍처, 종단간 미세조정이라는 구체적 방법 위에서, RoBERTa는 NSP 목적함수 제거, 더 긴 시퀀스 학습, 동적 마스킹 패턴 변경, 더 큰 byte-level BPE 어휘 체계, 대규모 미니배치, 더 오래 학습하는 절차, 그리고 새로운 대규모 뉴스 데이터셋(CC-NEWS) 추가라는 구체적 변형을 제안한다. 따라서 두 논문의 방법은 범용 AI/딥러닝 기반만 공통인 수준이 아니라, 구체적 기법·모듈·학습 절차에서 공통/변형/확장 관계가 있다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+          "source_text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+          "source_text": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "[5] dynamic mask-ing | 동적 마스킹",
+          "source_text": "[5] dynamic mask-ing | 동적 마스킹"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+          "source_text": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 7,
+          "quote": "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계",
+          "source_text": "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계"
+        },
+        {
+          "field": "core_techniques",
+          "index": 8,
+          "quote": "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법",
+          "source_text": "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+          "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 6,
+          "quote": "[3] [CLS] | 분류 작업을 위한 집계 시퀀스 표현으로 사용하는 특수 토큰",
+          "source_text": "[3] [CLS] | 분류 작업을 위한 집계 시퀀스 표현으로 사용하는 특수 토큰",
+          "index_corrected_from": 5
+        },
+        {
+          "field": "core_techniques",
+          "index": 7,
+          "quote": "[3] [SEP] | 문장 쌍을 구분하는 특수 구분 토큰",
+          "source_text": "[3] [SEP] | 문장 쌍을 구분하는 특수 구분 토큰",
+          "index_corrected_from": 6
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
+          "source_text": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
+          "index_corrected_from": 4
+        }
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [
+    {
+      "axis": "scope",
+      "side": "my",
+      "field": "experiment_results",
+      "from": 12,
+      "to": 9
+    },
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "from": 5,
+      "to": 6
+    },
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "from": 6,
+      "to": 7
+    },
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "from": 4,
+      "to": 3
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

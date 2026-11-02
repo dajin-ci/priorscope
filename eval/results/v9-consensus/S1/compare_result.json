@@ -1,0 +1,36 @@
+{
+  "overlap_level": [
+    "Medium Overlap"
+  ],
+  "llm_score": [
+    58
+  ],
+  "summary": [
+    "제안 논문은 open-vocabulary audio-visual event localization이라는 다운스트림 과제를 정식화하고 OV-AVEBench에서 segment-level localization을 평가하는 반면, 기존 논문은 여러 모달리티를 하나의 공유 임베딩 공간에 결합하는 범용 멀티모달 표현 학습을 다룬다. 다만 제안 논문은 기존 논문의 pretrained ImageBind 통합 임베딩 공간과 인코더 구성을 특징 추출 backbone으로 직접 활용하므로, 문제 설정은 다르지만 방법 측면에서는 일부 핵심 기반을 공유한다."
+  ],
+  "element_mapping": [
+    "M1 ↔ - | 없음 | 검토 범위 P1~P8 | M1은 open-vocabulary AVEL 문제를 정식화하여 seen/unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 태스크 정의이고, P1~P8은 이미지 중심 정렬, 데이터 페어링, 손실, 인코더/프로젝션 등 통합 멀티모달 임베딩 학습 방법에 관한 내용으로 특정 OV-AVEL 태스크 정식화는 없다.",
+    "M2 ↔ - | 없음 | 검토 범위 P1~P8 | M2는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 OV-AVEBench 데이터셋 구축에 관한 요소이고, P1~P8에는 이런 AVEL용 데이터셋 구축 요소가 없다.",
+    "M3 ↔ - | 없음 | 검토 범위 P1~P8 | M3는 정확도와 segment-level/event-level F1을 포함한 OV-AVEL 평가 지표 정립에 관한 요소이고, P1~P8은 평가 지표 설계가 아니라 표현 학습 방법에 관한 요소들이다.",
+    "M4 ↔ P1,P6,P7,P8 | 일치 | M[1] / P[3.2,3.3] | M4는 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하는 것으로, P1은 이미지 임베딩 정렬을 통한 전 모달리티 공통 임베딩 정렬, P6은 모든 모달리티 인코더에 Transformer 사용, P7은 모달리티별 분리 인코더 사용, P8은 모달리티별 선형 프로젝션 헤드로 고정 차원 임베딩 생성에 해당한다. 문서 기준상 기존 논문의 사전학습 모델·인코더·임베딩 공간을 그대로 쓰는 경우도 일치이므로 M4는 일치다.",
+    "M5 ↔ P1 | 유사 | M[1] / P[3.2] | M5는 오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교해 예측하는 학습 없는 베이스라인이고, P1은 각 모달리티를 이미지 임베딩에 정렬해 모달리티 간 emergent alignment가 생기도록 하는 원리다. 둘 다 공통 임베딩 공간에서 모달리티 간 유사도·정렬 관계를 활용한다는 점에서 관련되지만, M5의 구체적 예측 규칙 자체가 P1에 그대로 있지는 않아 유사다.",
+    "M6 ↔ - | 없음 | 검토 범위 P1~P8 | M6는 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입이고, P1~P8에는 다운스트림 AVEL을 위해 시간 관계를 학습하는 temporal layer 추가 요소가 없다.",
+    "M7 ↔ - | 없음 | 검토 범위 P1~P8 | M7은 temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화하는 요소이고, P6의 Transformer 사용은 모든 모달리티 인코더에 대한 범용 아키텍처 설명일 뿐이므로 문서 기준상 범용 기법 수준의 공통점만으로는 대응되지 않는다.",
+    "M8 ↔ - | 없음 | 검토 범위 P1~P8 | M8은 seen 클래스 열만 사용한 정답과 예측 사이의 cross entropy로 fine-tuning하는 학습 방식이고, P4·P5는 모달리티-이미지 정렬을 위한 InfoNCE 및 대칭 손실이지 다운스트림 OV-AVEL fine-tuning의 cross entropy 학습이 아니다. 또한 문서 기준상 손실 함수로 학습 같은 범용 기법 수준의 공통점만 있으면 없음이다."
+  ],
+  "result_pairs": [
+    "해당 없음 | 문서상 R-M은 모두 OV-AVEBench의 Avg. 지표 결과들로 제시되어 있고, R-P는 IN1K, P365, K400, MSR-VTT, NYU-D, ESC, Clotho, AudioCaps 등 다른 데이터셋의 Acc./Recall@1/R@1/mAP 등으로 제시되어 있어 데이터셋과 지표가 같은 쌍이 없다."
+  ],
+  "caution_points": [
+    "[M4 ↔ P1,P6,P7,P8] 제안 논문이 기존 논문의 pretrained ImageBind 통합 임베딩 공간과 인코더 구성을 특징 추출 backbone으로 직접 사용하므로, 심사자는 핵심 표현 기반이 이미 기존 논문에 있다고 지적할 수 있다. 보강 방법은 temporal reasoning과 OV-AVEL inference가 공유 backbone 위에서 어떻게 새로운 다운스트림 목적과 학습 절차를 형성하는지 본문에서 분리해 설명하는 것이다.",
+    "[M5 ↔ P1] 공통 임베딩 공간에서 오디오-텍스트와 비주얼-텍스트의 유사도 일치성을 활용하는 점은, 기존 논문의 모달리티 정렬 원리를 다운스트림 예측 규칙으로 변형한 것으로 보일 수 있다. 보강 방법은 이 규칙이 open-vocabulary localization의 예측 단계에서 어떤 입력·출력 구조와 판단 기준을 갖는지 구체적으로 서술하는 것이다."
+  ],
+  "differentiation_suggestions": [
+    "Our work uses the pretrained ImageBind space as a backbone, but it is developed for the specific downstream task of open-vocabulary audio-visual event localization rather than for learning a general joint embedding across modalities. Accordingly, our method focuses on predicting explicit event categories for seen and unseen events in test videos.",
+    "Unlike the prior work, our training-free baseline uses the consistency between audio-text and visual-text similarities as a task-specific inference rule for localization. This makes the shared embedding space serve a concrete prediction mechanism instead of only a representation-learning objective.",
+    "Our approach further introduces lightweight temporal layers to model temporal relations within the audio and visual modalities for event localization. This temporal modeling component addresses segment-level dynamics that are not specified in the prior work's general multimodal embedding framework."
+  ],
+  "related_work_draft": [
+    "The prior work (Girdhar et al., arXiv, 2023) learns a unified embedding space that aligns multiple modalities through image-centered training and provides the pretrained ImageBind backbone used in our work. In contrast, our work studies open-vocabulary audio-visual event localization, building task-specific temporal modeling and prediction procedures on top of that shared multimodal representation."
+  ]
+}

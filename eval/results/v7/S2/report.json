@@ -1,0 +1,26 @@
+{
+  "version": "1",
+  "route": "insufficient",
+  "title": "판단 보류·추가 확인 안내",
+  "summary": "비교 경로를 정할 정보 또는 근거가 부족해 비교 판단을 보류했습니다.",
+  "show_mappings": false,
+  "show_overall_grade": false,
+  "show_novelty_candidates": false,
+  "show_weaknesses": false,
+  "show_numeric": false,
+  "numeric": {
+    "status": "비교 범위 밖",
+    "comparable_count": 0,
+    "counts": {},
+    "incomparable_count": 0
+  },
+  "next_actions": [
+    "논문의 연구 목적·방법이 포함되었는지, PDF 추출이 정상인지 확인하세요.",
+    "누락된 정보나 적합성 분석 오류를 해결한 뒤 다시 분석하세요."
+  ],
+  "limitations": [
+    "적합성 근거는 PDF 원문이 아닌 추출본을 대조한 결과입니다.",
+    "범용 기법의 공통점만으로 비교 적합성이나 독창성을 확정하지 않습니다.",
+    "수치 비교는 확인된 평가 조건에 한하며 통계적 우위나 공정한 학습 조건을 보장하지 않습니다."
+  ]
+}

@@ -1,0 +1,162 @@
+{
+  "version": "3",
+  "route": "partial",
+  "label": "공통 범위만 비교",
+  "axes": {
+    "problem": {
+      "relation": "related",
+      "reason": "두 논문 모두 오디오-비주얼 멀티모달 표현을 다루지만, 해결하려는 문제는 다르다. 내 논문은 'open-vocabulary AVEL'이라는 구체적 태스크(seen/unseen 이벤트의 시공간 위치 추정)를 정식화하고, prior 논문은 '여러 모달리티를 하나의 공유 임베딩 공간에 결합'하는 표현 학습 문제를 다룬다. 내 논문은 prior 논문의 통합 임베딩 공간을 downstream 태스크의 기반으로 활용하므로, 문제 자체는 연관되지만 동일하지 않다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
+          "source_text": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다."
+        },
+        {
+          "field": "problem",
+          "index": 1,
+          "quote": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다.",
+          "source_text": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos.",
+          "source_text": "[1] We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.",
+          "source_text": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We present IMAGEBIND, which learns a single shared representation space by leveraging multiple types of image-paired data.",
+          "source_text": "[1] We present IMAGEBIND, which learns a single shared representation space by leveraging multiple types of image-paired data. It does not need datasets where all modalities co-occur with each other. Instead, we leverage the binding property of images and we show that just aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities. IMAGEBIND can be initialized with large-scale vision-language models such as CLIP [60], thereby leveraging the rich image and text representations of these models. We use large-scale image-text paired data along with naturally paired 'self-supervised' data across four new modalities - audio, depth, thermal, and Inertial Measurement Unit (IMU) readings - and show strong emergent zero-shot classification and retrieval performance on tasks for each of these modalities. Finally, we show that IMAGEBIND's joint embeddings can be used for a wide variety of compositional tasks, including cross-modal retrieval, combining embeddings via arithmetic, detecting audio sources in images, and generating images given audio input."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "partial",
+      "reason": "내 논문은 OV-AVEBench 데이터셋에서 오디오-비주얼 이벤트의 segment-level 위치 추정을 평가 대상으로 삼고, prior 논문은 이미지-텍스트를 중심으로 오디오·깊이·열·IMU 등 여러 모달리티의 제로샷 분류/검색 성능을 광범위하게 평가한다. 두 논문 모두 오디오-비주얼 모달리티를 포함하므로 일부 범위가 겹치지만, 내 논문은 특정 localization 태스크에, prior 논문은 범용 멀티모달 표현 학습에 초점이 있어 전체 연구 범위는 부분적으로만 공통된다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축",
+          "source_text": "[1] the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축"
+        },
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "three evaluation metrics | 정확도와 segment-level/event-level F1을 포함한 평가 지표를 정립",
+          "source_text": "[1] three evaluation metrics | 정확도와 segment-level/event-level F1을 포함한 평가 지표를 정립"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+          "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "IN1K | IMAGEBIND | Acc. | 77.7 | ↑ | [Table 2]",
+          "source_text": "IN1K | IMAGEBIND | Acc. | 77.7 | ↑ | [Table 2]"
+        },
+        {
+          "field": "experiment_results",
+          "index": 11,
+          "quote": "Clotho | IMAGEBIND | R@1 | 6.0 | ↑ | [Table 3]",
+          "source_text": "Clotho | IMAGEBIND | R@1 | 6.0 | ↑ | [Table 3]",
+          "index_corrected_from": 10
+        }
+      ]
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "내 논문은 prior 논문의 ImageBind 통합 멀티모달 임베딩 공간을 직접 활용하여 오디오·비주얼·텍스트 특징을 추출하고, 이를 기반으로 open-vocabulary AVEL 예측을 수행한다. 즉 prior 논문의 핵심 기법(모든 모달리티 인코더에 Transformer 사용, 모달리티별 선형 프로젝션 헤드로 고정 차원 임베딩 생성, 이미지 중심 정렬을 통한 emergent alignment)을 내 논문의 특징 추출 backbone으로 공유·활용하고 있다. 다만 내 논문은 여기에 경량 temporal layer와 Transformer 블록 스택을 추가하여 시간 관계를 학습하는 자체 기법을 더하므로, 단순 범용 기반만 공통인 것이 아니라 구체적 방법상 연결/확장 관계가 있다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+          "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
+          "source_text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입",
+          "source_text": "[1] lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+          "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 7,
+          "quote": "We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+          "source_text": "[3.3] We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+          "index_corrected_from": 6
+        }
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [
+    {
+      "axis": "scope",
+      "side": "prior",
+      "field": "core_techniques",
+      "index": 0,
+      "quote": "aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함",
+      "reason": "인용 문구가 해당 필드 어디에도 없습니다."
+    },
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "index": 0,
+      "quote": "aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함",
+      "reason": "인용 문구가 해당 필드 어디에도 없습니다."
+    }
+  ],
+  "index_corrections": [
+    {
+      "axis": "scope",
+      "side": "prior",
+      "field": "experiment_results",
+      "from": 10,
+      "to": 11
+    },
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "from": 6,
+      "to": 7
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

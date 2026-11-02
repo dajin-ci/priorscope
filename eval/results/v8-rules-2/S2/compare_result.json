@@ -1,0 +1,66 @@
+{
+  "overlap_level": [
+    "Medium Overlap"
+  ],
+  "llm_score": [
+    63
+  ],
+  "summary": [
+    "제안 논문은 기존 논문의 사전학습 구성요소를 직접 재검토하면서 NSP 제거, 동적 마스킹, 더 큰 byte-level BPE, FULL-SENTENCES 입력 등 구체적 변형을 제안한다. 반면 더 긴 학습, 더 큰 배치, 더 많은 데이터, CC-NEWS 추가처럼 학습 절차와 데이터 규모에 관한 요소는 기존 논문의 핵심 기술과 직접 대응되지 않아, 두 논문은 공통 기반 위에 일부 고유한 확장도 함께 가진다."
+  ],
+  "element_mapping": [
+    "M1 ↔ - | 없음 | 검토 범위 P1~P8 | training the model longer, with bigger batches, over more data는 학습 기간·배치·데이터 양 같은 설정값 변경이므로 기존 논문의 핵심 기술 요소 대응으로 보지 않는다.",
+    "M2 ↔ P2 | 유사 | M[1] / P[3.1] | removing the next sentence prediction objective는 기존 논문의 next sentence prediction task를 유지하지 않고 제거한 변형으로, 심사자가 기존 요소와 직접 연결해 볼 수 있다.",
+    "M3 ↔ - | 없음 | 검토 범위 P1~P8 | training on longer sequences는 시퀀스 길이에 관한 학습 절차 변경이며 문서상 직접 대응되는 기존 핵심 기술 요소가 없다.",
+    "M4 ↔ P1 | 유사 | M[1] / P[3.1] | dynamically changing the masking pattern applied to the training data는 MLM의 마스킹 기반 사전학습 역할을 유지하면서 마스킹 방식을 동적으로 바꾼 변형이다.",
+    "M5 ↔ P1 | 유사 | M[5] / P[3.1] | dynamic masking은 기존 논문의 masked language model pre-training objective와 같은 역할 축에서의 마스킹 방식 변형이다.",
+    "M6 ↔ P2,P8 | 유사 | M[5] / P[3.1],[3] | FULL-SENTENCES without NSP loss는 문장 단위 입력 구성과 [SEP] 기반 문장 구분 맥락을 유지하면서 NSP task를 제거한 변형으로 볼 수 있다.",
+    "M7 ↔ - | 없음 | 검토 범위 P1~P8 | large mini-batches는 배치 크기만 바꾼 학습 설정 변경이므로 기존 논문의 핵심 기술 요소 대응으로 보지 않는다.",
+    "M8 ↔ P6 | 유사 | M[5] / P[3] | a larger byte-level BPE는 입력 어휘·서브워드 임베딩 체계를 사용하는 점에서 WordPiece embeddings와 같은 역할을 가지되 방식을 교체한 경우다.",
+    "M9 ↔ - | 없음 | 검토 범위 P1~P8 | CC-NEWS는 새로 수집한 대규모 뉴스 데이터셋 추가로, 기존 논문의 핵심 기술 요소라기보다 데이터 범위 확장에 해당한다."
+  ],
+  "result_pairs": [
+    "R-M1 ~ R-P11 | 동일 조건 | 둘 다 SQuAD v1.1 / dev / single / EM 결과이다.",
+    "R-M2 ~ R-P12 | 동일 조건 | 둘 다 SQuAD v1.1 / dev / single / F1 결과이다.",
+    "R-M3 ~ R-P23 | 동일 조건 | 둘 다 SQuAD v2.0 / dev / single / EM 결과이다.",
+    "R-M4 ~ R-P24 | 동일 조건 | 둘 다 SQuAD v2.0 / dev / single / F1 결과이다.",
+    "R-M5 ~ R-P25 | 동일 조건 | 둘 다 SQuAD v2.0 / test / single / EM 결과이다.",
+    "R-M6 ~ R-P26 | 동일 조건 | 둘 다 SQuAD v2.0 / test / single / F1 결과이다.",
+    "R-M12 ~ R-P4 | 조건 다름 | 둘 다 QNLI 결과이지만 R-M12는 dev, R-P4는 test라 평가 분할이 다르다.",
+    "R-M13 ~ R-P3 | 조건 다름 | 둘 다 QQP 결과이지만 R-M13는 dev, R-P3는 test라 평가 분할이 다르다.",
+    "R-M14 ~ R-P9 | 조건 다름 | 둘 다 RTE 결과이지만 R-M14는 dev, R-P9는 test라 평가 분할이 다르다.",
+    "R-M16 ~ R-P8 | 조건 다름 | 둘 다 MRPC / F1 비교로 볼 수 있으나 R-M16은 dev, R-P8은 test라 조건이 다르다.",
+    "R-M17 ~ R-P6 | 조건 다름 | 둘 다 CoLA 결과이지만 R-M17은 dev, R-P6는 test라 평가 분할이 다르다.",
+    "R-M18 ~ R-P7 | 조건 다름 | 둘 다 STS/STS-B 계열 결과이지만 R-M18은 dev, R-P7은 test라 평가 분할이 다르다.",
+    "R-M20 ~ R-P1 | 조건 다름 | 둘 다 MNLI 결과지만 R-M20은 test / ensemble이고 R-P1은 test / single이며, 세부 분할도 MNLI-m로 표기되어 있다.",
+    "R-M21 ~ R-P2 | 조건 다름 | 둘 다 MNLI 결과지만 R-M21은 test / ensemble이고 R-P2는 test / single / MNLI-mm이다.",
+    "R-M22 ~ R-P4 | 조건 다름 | 둘 다 QNLI / test이나 R-M22는 ensemble이고 R-P4는 single이다.",
+    "R-M23 ~ R-P3 | 조건 다름 | 둘 다 QQP 결과이지만 R-M23은 test / ensemble이고 R-P3는 test / single이다.",
+    "R-M24 ~ R-P9 | 조건 다름 | 둘 다 RTE / test이나 R-M24는 ensemble이고 R-P9는 single이다.",
+    "R-M25 ~ R-P5 | 조건 다름 | 둘 다 SST/SST-2 / test 결과이지만 R-M25는 ensemble이고 R-P5는 single이다.",
+    "R-M26 ~ R-P8 | 조건 다름 | 둘 다 MRPC / test / F1 비교로 볼 수 있으나 R-M26은 ensemble, R-P8은 single이다.",
+    "R-M27 ~ R-P6 | 조건 다름 | 둘 다 CoLA / test이나 R-M27은 ensemble이고 R-P6는 single이다.",
+    "R-M28 ~ R-P7 | 조건 다름 | 둘 다 STS/STS-B / test 계열 결과이지만 R-M28은 ensemble이고 R-P7는 single이다."
+  ],
+  "caution_points": [
+    "[M2 ↔ P2] NSP 목적함수 제거는 기존 논문의 next sentence prediction task를 직접 변형한 것으로 지적될 수 있다, 왜 제거가 필요한지와 제거 후 입력 구성 및 학습 목적의 차이를 본문에서 명확히 설명하는 보강이 필요하다.",
+    "[M4 ↔ P1] 동적 마스킹 패턴 변경은 기존 MLM 사전학습 목표의 구현 방식을 바꾼 수준으로 보일 수 있다, 마스킹이 고정되지 않는 학습 절차 차이와 그 적용 조건을 구체적으로 서술해 구분해야 한다.",
+    "[M5 ↔ P1] dynamic masking은 기존 논문의 masked language model과 같은 역할 축에 있어 동일 계열 개선으로 지적될 수 있다, 정적 마스킹과의 절차적 차이를 실험 설정과 함께 분명히 제시하는 보강이 필요하다.",
+    "[M6 ↔ P2,P8] FULL-SENTENCES without NSP loss는 문장 쌍 구성과 구분 토큰 사용 면에서 기존 논문과 가깝다는 지적을 받을 수 있다, NSP를 쓰지 않는 대신 어떤 입력 단위와 학습 조건을 채택했는지 명시해 차이를 드러내야 한다.",
+    "[M8 ↔ P6] larger byte-level BPE는 기존 WordPiece embeddings와 같은 서브워드 입력 표현의 교체로 보일 수 있다, 어휘 체계가 달라지는 범위와 입력 표현상의 차이를 본문에서 구체화할 필요가 있다.",
+    "[R-M1 ↔ R-P11] SQuAD v1.1 dev single EM은 동일 조건 결과라 수치가 직접 비교될 수 있다, 제안 논문은 동일 조건 비교가 무엇을 보여주는지와 차이를 만든 설계 요소를 함께 설명해야 한다.",
+    "[R-M2 ↔ R-P12] SQuAD v1.1 dev single F1은 동일 조건 결과라 기존 논문과 직접 대조된다는 지적이 가능하다, 비교 결과의 해석을 학습 절차와 데이터 설계 차이에 연결해 보강해야 한다.",
+    "[R-M3 ↔ R-P23] SQuAD v2.0 dev single EM은 동일 조건 결과로 직접 비교 가능하다, 동일 데이터셋과 지표에서 어떤 설계 차이가 반영되는지 해석을 명시하는 것이 좋다.",
+    "[R-M4 ↔ R-P24] SQuAD v2.0 dev single F1은 동일 조건 결과라 직접 비교 대상으로 보일 수 있다, 제안 논문은 이 차이가 특정 사전학습 절차 변경과 어떻게 연결되는지 본문에서 설명해야 한다.",
+    "[R-M5 ↔ R-P25] SQuAD v2.0 test single EM은 동일 조건 결과라 기존 논문과 수치 비교가 바로 가능하다, test single 조건이 같다는 점을 인정하면서 절차와 데이터 측면의 차이를 함께 강조해야 한다.",
+    "[R-M6 ↔ R-P26] SQuAD v2.0 test single F1은 동일 조건 결과라 직접 비교가 가능하다, 동일 조건 비교에서 제안 논문의 차별적 학습 설계를 해석 문장으로 보강하는 것이 필요하다."
+  ],
+  "differentiation_suggestions": [
+    "Our work removes the next sentence prediction objective and re-examines whether downstream gains can be explained by training procedure and data effects rather than by keeping that auxiliary task. This shifts the comparison from adopting the same pretraining objective to testing which design choices actually matter under controlled retraining.",
+    "Our work uses dynamically changing masking patterns during training, whereas the prior work introduces masked language modeling as a fixed pretraining objective and notes a pre-training versus fine-tuning mismatch caused by the [MASK] token. The manuscript should explicitly describe this procedural difference so that the contribution is framed as a change in how masking is applied during pretraining.",
+    "Our work expands the pretraining setup with a novel dataset, CC-NEWS, and with training over more data, longer schedules, and larger batches. This distinguishes the study from the prior work by broadening the data scope and training procedure rather than only reusing the original pretraining configuration."
+  ],
+  "related_work_draft": [
+    "The prior work (Devlin et al., arXiv, 2019) introduced BERT with masked language modeling, next sentence prediction, and WordPiece-based bidirectional Transformer pretraining. In contrast, our work revisits these design choices by modifying the training procedure and data setup, including removal of the NSP objective, dynamic masking, and additional pretraining data."
+  ]
+}

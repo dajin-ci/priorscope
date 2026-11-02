@@ -1,0 +1,451 @@
+{
+  "status": "FAILED",
+  "final_level": "적용 안 함",
+  "classify_level": null,
+  "classify_agrees": null,
+  "llm_score": null,
+  "coverage": {
+    "min": null,
+    "max": null,
+    "uncertain_count": 0,
+    "verdict_counts": {
+      "일치": 0,
+      "유사": 1,
+      "없음": 7,
+      "확인필요": 0
+    },
+    "thresholds": {
+      "high": 70.0,
+      "medium": 30.0
+    }
+  },
+  "mappings": [
+    {
+      "id": "M1",
+      "text": "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M1은 seen·unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 OV-AVEL 문제 정식화인데, P1~P8은 여러 모달리티를 하나의 공유 임베딩 공간에 정렬하는 표현 학습과 인코더 설계를 설명할 뿐 특정 AVEL 문제나 open-vocabulary 이벤트 국소화 문제 정식화는 제시하지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P7",
+        "max_score": 0.4046,
+        "top": [
+          {
+            "id": "P7",
+            "score": 0.4046
+          },
+          {
+            "id": "P2",
+            "score": 0.3979
+          },
+          {
+            "id": "P3",
+            "score": 0.395
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M2",
+      "text": "[1] the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M2는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 OV-AVEBench 데이터셋 구축인데, P2·P3은 대규모 웹 이미지-텍스트 및 이미지-기타 모달리티 페어 데이터를 사용한다는 내용만 있고 AVEL용 데이터셋 구축이나 segment-level 주석 데이터셋은 제시하지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.4683,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.4683
+          },
+          {
+            "id": "P7",
+            "score": 0.4105
+          },
+          {
+            "id": "P3",
+            "score": 0.3918
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M3",
+      "text": "[1] three evaluation metrics | 정확도와 segment-level/event-level F1을 포함한 평가 지표를 정립",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M3는 정확도와 segment-level/event-level F1을 포함한 평가 지표 정립인데, P1~P8은 학습 방법과 아키텍처에 관한 설명이며 AVEL용 표준 평가 지표를 정의하지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P5",
+        "max_score": 0.4207,
+        "top": [
+          {
+            "id": "P5",
+            "score": 0.4207
+          },
+          {
+            "id": "P4",
+            "score": 0.3863
+          },
+          {
+            "id": "P7",
+            "score": 0.3863
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M4",
+      "text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+      "section": "1",
+      "prior_ids": [
+        "P1",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[1] / P[3.2],[3.3]",
+      "explanation": "M4는 사전학습된 ImageBind의 통합 멀티모달 공간에서 오디오·비주얼·텍스트 특징을 추출하는 요소이고, P1은 각 모달리티를 이미지 임베딩에 정렬해 전체 모달리티 공통 공간이 형성됨을 설명하며 P6~P8은 이를 위한 인코더와 프로젝션 설계를 제시한다. 다만 M4는 그 공간을 다운스트림 특징 추출에 활용하는 것이고, P1·P6·P7·P8은 그 공간 자체의 학습 방법이라는 점에서 유사 수준이다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P1",
+        "max_score": 0.5818,
+        "top": [
+          {
+            "id": "P1",
+            "score": 0.5818
+          },
+          {
+            "id": "P7",
+            "score": 0.5812
+          },
+          {
+            "id": "P2",
+            "score": 0.5556
+          }
+        ],
+        "cited_max": 0.5818
+      }
+    },
+    {
+      "id": "M5",
+      "text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M5는 오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교해 예측하는 학습 없는 베이스라인인데, P1~P8에는 텍스트와의 두 유사도를 비교해 AVEL 예측을 수행하는 추론 규칙이 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.5149,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.5149
+          },
+          {
+            "id": "P1",
+            "score": 0.5052
+          },
+          {
+            "id": "P7",
+            "score": 0.4836
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M6",
+      "text": "[1] lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M6는 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입이다. P6의 Transformer 아키텍처 사용은 범용 인코더 설계 수준의 공통점에 그치므로, schema 기준상 일반 기법 수준 공통점만으로는 대응으로 보기 어렵다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P7",
+        "max_score": 0.5704,
+        "top": [
+          {
+            "id": "P7",
+            "score": 0.5704
+          },
+          {
+            "id": "P6",
+            "score": 0.5262
+          },
+          {
+            "id": "P4",
+            "score": 0.521
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M7",
+      "text": "[3.2] a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화",
+      "section": "3.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M7은 temporal layer를 표준 Transformer 블록 스택으로 구현하는 구체 설계인데, P6도 Transformer 아키텍처를 사용하지만 적용 위치와 목적이 다른 일반적 공통점에 해당하므로 직접 대응으로 보기 어렵다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P6",
+        "max_score": 0.5582,
+        "top": [
+          {
+            "id": "P6",
+            "score": 0.5582
+          },
+          {
+            "id": "P8",
+            "score": 0.4626
+          },
+          {
+            "id": "P4",
+            "score": 0.4175
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M8",
+      "text": "[3.2] The ground truth Y' E RT×(C¹ for the training data can be easily obtained by select- ing columns of corresponding seen classes from Y E RT×(C+1). Then, our fine-tuning baseline is trained by op- timizing the cross entropy loss between Save and Y'. | seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습",
+      "section": "3.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P8",
+      "explanation": "M8은 seen 클래스 열만 사용한 정답과 예측 사이 cross entropy로 미세조정하는 OV-AVEL용 학습 설정인데, P4·P5를 포함한 기존 논문의 학습은 모달리티-이미지 정렬을 위한 InfoNCE 및 대칭 손실이 중심이며 seen-class 선택 기반의 분류형 미세조정은 제시되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P4",
+        "max_score": 0.4678,
+        "top": [
+          {
+            "id": "P4",
+            "score": 0.4678
+          },
+          {
+            "id": "P5",
+            "score": 0.4668
+          },
+          {
+            "id": "P2",
+            "score": 0.4177
+          }
+        ],
+        "cited_max": null
+      }
+    }
+  ],
+  "uncertain_items": [],
+  "numeric_checks": [],
+  "expected_result_pairs": [],
+  "result_warnings": {
+    "duplicates": {},
+    "invalid_locations": []
+  },
+  "issues": [
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[0]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    },
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[1]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    },
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[2]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    },
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[3]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    },
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[4]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    },
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[5]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    }
+  ],
+  "not_checked": [
+    {
+      "code": "SEMANTIC_VALIDITY_NOT_CHECKED",
+      "path": "comparison_result.element_mapping",
+      "reason": "기법의 의미상 동일성, 원문 주장 전체의 참·거짓, 근거의 충분성은 규칙 기반으로 판정하지 않습니다."
+    },
+    {
+      "code": "SIMILARITY_THRESHOLD_UNSET",
+      "path": "similarity",
+      "reason": "유사도 임계값이 정해지지 않아 점수만 보고하고 판정은 바꾸지 않았습니다."
+    }
+  ],
+  "similarity": {
+    "available": true,
+    "model": "embedding-passage",
+    "threshold": null,
+    "demoted": [],
+    "stats": {
+      "min": 0.3139,
+      "max": 0.5818,
+      "mean": 0.4321
+    }
+  },
+  "weaknesses": null,
+  "suitability": {
+    "version": "2",
+    "route": "partial",
+    "label": "공통 범위만 비교",
+    "axes": {
+      "problem": {
+        "relation": "related",
+        "reason": "두 논문은 모두 오디오-비주얼 멀티모달 임베딩과 관련되지만, 해결하려는 문제는 다르다. 내 논문은 기존 AVEL의 closed-set 한계를 넘어 unseen 이벤트 카테고리까지 명시적으로 예측하는 Open-Vocabulary AVEL 문제를 정식화하는 데 목적이 있다. 반면 선행 논문은 여러 모달리티(이미지, 텍스트, 오디오, 깊이, 열, IMU)를 하나의 공유 임베딩 공간에 정렬하는 통합 표현 학습 자체를 문제로 삼으며, 특정 다운스트림 태스크인 AVEL이나 open-vocabulary 이벤트 국소화를 직접 목표로 하지 않는다.",
+        "my_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
+            "source_text": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다."
+          },
+          {
+            "field": "problem",
+            "index": 1,
+            "quote": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다.",
+            "source_text": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다."
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.",
+            "source_text": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training."
+          },
+          {
+            "field": "problem",
+            "index": 1,
+            "quote": "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together.",
+            "source_text": "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together."
+          }
+        ]
+      },
+      "scope": {
+        "relation": "partial",
+        "reason": "두 논문의 연구 범위는 부분적으로만 겹친다. 내 논문은 오디오-비주얼 이벤트 국소화라는 구체적 다운스트림 태스크에 초점을 두고, segment-level 주석과 평가 지표를 갖춘 OV-AVEBench 데이터셋을 구축하며, ImageBind의 통합 멀티모달 공간을 특징 추출에 활용한다. 선행 논문은 특정 태스크보다는 여러 모달리티를 하나의 임베딩 공간에 묶는 표현 학습 자체를 범위로 하며, 오디오-비주얼 국소화를 직접 다루지 않는다. 다만 내 논문이 선행 논문의 ImageBind 공간을 사용한다는 점에서 모달리티 범위와 표현 공간 측면에서 접점이 있다.",
+        "my_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 0,
+            "quote": "the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
+            "source_text": "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화"
+          },
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+            "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 0,
+            "quote": "aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함",
+            "source_text": "[3.2] aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함"
+          },
+          {
+            "field": "core_techniques",
+            "index": 5,
+            "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+            "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+          }
+        ]
+      },
+      "method": {
+        "relation": "unknown",
+        "reason": "판정 형식 또는 양쪽 추출 근거를 확인할 수 없습니다.",
+        "my_evidence": [],
+        "prior_evidence": [],
+        "rejected_model_view": {
+          "relation": "specific_shared",
+          "reason": "내 논문은 선행 논문의 ImageBind가 만든 통합 멀티모달 임베딩 공간을 직접 활용하여 오디오·비주얼·텍스트 특징을 추출하고, 이를 바탕으로 open-vocabulary AVEL을 수행한다. 또한 경량 temporal layer와 표준 Transformer 블록 스택을 사용해 시간 관계를 인코딩하는데, 이는 선행 논문이 모든 모달리티 인코더에 Transformer 아키텍처를 사용한 것과 아키텍처 계열에서 연결된다. 다만 내 논문은 ImageBind 공간 위에서 이벤트 국소화라는 다운스트림 예측과 temporal layer를 추가한 변형·확장 구조를 취하므로, 단순 범용 기반 공통이 아니라 구체적 방법상 연결이 있다."
+        }
+      }
+    },
+    "comparison_allowed": true,
+    "evidence_basis": "extracted_text",
+    "warnings": [
+      "핵심 방법: 근거 확인 실패로 판단을 보류했습니다."
+    ],
+    "evidence_failures": [
+      {
+        "axis": "method",
+        "side": "prior",
+        "field": "core_techniques",
+        "index": 3,
+        "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+        "reason": "인용 문구가 해당 항목에 없습니다."
+      },
+      {
+        "axis": "method",
+        "side": "prior",
+        "field": "core_techniques",
+        "index": 4,
+        "quote": "We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+        "reason": "인용 문구가 해당 항목에 없습니다."
+      }
+    ],
+    "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+    "model": "solar-pro4"
+  },
+  "overall_assessment_applicable": false
+}

@@ -1,12 +1,12 @@
 {
   "kind": "studio.workflow-config-draft",
   "schemaVersion": 4,
-  "exportedAt": "2026-10-30T13:32:12.504Z",
+  "exportedAt": "2026-11-02T15:21:51.609Z",
   "exportedFrom": {
     "workflowId": "agt_VXeqFo5T6iNrz3a7zb8wqZ",
     "workflowName": "Compare Agent",
-    "configId": "cfg_C8T7DttAizFQqXNdyL3GnY",
-    "configVer": 6
+    "configId": "cfg_5a2C9pYK6du2J3QmXAauX4",
+    "configVer": 7
   },
   "workflowConfig": {
     "workflow_name": "Compare Agent",
@@ -91,7 +91,7 @@
                   "type": "array",
                   "items": {
                     "type": "string",
-                    "description": "M 요소마다 한 줄. 형식: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 설명\n대응 없으면: M3 ↔ - | 없음 | 검토 범위 P1~Pn | 설명\n판정은 일치·유사·없음·확인필요 중 하나. 다른 용어·언어로 쓴 같은 기술도 대응으로 본다. 확신 없으면 없음이 아니라 확인필요.\nTransformer 사용, 손실 함수 학습처럼 일반 기법 수준 공통점만 있으면 없음. 내 논문이 기존 논문의 사전학습 모델·인코더를 그대로 쓰면 그 P도 대응에 포함."
+                    "description": "M마다 한 줄: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 설명\n대응 없음: M3 ↔ - | 없음 | 검토 범위 P1~Pn | 설명\n판정은 문서 안내의 판정 기준을 따른다. 요약:\n일치=기존 P를 그대로 씀(사전학습 모델·임베딩 공간 포함)\n유사=같은 역할로 방식만 변형·교체\n없음=기존에 없음. P 제거, 학습 규모·설정값만 변경, 범용 기법만 공통도 없음. P칸은 -, 설명에 관련 P\n확인필요=판단이 안 서면 없음 대신 쓴다\n다른 용어·언어로 쓴 같은 기술도 대응으로 본다"
                   },
                   "description": ""
                 },
@@ -418,7 +418,7 @@
         {
           "name": "지시-1",
           "modelName": "",
-          "prompt": "입력 문서는 내 논문(M, R-M)과 기존 논문(P, R-P) 비교 자료다. 문서의 번호만 쓴다.\n1) M마다 한 줄씩 대응을 쓴다: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 이유. 대응 없으면 M3 ↔ - | 없음 | 검토 범위 P1~Pn | 이유. 판정은 일치·유사·없음·확인필요. 확신 없으면 확인필요.\n2) 데이터셋·지표가 같은 실험 쌍을 R-M1 ~ R-P2 | 동일 조건 또는 조건 다름 | 이유 로 쓴다.\n3) 1)의 판정을 근거로 등급을 정한다. High Overlap: 핵심 요소 대부분이 이미 있음. Medium Overlap: 일부 겹치나 고유 구성 있음. Low Overlap: 분야만 비슷함. 등급과 이유를 M 번호를 들어 2~3문장으로 쓴다.\n"
+          "prompt": "입력은 내 논문(M, R-M)과 기존 논문(P, R-P) 비교 자료다. 문서의 번호만 쓴다.\n1) M마다 대응을 쓴다: M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 이유. 없으면 M3 ↔ - | 없음 | 검토 범위 P1~Pn | 이유. 판정은 문서 안내의 기준을 따른다. 핵심: 심사자가 '기존 논문에 이미 있다'고 반박할 수 있으면 일치·유사, 아니면 없음. 확신 없으면 확인필요.\n2) 데이터셋·지표가 같은 실험 쌍: R-M1 ~ R-P2 | 동일 조건 또는 조건 다름 | 이유\n3) 1)의 판정으로 등급을 정한다. High Overlap: 핵심 요소 대부분이 이미 있음. Medium Overlap: 일부 겹치나 고유 구성 있음. Low Overlap: 분야만 비슷함. 등급과 이유를 M 번호를 들어 2~3문장으로 쓴다.\n"
         }
       ],
       "connectionMapping": {

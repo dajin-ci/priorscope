@@ -1,0 +1,484 @@
+{
+  "status": "FAILED",
+  "final_level": "적용 안 함",
+  "classify_level": null,
+  "classify_agrees": null,
+  "llm_score": null,
+  "coverage": {
+    "min": null,
+    "max": null,
+    "uncertain_count": 1,
+    "verdict_counts": {
+      "일치": 1,
+      "유사": 0,
+      "없음": 6,
+      "확인필요": 1
+    },
+    "thresholds": {
+      "high": 70.0,
+      "medium": 30.0
+    }
+  },
+  "mappings": [
+    {
+      "id": "M1",
+      "text": "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "OV-AVEL은 seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 AVEL 문제 정식화인데, 기존 논문 P1~P8은 여러 모달리티를 하나의 임베딩 공간에 정렬하는 표현 학습과 인코더/손실 설계에 관한 내용만 제시되어 있어 특정 AVEL 문제 정식화 자체가 이미 있다고 보기는 어렵다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P7",
+        "max_score": 0.4046,
+        "top": [
+          {
+            "id": "P7",
+            "score": 0.4046
+          },
+          {
+            "id": "P2",
+            "score": 0.398
+          },
+          {
+            "id": "P3",
+            "score": 0.395
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M2",
+      "text": "[1] the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "OV-AVEBench는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축인데, 기존 논문은 대규모 웹 기반 이미지-텍스트 페어 데이터와 오디오·깊이·열·IMU-이미지 자기지도 페어링 데이터만 제시되어 있어 같은 역할의 AVEL용 segment-level 주석 데이터셋이 확인되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.4683,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.4683
+          },
+          {
+            "id": "P7",
+            "score": 0.4105
+          },
+          {
+            "id": "P3",
+            "score": 0.3917
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M3",
+      "text": "[1] three evaluation metrics | 정확도와 segment-level/event-level F1을 포함한 평가 지표를 정립",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "정확도와 segment-level/event-level F1을 포함한 AVEL용 평가 지표 정립은 기존 논문 P1~P8의 표현 학습 방법, 인코더, 손실 설명과 직접 대응되지 않으며, 같은 평가 체계가 제시되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P5",
+        "max_score": 0.4206,
+        "top": [
+          {
+            "id": "P5",
+            "score": 0.4206
+          },
+          {
+            "id": "P7",
+            "score": 0.3863
+          },
+          {
+            "id": "P4",
+            "score": 0.3862
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M4",
+      "text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+      "section": "1",
+      "prior_ids": [
+        "P1",
+        "P6",
+        "P7",
+        "P8"
+      ],
+      "agent_verdict": "일치",
+      "final_verdict": "일치",
+      "evidence": "M[1] / P[3.2],P[3.3]",
+      "explanation": "사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하는 요소는 기존 논문의 공통 임베딩 공간, Transformer 인코더, 모달리티별 분리 인코더, 선형 프로젝션 헤드에 기반한 ImageBind 표현을 그대로 활용하는 것으로 볼 수 있다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P1",
+        "max_score": 0.5819,
+        "top": [
+          {
+            "id": "P1",
+            "score": 0.5819
+          },
+          {
+            "id": "P7",
+            "score": 0.5813
+          },
+          {
+            "id": "P2",
+            "score": 0.5557
+          }
+        ],
+        "cited_max": 0.5819
+      }
+    },
+    {
+      "id": "M5",
+      "text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교해 예측하는 학습 없는 베이스라인은 기존 논문의 모달리티-이미지 정렬 학습, 대칭 손실, 인코더 구조와는 다른 AVEL 예측 규칙 기반 방식으로 직접 확인되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.5148,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.5148
+          },
+          {
+            "id": "P1",
+            "score": 0.5052
+          },
+          {
+            "id": "P7",
+            "score": 0.4835
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M6",
+      "text": "[1] lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "오디오/비주얼 모달리티 내부 시간 관계를 학습하기 위한 경량 temporal layer 삽입은 다운스트림 AVEL의 시간 구조를 위한 모듈이지만, 기존 논문은 공유 임베딩 표현 학습을 위한 모달리티 정렬과 인코더 설계만 설명하며 별도 temporal layer는 제시하지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P7",
+        "max_score": 0.5705,
+        "top": [
+          {
+            "id": "P7",
+            "score": 0.5705
+          },
+          {
+            "id": "P6",
+            "score": 0.5263
+          },
+          {
+            "id": "P4",
+            "score": 0.521
+          }
+        ],
+        "cited_max": null
+      }
+    },
+    {
+      "id": "M7",
+      "text": "[3.2] a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화",
+      "section": "3.2",
+      "prior_ids": [
+        "P6"
+      ],
+      "agent_verdict": "없음",
+      "final_verdict": "확인필요",
+      "evidence": "M[3.2] / P[3.3]",
+      "explanation": "temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 P6의 모든 모달리티 인코더에 Transformer를 사용한다는 일반 설계와 표면적 공통점은 있으나, 문서 기준상 Transformer 사용처럼 범용 기법 수준의 공통점만으로는 대응되는 고유 요소로 보기 어렵다.",
+      "demoted_reasons": [
+        "없음 판정과 P 대응번호가 함께 있어 범위를 확인해야 합니다.",
+        "없음 판정에 기존 논문의 검토 범위가 명시되지 않았습니다."
+      ],
+      "similarity": {
+        "best_p": "P6",
+        "max_score": 0.5582,
+        "top": [
+          {
+            "id": "P6",
+            "score": 0.5582
+          },
+          {
+            "id": "P8",
+            "score": 0.4625
+          },
+          {
+            "id": "P4",
+            "score": 0.4175
+          }
+        ],
+        "cited_max": 0.5582
+      }
+    },
+    {
+      "id": "M8",
+      "text": "[3.2] The ground truth Y' E RT×(C¹ for the training data can be easily obtained by select- ing columns of corresponding seen classes from Y E RT×(C+1). Then, our fine-tuning baseline is trained by op- timizing the cross entropy loss between Save and Y'. | seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습",
+      "section": "3.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[3.2] / 검토 범위 P1~P8",
+      "explanation": "seen 클래스 열만 사용한 정답과 예측 사이의 cross entropy로 미세조정 학습하는 설정은 기존 논문의 InfoNCE 대조학습 손실 및 양방향 대칭 손실과 목적과 학습 절차가 달라 직접 대응되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P4",
+        "max_score": 0.4678,
+        "top": [
+          {
+            "id": "P4",
+            "score": 0.4678
+          },
+          {
+            "id": "P5",
+            "score": 0.4668
+          },
+          {
+            "id": "P2",
+            "score": 0.4177
+          }
+        ],
+        "cited_max": null
+      }
+    }
+  ],
+  "uncertain_items": [
+    {
+      "id": "M7",
+      "text": "[3.2] a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화",
+      "reasons": [
+        "없음 판정과 P 대응번호가 함께 있어 범위를 확인해야 합니다.",
+        "없음 판정에 기존 논문의 검토 범위가 명시되지 않았습니다."
+      ]
+    }
+  ],
+  "numeric_checks": [],
+  "expected_result_pairs": [],
+  "result_warnings": {
+    "duplicates": {},
+    "invalid_locations": []
+  },
+  "issues": [
+    {
+      "code": "NO_MATCH_HAS_PRIOR_REFERENCE",
+      "severity": "review",
+      "path": "comparison_result.element_mapping[6]",
+      "item_id": "M7",
+      "message": "없음 판정과 P 대응번호가 함께 있어 범위를 확인해야 합니다."
+    },
+    {
+      "code": "NO_MATCH_SCOPE_MISSING",
+      "severity": "review",
+      "path": "comparison_result.element_mapping[6].evidence",
+      "item_id": "M7",
+      "message": "없음 판정에 기존 논문의 검토 범위가 명시되지 않았습니다."
+    },
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[0]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    }
+  ],
+  "not_checked": [
+    {
+      "code": "SEMANTIC_VALIDITY_NOT_CHECKED",
+      "path": "comparison_result.element_mapping",
+      "reason": "기법의 의미상 동일성, 원문 주장 전체의 참·거짓, 근거의 충분성은 규칙 기반으로 판정하지 않습니다."
+    },
+    {
+      "code": "SIMILARITY_THRESHOLD_UNSET",
+      "path": "similarity",
+      "reason": "유사도 임계값이 정해지지 않아 점수만 보고하고 판정은 바꾸지 않았습니다."
+    }
+  ],
+  "similarity": {
+    "available": true,
+    "model": "embedding-passage",
+    "threshold": null,
+    "demoted": [],
+    "stats": {
+      "min": 0.3139,
+      "max": 0.5819,
+      "mean": 0.4321
+    }
+  },
+  "weaknesses": null,
+  "suitability": {
+    "version": "3",
+    "route": "partial",
+    "label": "공통 범위만 비교",
+    "axes": {
+      "problem": {
+        "relation": "related",
+        "reason": "두 논문은 모두 오디오-비주얼 멀티모달 임베딩과 관련되지만, 해결하려는 핵심 문제는 다르다. 내 논문은 closed-set/open-set AVEL의 한계를 넘어 seen과 unseen 이벤트 카테고리를 모두 명시적으로 예측하는 OV-AVEL 문제와 벤치마크를 정식화하는 것이 목적이다. 반면 선행 논문은 여러 모달리티(오디오, 깊이, 열, IMU 등)를 하나의 공유 임베딩 공간에 정렬하는 ImageBind를 제안하며, 특정 다운스트림 태스크보다는 범용 멀티모달 표현 학습에 초점을 둔다. 따라서 두 문제는 연관되지만 동일하지 않다.",
+        "my_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
+            "source_text": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다."
+          },
+          {
+            "field": "problem",
+            "index": 1,
+            "quote": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다.",
+            "source_text": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다."
+          },
+          {
+            "field": "contributions",
+            "index": 0,
+            "quote": "We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos.",
+            "source_text": "[1] We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos."
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.",
+            "source_text": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training."
+          },
+          {
+            "field": "contributions",
+            "index": 0,
+            "quote": "We present IMAGEBIND, which learns a single shared representation space by leveraging multiple types of image-paired data.",
+            "source_text": "[1] We present IMAGEBIND, which learns a single shared representation space by leveraging multiple types of image-paired data. It does not need datasets where all modalities co-occur with each other. Instead, we leverage the binding property of images and we show that just aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities. IMAGEBIND can be initialized with large-scale vision-language models such as CLIP [60], thereby leveraging the rich image and text representations of these models. We use large-scale image-text paired data along with naturally paired 'self-supervised' data across four new modalities - audio, depth, thermal, and Inertial Measurement Unit (IMU) readings - and show strong emergent zero-shot classification and retrieval performance on tasks for each of these modalities. Finally, we show that IMAGEBIND's joint embeddings can be used for a wide variety of compositional tasks, including cross-modal retrieval, combining embeddings via arithmetic, detecting audio sources in images, and generating images given audio input."
+          }
+        ]
+      },
+      "scope": {
+        "relation": "partial",
+        "reason": "두 연구는 오디오-비주얼 멀티모달 표현을 다룬다는 점에서 일부 범위가 겹치지만, 연구 대상과 전제가 다르다. 내 논문은 OV-AVEBench 데이터셋에서 segment-level 이벤트 위치 추정과 카테고리 예측에 초점을 두며, ImageBind의 통합 멀티모달 공간을 특징 추출기로 활용한다. 선행 논문은 다양한 모달리티를 하나의 임베딩 공간에 정렬하는 표현 학습 자체를 다루며, 특정 AVEL 태스크나 세그먼트 수준 주석을 전제로 하지 않는다. 따라서 입출력/연구 대상 측면에서 부분적 공통점만 존재한다.",
+        "my_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+            "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+          },
+          {
+            "field": "core_techniques",
+            "index": 0,
+            "quote": "the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
+            "source_text": "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화"
+          },
+          {
+            "field": "core_techniques",
+            "index": 1,
+            "quote": "the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축",
+            "source_text": "[1] the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축"
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 6,
+            "quote": "We use separate encoders for images, text, audio, thermal images, depth images, and IMU | 모달리티별로 분리된 인코더를 사용함",
+            "source_text": "[3.3] We use separate encoders for images, text, audio, ther- mal images, depth images, and IMU | 모달리티별로 분리된 인코더를 사용함"
+          },
+          {
+            "field": "core_techniques",
+            "index": 7,
+            "quote": "We add a modality-specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+            "source_text": "[3.3] We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함"
+          }
+        ]
+      },
+      "method": {
+        "relation": "generic_only",
+        "reason": "두 논문은 모두 Transformer 아키텍처와 멀티모달 임베딩을 사용한다는 점에서 범용적 공통점이 있으나, 구체적인 기법·모듈·학습 절차상의 직접적 연결은 추출본에서 확인되지 않는다. 내 논문은 ImageBind의 통합 멀티모달 공간을 특징 추출기로 활용하고, 경량 temporal layer와 표준 Transformer 블록 스택으로 시간 관계를 인코딩하며, seen 클래스 열만 사용한 cross entropy로 미세조정한다. 선행 논문은 모달리티별 인코더와 선형 프로젝션 헤드, InfoNCE 대조학습 손실로 이미지 임베딩에 정렬하는 표현 학습 방법을 제안한다. 두 방법은 Transformer와 멀티모달 임베딩이라는 범용 기반만 공유할 뿐, 구체적 방법상 변형·확장 관계로 볼 근거는 부족하다.",
+        "my_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+            "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+          },
+          {
+            "field": "core_techniques",
+            "index": 4,
+            "quote": "comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
+            "source_text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인"
+          },
+          {
+            "field": "core_techniques",
+            "index": 5,
+            "quote": "lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입",
+            "source_text": "[1] lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입"
+          },
+          {
+            "field": "core_techniques",
+            "index": 7,
+            "quote": "The ground truth Y' E RT×(C¹ for the training data can be easily obtained by select- ing columns of corresponding seen classes from Y E RT×(C+1). Then, our fine-tuning baseline is trained by op- timizing the cross entropy loss between Save and Y'. | seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습",
+            "source_text": "[3.2] The ground truth Y' E RT×(C¹ for the training data can be easily obtained by select- ing columns of corresponding seen classes from Y E RT×(C+1). Then, our fine-tuning baseline is trained by op- timizing the cross entropy loss between Save and Y'. | seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습"
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 2,
+            "quote": "we use the natural, self-supervised pairing of other modalities - audio, depth, thermal, and In- tertial Measurement Unit (IMU) - with images | 오디오·깊이·열·IMU와 이미지의 자연적 자기지도 페어링을 사용함",
+            "source_text": "[3.2] we use the natural, self-supervised pairing of other modalities - audio, depth, thermal, and In- tertial Measurement Unit (IMU) - with images | 오디오·깊이·열·IMU와 이미지의 자연적 자기지도 페어링을 사용함"
+          },
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "are optimized using an InfoNCE [54] loss | 모달리티-이미지 정렬을 위해 InfoNCE 대조학습 손실을 사용함",
+            "source_text": "[3.2] are optimized using an InfoNCE [54] loss | 모달리티-이미지 정렬을 위해 InfoNCE 대조학습 손실을 사용함"
+          },
+          {
+            "field": "core_techniques",
+            "index": 5,
+            "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+            "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+          },
+          {
+            "field": "core_techniques",
+            "index": 7,
+            "quote": "We add a modality-specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+            "source_text": "[3.3] We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함"
+          }
+        ]
+      }
+    },
+    "comparison_allowed": true,
+    "evidence_basis": "extracted_text",
+    "warnings": [],
+    "evidence_failures": [],
+    "index_corrections": [],
+    "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+    "model": "solar-pro4"
+  },
+  "overall_assessment_applicable": false
+}

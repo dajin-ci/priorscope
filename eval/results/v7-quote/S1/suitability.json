@@ -1,0 +1,106 @@
+{
+  "version": "2",
+  "route": "partial",
+  "label": "공통 범위만 비교",
+  "axes": {
+    "problem": {
+      "relation": "related",
+      "reason": "두 논문은 모두 오디오-비주얼 멀티모달 임베딩과 관련되지만, 해결하려는 문제는 다르다. 내 논문은 기존 AVEL의 closed-set 한계를 넘어 unseen 이벤트 카테고리까지 명시적으로 예측하는 Open-Vocabulary AVEL 문제를 정식화하는 데 목적이 있다. 반면 선행 논문은 여러 모달리티(이미지, 텍스트, 오디오, 깊이, 열, IMU)를 하나의 공유 임베딩 공간에 정렬하는 통합 표현 학습 자체를 문제로 삼으며, 특정 다운스트림 태스크인 AVEL이나 open-vocabulary 이벤트 국소화를 직접 목표로 하지 않는다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
+          "source_text": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다."
+        },
+        {
+          "field": "problem",
+          "index": 1,
+          "quote": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다.",
+          "source_text": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.",
+          "source_text": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training."
+        },
+        {
+          "field": "problem",
+          "index": 1,
+          "quote": "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together.",
+          "source_text": "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "partial",
+      "reason": "두 논문의 연구 범위는 부분적으로만 겹친다. 내 논문은 오디오-비주얼 이벤트 국소화라는 구체적 다운스트림 태스크에 초점을 두고, segment-level 주석과 평가 지표를 갖춘 OV-AVEBench 데이터셋을 구축하며, ImageBind의 통합 멀티모달 공간을 특징 추출에 활용한다. 선행 논문은 특정 태스크보다는 여러 모달리티를 하나의 임베딩 공간에 묶는 표현 학습 자체를 범위로 하며, 오디오-비주얼 국소화를 직접 다루지 않는다. 다만 내 논문이 선행 논문의 ImageBind 공간을 사용한다는 점에서 모달리티 범위와 표현 공간 측면에서 접점이 있다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
+          "source_text": "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+          "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함",
+          "source_text": "[3.2] aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+          "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+        }
+      ]
+    },
+    "method": {
+      "relation": "unknown",
+      "reason": "판정 형식 또는 양쪽 추출 근거를 확인할 수 없습니다.",
+      "my_evidence": [],
+      "prior_evidence": [],
+      "rejected_model_view": {
+        "relation": "specific_shared",
+        "reason": "내 논문은 선행 논문의 ImageBind가 만든 통합 멀티모달 임베딩 공간을 직접 활용하여 오디오·비주얼·텍스트 특징을 추출하고, 이를 바탕으로 open-vocabulary AVEL을 수행한다. 또한 경량 temporal layer와 표준 Transformer 블록 스택을 사용해 시간 관계를 인코딩하는데, 이는 선행 논문이 모든 모달리티 인코더에 Transformer 아키텍처를 사용한 것과 아키텍처 계열에서 연결된다. 다만 내 논문은 ImageBind 공간 위에서 이벤트 국소화라는 다운스트림 예측과 temporal layer를 추가한 변형·확장 구조를 취하므로, 단순 범용 기반 공통이 아니라 구체적 방법상 연결이 있다."
+      }
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [
+    "핵심 방법: 근거 확인 실패로 판단을 보류했습니다."
+  ],
+  "evidence_failures": [
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "index": 3,
+      "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+      "reason": "인용 문구가 해당 항목에 없습니다."
+    },
+    {
+      "axis": "method",
+      "side": "prior",
+      "field": "core_techniques",
+      "index": 4,
+      "quote": "We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+      "reason": "인용 문구가 해당 항목에 없습니다."
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

@@ -1,0 +1,59 @@
+{
+  "version": "1",
+  "route": "insufficient",
+  "label": "판단 보류·추가 확인 안내",
+  "axes": {
+    "problem": {
+      "relation": "related",
+      "reason": "두 논문은 모두 언어 모델 사전학습(pretraining)과 그 표현 학습의 개선을 다루지만, 해결하려는 문제의 초점이 다르다. BERT는 단방향 언어 모델의 한계를 지적하고 양방향 사전학습의 중요성을 보이는 것이 핵심 문제인 반면, RoBERTa는 BERT 이후 보고된 개선들의 원인이 훈련 절차·데이터·설계 선택에 있는지 비교·검증하고 BERT가 충분히 훈련되지 않았음을 지적하는 문제에 집중한다. 따라서 같은 사전학습 영역이지만 해결 목적이 완전히 동일하지는 않다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+          "source_text": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+          "source_text": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+          "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context.",
+          "source_text": "Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "unknown",
+      "reason": "판정 형식 또는 양쪽 추출 근거를 확인할 수 없습니다.",
+      "my_evidence": [],
+      "prior_evidence": []
+    },
+    "method": {
+      "relation": "unknown",
+      "reason": "판정 형식 또는 양쪽 추출 근거를 확인할 수 없습니다.",
+      "my_evidence": [],
+      "prior_evidence": []
+    }
+  },
+  "comparison_allowed": false,
+  "evidence_basis": "extracted_text",
+  "warnings": [
+    "연구 범위·대상: 근거 확인 실패로 판단을 보류했습니다.",
+    "핵심 방법: 근거 확인 실패로 판단을 보류했습니다."
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

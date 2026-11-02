@@ -1,0 +1,122 @@
+{
+  "version": "3",
+  "route": "research",
+  "label": "연구 내용 비교",
+  "axes": {
+    "problem": {
+      "relation": "same",
+      "reason": "두 논문 모두 언어 모델 사전학습(pretraining) 방법의 설계와 학습 조건이 다운스트림 과제 성능에 미치는 영향을 규명하고, 더 효과적인 사전학습 접근법을 제시하는 것을 공통된 연구 목적으로 삼는다. 내 논문은 BERT의 설계 선택과 학습 전략을 재검토하여 개선된 사전학습 절차를 제안하고, 선행 논문은 양방향 사전학습의 중요성을 입증하며 사전학습 표현이 다운스트림 과제 구조를 단순화할 수 있음을 보인다. 둘 다 사전학습 표현 학습과 그 활용이라는 동일한 문제 영역에 속한다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+          "source_text": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance.",
+          "source_text": "[1] We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+          "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures.",
+          "source_text": "[1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "comparable",
+      "reason": "두 논문은 모두 Transformer 인코더 기반 언어 모델의 사전학습과 그 표현을 다양한 자연어처리 다운스트림 과제에 적용하는 범위를 공유한다. 내 논문은 BERT의 설계 선택을 변형한 RoBERTa 사전학습과 GLUE, SQuAD, RACE 등에서의 평가를 다루고, 선행 논문은 BERT 사전학습과 동일한 유형의 과제들(MNLI, QQP, QNLI, SST, CoLA, MRPC, RTE, SQuAD, SWAG 등)에서의 평가를 다룬다. 입출력 형태(사전학습된 언어 표현 → 다운스트림 과제 미세조정)와 연구 대상(사전학습 방법 및 그 효과)이 대응하므로 연구 내용 비교가 가능하다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+          "source_text": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차"
+        },
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]",
+          "source_text": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+          "source_text": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용"
+        },
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+          "source_text": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]"
+        }
+      ]
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "내 논문은 선행 논문의 BERT 사전학습 목표(마스킹 언어 모델)와 양방향 Transformer 인코더 구조를 기반으로 하되, NSP 목적함수 제거, FULL-SENTENCES 입력 형식, 동적 마스킹, 더 큰 byte-level BPE 어휘, 더 큰 미니배치, 더 많은 데이터와 긴 시퀀스 학습 등으로 구체적인 설계 선택과 학습 절차를 변형·확장한다. 선행 논문의 핵심 기법인 MLM 목표와 Transformer 인코더가 내 논문 방법의 직접적인 기반이 되므로, 단순 범용 기반 공통이 아니라 구체적 기법·학습 절차에 공통/변형/확장 관계가 있다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+          "source_text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "[5] dynamic mask-ing | 동적 마스킹",
+          "source_text": "[5] dynamic mask-ing | 동적 마스킹"
+        },
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+          "source_text": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+          "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+          "source_text": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용"
+        }
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

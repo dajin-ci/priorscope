@@ -1,0 +1,35 @@
+{
+  "overlap_level": [
+    "Low Overlap"
+  ],
+  "llm_score": [
+    22
+  ],
+  "summary": [
+    "제안 논문과 기존 논문은 모두 오디오-비주얼 멀티모달 임베딩과 관련되지만, 제안 논문은 seen과 unseen 이벤트 카테고리를 명시적으로 예측하는 OV-AVEL 문제와 벤치마크에 초점을 둔다. 반면 기존 논문은 다양한 모달리티를 하나의 공유 임베딩 공간에 정렬하는 범용 멀티모달 표현 학습을 다루므로, 두 연구는 연관되지만 동일한 문제를 해결하지는 않는다. 제안 논문은 ImageBind의 통합 멀티모달 공간을 특징 추출기로 활용한다는 접점이 있으나, AVEL 설정, segment-level 주석, temporal modeling, fine-tuning 절차는 기존 논문에서 직접 제시되지 않는다."
+  ],
+  "element_mapping": [
+    "M1 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | OV-AVEL은 seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 AVEL 문제 정식화인데, 기존 논문 P1~P8은 여러 모달리티를 하나의 임베딩 공간에 정렬하는 표현 학습과 인코더/손실 설계에 관한 내용만 제시되어 있어 특정 AVEL 문제 정식화 자체가 이미 있다고 보기는 어렵다.",
+    "M2 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | OV-AVEBench는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축인데, 기존 논문은 대규모 웹 기반 이미지-텍스트 페어 데이터와 오디오·깊이·열·IMU-이미지 자기지도 페어링 데이터만 제시되어 있어 같은 역할의 AVEL용 segment-level 주석 데이터셋이 확인되지 않는다.",
+    "M3 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | 정확도와 segment-level/event-level F1을 포함한 AVEL용 평가 지표 정립은 기존 논문 P1~P8의 표현 학습 방법, 인코더, 손실 설명과 직접 대응되지 않으며, 같은 평가 체계가 제시되지 않는다.",
+    "M4 ↔ P1,P6,P7,P8 | 일치 | M[1] / P[3.2],P[3.3] | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하는 요소는 기존 논문의 공통 임베딩 공간, Transformer 인코더, 모달리티별 분리 인코더, 선형 프로젝션 헤드에 기반한 ImageBind 표현을 그대로 활용하는 것으로 볼 수 있다.",
+    "M5 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교해 예측하는 학습 없는 베이스라인은 기존 논문의 모달리티-이미지 정렬 학습, 대칭 손실, 인코더 구조와는 다른 AVEL 예측 규칙 기반 방식으로 직접 확인되지 않는다.",
+    "M6 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | 오디오/비주얼 모달리티 내부 시간 관계를 학습하기 위한 경량 temporal layer 삽입은 다운스트림 AVEL의 시간 구조를 위한 모듈이지만, 기존 논문은 공유 임베딩 표현 학습을 위한 모달리티 정렬과 인코더 설계만 설명하며 별도 temporal layer는 제시하지 않는다.",
+    "M7 ↔ P6 | 없음 | M[3.2] / P[3.3] | temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 P6의 모든 모달리티 인코더에 Transformer를 사용한다는 일반 설계와 표면적 공통점은 있으나, 문서 기준상 Transformer 사용처럼 범용 기법 수준의 공통점만으로는 대응되는 고유 요소로 보기 어렵다.",
+    "M8 ↔ - | 없음 | M[3.2] / 검토 범위 P1~P8 | seen 클래스 열만 사용한 정답과 예측 사이의 cross entropy로 미세조정 학습하는 설정은 기존 논문의 InfoNCE 대조학습 손실 및 양방향 대칭 손실과 목적과 학습 절차가 달라 직접 대응되지 않는다."
+  ],
+  "result_pairs": [
+    "해당 없음 | 조건 다름 | 제안 논문 실험은 모두 OV-AVEBench의 Avg. 결과이고, 기존 논문 실험은 IN1K, P365, K400, MSR-VTT, Clotho, AudioCaps, ESC 등 다른 데이터셋과 Acc./Recall@1/R@1/R@10/mAP/Top-1 지표로 보고되어 데이터셋과 지표가 같은 쌍이 확인되지 않는다."
+  ],
+  "caution_points": [
+    "[M4 ↔ P1,P6,P7,P8] 제안 논문이 사전학습된 ImageBind의 통합 멀티모달 공간을 특징 추출기로 그대로 활용한다는 점은 기존 논문의 핵심 구성요소를 그대로 사용한 것으로 지적될 수 있다. 본문에서는 이를 기반 모델 채택으로 명확히 위치시키고, AVEL 문제 설정·segment-level 예측·fine-tuning 절차가 비교의 핵심 차이임을 분리해 서술하는 것이 좋다."
+  ],
+  "differentiation_suggestions": [
+    "Our work uses the pretrained ImageBind representation as a feature extractor within an OV-AVEL pipeline, whereas the prior work focuses on learning a general joint embedding space itself rather than formulating an AVEL task.",
+    "Our work targets segment-level event localization and explicit category prediction on seen and unseen events, while the prior work does not assume an AVEL setting or segment-level manual annotations.",
+    "Our work introduces temporal modeling and a fine-tuning procedure based on cross entropy over seen classes, whereas the prior work describes modality-alignment pretraining with InfoNCE and symmetric losses rather than a downstream temporal AVEL training setup."
+  ],
+  "related_work_draft": [
+    "제안 논문은 기존 논문인 Girdhar et al., arXiv, 2023의 ImageBind 표현을 특징 추출기로 활용한다는 점에서 멀티모달 임베딩 공간을 공유한다. 그러나 제안 논문은 seen/unseen 이벤트를 모두 다루는 OV-AVEL과 segment-level localization에 초점을 두는 반면, 기존 논문은 특정 다운스트림 태스크보다 범용 joint embedding 학습 자체를 목표로 한다."
+  ]
+}

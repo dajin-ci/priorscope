@@ -1,0 +1,247 @@
+{
+  "created_at": "2026-11-02T23:58:28",
+  "metrics": {
+    "provisional": true,
+    "samples": 2,
+    "route_accuracy": 1.0,
+    "route_accuracy_disputed": null,
+    "route_accuracy_vs_sheet": 1.0,
+    "gate_leak_rate": null,
+    "over_block_rate": 0.0,
+    "axis_accuracy": {
+      "problem": 1.0,
+      "scope": 1.0,
+      "method": 0.5
+    },
+    "axis_accuracy_vs_sheet": {
+      "problem": 1.0,
+      "scope": 1.0,
+      "method": 0.5
+    },
+    "elements_scored": 17,
+    "false_novelty_rate": 0.2,
+    "false_novelty_rate_agent": 0.2,
+    "element_accuracy": 0.7647058823529411,
+    "uncertain_rate": 0.058823529411764705,
+    "grade_agreement": 1.0,
+    "grade_held": 0
+  },
+  "targets": {
+    "false_novelty_rate": false,
+    "element_accuracy": false,
+    "route_accuracy": true,
+    "gate_leak_rate": null,
+    "grade_agreement": true
+  },
+  "samples": [
+    {
+      "sample": "S1",
+      "provisional": true,
+      "route_pred": "partial",
+      "route_truth": [
+        "partial"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": true,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {
+        "problem": {
+          "pred": "related",
+          "truth": "related",
+          "truth_from_sheet": "related",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "partial",
+          "truth": "partial",
+          "truth_from_sheet": "partial",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "method": {
+          "pred": "generic_only",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": false,
+          "correct_vs_sheet": false
+        }
+      },
+      "elements": {
+        "rows": [
+          {
+            "id": "M1",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M2",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M3",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M4",
+            "truth": "일치",
+            "agent": "일치",
+            "final": "일치",
+            "demoted": false
+          },
+          {
+            "id": "M5",
+            "truth": "유사",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M6",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M7",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "확인필요",
+            "demoted": true
+          },
+          {
+            "id": "M8",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          }
+        ],
+        "missing_in_pred": []
+      },
+      "grade": null
+    },
+    {
+      "sample": "S2",
+      "provisional": true,
+      "route_pred": "research",
+      "route_truth": [
+        "research"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": true,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {
+        "problem": {
+          "pred": "same",
+          "truth": "same",
+          "truth_from_sheet": "same",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "comparable",
+          "truth": "comparable",
+          "truth_from_sheet": "comparable",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "method": {
+          "pred": "specific_shared",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": true,
+          "correct_vs_sheet": true
+        }
+      },
+      "elements": {
+        "rows": [
+          {
+            "id": "M1",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M2",
+            "truth": "없음",
+            "agent": "유사",
+            "final": "유사",
+            "demoted": false
+          },
+          {
+            "id": "M3",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M4",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "demoted": false
+          },
+          {
+            "id": "M5",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "demoted": false
+          },
+          {
+            "id": "M6",
+            "truth": "없음",
+            "agent": "유사",
+            "final": "유사",
+            "demoted": false
+          },
+          {
+            "id": "M7",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          },
+          {
+            "id": "M8",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "demoted": false
+          },
+          {
+            "id": "M9",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "demoted": false
+          }
+        ],
+        "missing_in_pred": []
+      },
+      "grade": {
+        "pred": "Low Overlap",
+        "truth": "Low Overlap",
+        "held": false,
+        "correct": true
+      }
+    }
+  ],
+  "results_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/eval/results/v8-rules-2"
+}

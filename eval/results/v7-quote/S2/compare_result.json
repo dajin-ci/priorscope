@@ -1,0 +1,62 @@
+{
+  "overlap_level": [
+    "Medium Overlap"
+  ],
+  "llm_score": [
+    61
+  ],
+  "summary": [
+    "제안 논문은 기존 논문이 제시한 MLM·NSP·Transformer 인코더·WordPiece-[CLS]/[SEP]의 기본 틀을 바탕으로, NSP 제거·동적 마스킹·더 긴 시퀀스·더 큰 배치·더 많은 데이터 같은 학습 절차 재설계를 통해 같은 유형의 다운스트림 과제에서 성능을 비교한다. 따라서 두 논문은 언어 모델 사전학습이 표현과 다운스트림 성능에 미치는 영향을 다룬다는 점에서 직접 비교 가능하지만, 제안 논문은 기존 논문의 구체적 사전학습 구성요소를 명시적으로 수정·확장한 관계에 있다.",
+    "제안 논문과 기존 논문은 모두 사전학습 방법·목표·조건이 언어 표현과 다운스트림 성능에 어떻게 기여하는가를 공통된 핵심 문제로 삼는다. 다만 제안 논문은 기존 논문의 특정 사전학습 모듈과 학습 전략을 직접 변형·제거·확장한다는 점에서 관계가 더 구체적이다."
+  ],
+  "element_mapping": [
+    "M1 ↔ - | 없음 | 검토 범위 P1~P8 | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차는 P1~P8에 직접 대응하는 학습 시간·배치 크기·데이터 규모 확대 요소로 명시되어 있지 않다.",
+    "M2 ↔ P2 | 유사 | M[1] / P[3.1] | 제안 논문은 next sentence prediction objective를 제거하고, 기존 논문은 next sentence prediction task를 사전학습 절차로 포함하므로 동일 요소에 대한 반대 방향의 설계 변경 관계다.",
+    "M3 ↔ - | 없음 | 검토 범위 P1~P8 | 더 긴 시퀀스로 학습하는 방법은 P1~P8에 직접 대응하는 시퀀스 길이 확장 요소가 문서상 제시되어 있지 않다.",
+    "M4 ↔ P1 | 유사 | M[1] / P[3.1] | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법은 기존 논문의 masked language model pre-training objective와 같은 마스킹 기반 사전학습 목표를 공유하되 마스킹 운영 방식을 확장한 것이다.",
+    "M5 ↔ P1 | 유사 | M[5] / P[3.1] | dynamic mask-ing은 기존 논문의 MLM 사전학습 목표를 구현하는 마스킹 방식의 변형으로 볼 수 있다.",
+    "M6 ↔ P2,P8 | 유사 | M[5] / P[3.1],[3] | FULL-SENTENCES without NSP loss는 기존 논문의 next sentence prediction task 및 [SEP]로 문장 쌍을 구분하는 입력 구성과 관련되며, 문장 단위 입력을 유지하되 NSP 손실을 제거한 변형이다.",
+    "M7 ↔ - | 없음 | 검토 범위 P1~P8 | large mini-batches는 P1~P8에 직접 대응하는 미니배치 크기 관련 핵심 기술 요소가 없다.",
+    "M8 ↔ P6 | 유사 | M[5] / P[3] | 더 큰 byte-level BPE 어휘 체계와 기존 논문의 WordPiece embeddings는 모두 서브워드 기반 어휘·토크나이저 설계라는 점에서 대응한다.",
+    "M9 ↔ - | 없음 | 검토 범위 P1~P8 | CC-NEWS를 추가하는 방법은 제안 논문에 명시된 새로운 대규모 뉴스 데이터셋 사용이며, P1~P8에는 특정 추가 사전학습 데이터셋에 대응하는 요소가 없다."
+  ],
+  "result_pairs": [
+    "R-M1 ~ R-P11 | 동일 조건 | 둘 다 SQuAD v1.1 dev single EM 결과이다.",
+    "R-M2 ~ R-P12 | 동일 조건 | 둘 다 SQuAD v1.1 dev single F1 결과이다.",
+    "R-M3 ~ R-P23 | 동일 조건 | 둘 다 SQuAD v2.0 dev single EM 결과이다.",
+    "R-M4 ~ R-P24 | 동일 조건 | 둘 다 SQuAD v2.0 dev single F1 결과이다.",
+    "R-M5 ~ R-P25 | 동일 조건 | 둘 다 SQuAD v2.0 test single 결과이며, 제안 논문의 지표 표기는 ?이지만 수치 위치상 EM 행으로 배치되어 있다.",
+    "R-M6 ~ R-P26 | 동일 조건 | 둘 다 SQuAD v2.0 test single 결과이며, 제안 논문의 지표 표기는 ?이지만 수치 위치상 F1 행으로 배치되어 있다.",
+    "R-M12 ~ R-P4 | 조건 다름 | 둘 다 QNLI이지만 제안 논문은 dev single이고 기존 논문은 test single Acc.여서 평가 분할이 다르다.",
+    "R-M13 ~ R-P3 | 조건 다름 | 둘 다 QQP이지만 제안 논문은 dev single이고 기존 논문은 test single F1이어서 평가 분할이 다르다.",
+    "R-M14 ~ R-P9 | 조건 다름 | 둘 다 RTE이지만 제안 논문은 dev single이고 기존 논문은 test single Acc.여서 평가 분할이 다르다.",
+    "R-M16 ~ R-P8 | 조건 다름 | 둘 다 MRPC이지만 제안 논문은 dev single이고 기존 논문은 test single F1이어서 평가 분할이 다르다.",
+    "R-M17 ~ R-P6 | 조건 다름 | 둘 다 CoLA이지만 제안 논문은 dev single이고 기존 논문은 test single Acc.여서 평가 분할이 다르다.",
+    "R-M18 ~ R-P7 | 조건 다름 | 둘 다 STS/STS-B 결과로 대응 가능하나, 제안 논문은 dev single이고 기존 논문은 test single Spearman correlations여서 평가 분할이 다르다.",
+    "R-M25 ~ R-P5 | 조건 다름 | 둘 다 SST/SST-2 결과로 대응 가능하나, 제안 논문은 test ensemble이고 기존 논문은 test single Acc.여서 추론 방식이 다르다.",
+    "R-M26 ~ R-P8 | 조건 다름 | 둘 다 MRPC이지만 제안 논문은 test ensemble이고 기존 논문은 test single F1여서 조건이 다르다.",
+    "R-M27 ~ R-P6 | 조건 다름 | 둘 다 CoLA이지만 제안 논문은 test ensemble이고 기존 논문은 test single Acc.여서 조건이 다르다.",
+    "R-M28 ~ R-P7 | 조건 다름 | 둘 다 STS/STS-B 결과로 대응 가능하나, 제안 논문은 test ensemble이고 기존 논문은 test single Spearman correlations여서 조건이 다르다."
+  ],
+  "caution_points": [
+    "[M2 ↔ P2] NSP를 다루는 핵심 요소가 직접 대응되어 기존 논문의 next sentence prediction 변형으로 보일 수 있다, 제안 논문에서는 NSP를 유지하지 않고 제거했을 때의 학습 설정과 효과 차이를 문제 설정 차원에서 분명히 써야 한다.",
+    "[M4 ↔ P1] 마스킹 기반 사전학습이라는 점에서 기존 논문의 MLM과 매우 가깝게 보일 수 있다, 동적 마스킹이 고정 마스킹과 어떻게 다른 학습 절차를 형성하는지 본문에 구체적으로 보강해야 한다.",
+    "[M5 ↔ P1] dynamic masking은 기존 논문의 MLM 구현 변형으로 읽힐 수 있다, 마스킹 패턴 변경의 적용 방식과 그 목적을 기존 논문과 대비해 명시하는 것이 필요하다.",
+    "[M6 ↔ P2,P8] FULL-SENTENCES without NSP loss는 문장쌍 입력과 [SEP] 사용이라는 공통점 때문에 기존 논문의 입력 형식과 유사하게 보일 수 있다, 문장 단위 입력은 유지하되 NSP 손실은 제거한다는 설계 차이를 분명히 설명해야 한다.",
+    "[M8 ↔ P6] 서브워드 기반 어휘 체계라는 점에서 기존 논문의 WordPiece와 같은 범주의 선택으로 지적될 수 있다, byte-level BPE와 WordPiece의 어휘 범위 및 토크나이징 차이를 데이터 처리 관점에서 보강해야 한다.",
+    "[R-M1 ↔ R-P11] 둘 다 SQuAD v1.1 dev single EM이라 수치가 직접 비교되어 동일한 평가 축으로 인식될 수 있다, 제안 논문은 같은 조건 비교 위에 어떤 학습 설계 변경이 있었는지 결과 해석과 함께 분리해서 서술해야 한다.",
+    "[R-M2 ↔ R-P12] 둘 다 SQuAD v1.1 dev single F1이라 직접 비교가 가능해 기존 논문의 연장선으로 보일 수 있다, 제안 논문은 평가 조건은 같지만 학습 절차 재설계가 다르다는 점을 결과 문단에서 분명히 해야 한다.",
+    "[R-M3 ↔ R-P23] 둘 다 SQuAD v2.0 dev single EM 결과여서 기존 논문과 동일한 벤치마크 비교로 읽힐 수 있다, 제안 논문은 동일 벤치마크를 사용한 이유와 다른 학습 조건을 함께 설명해야 한다.",
+    "[R-M4 ↔ R-P24] 둘 다 SQuAD v2.0 dev single F1이므로 심사자가 동일 실험 축으로 바로 비교할 수 있다, 같은 평가 조건 아래 어떤 설계 변경이 성능 차이에 연결되는지 본문에서 분리해 해석할 필요가 있다.",
+    "[R-M5 ↔ R-P25] 둘 다 SQuAD v2.0 test single로 대응되어 결과가 직접 대조될 수 있다, 제안 논문은 지표 표기와 함께 동일 조건 비교의 근거를 더 명확히 적는 것이 좋다.",
+    "[R-M6 ↔ R-P26] 둘 다 SQuAD v2.0 test single로 대응되어 동일 평가 조건의 직접 비교로 보일 수 있다, 제안 논문은 test single 조건에서의 학습 설계 차이를 결과 설명에 명시해야 한다."
+  ],
+  "differentiation_suggestions": [
+    "Our work keeps masked language model pretraining but changes how masks are applied during training by dynamically changing the masking pattern, whereas the prior work presents MLM as the pre-training objective without this training procedure change.",
+    "Our work uses full-sentence inputs without the next sentence prediction loss, while the prior work includes next sentence prediction as a pre-training task and uses [SEP] to separate sentence pairs. This distinction should be described as a change in pretraining objective and input usage rather than as a different downstream task setting.",
+    "Our work expands the pretraining setup with longer training, bigger batches, and more data including CC-NEWS, whereas the prior work’s listed core techniques do not specify these training-scale choices as core components. This difference should be presented as a change in training procedure and data scope."
+  ],
+  "related_work_draft": [
+    "The prior work, Devlin et al., arXiv, 2019, introduced BERT with masked language model pretraining, next sentence prediction, and a bidirectional Transformer encoder. Our work builds on this framework while modifying specific pretraining objectives and training conditions, including the removal of NSP, dynamic masking, and larger-scale training."
+  ]
+}

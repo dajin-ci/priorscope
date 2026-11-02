@@ -1,0 +1,26 @@
+{
+  "version": "1",
+  "route": "partial",
+  "title": "공통 범위만 비교",
+  "summary": "관련된 문제 중 공통 범위만 검토합니다. 전체 연구의 차별성 등급은 제공하지 않습니다.",
+  "show_mappings": true,
+  "show_overall_grade": false,
+  "show_novelty_candidates": false,
+  "show_weaknesses": false,
+  "show_numeric": true,
+  "numeric": {
+    "status": "비교 불가·정보 부족",
+    "comparable_count": 0,
+    "counts": {},
+    "incomparable_count": 6
+  },
+  "next_actions": [
+    "공통으로 다루는 문제와 서로 다른 연구 범위를 먼저 설명하세요.",
+    "연구 범위 밖의 요소를 곧바로 약점으로 해석하지 마세요."
+  ],
+  "limitations": [
+    "적합성 근거는 PDF 원문이 아닌 추출본을 대조한 결과입니다.",
+    "범용 기법의 공통점만으로 비교 적합성이나 독창성을 확정하지 않습니다.",
+    "수치 비교는 확인된 평가 조건에 한하며 통계적 우위나 공정한 학습 조건을 보장하지 않습니다."
+  ]
+}

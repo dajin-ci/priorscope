@@ -1,0 +1,114 @@
+{
+  "version": "1",
+  "route": "insufficient",
+  "label": "판단 보류·추가 확인 안내",
+  "axes": {
+    "problem": {
+      "relation": "related",
+      "reason": "두 논문은 모두 오디오-비주얼 멀티모달 임베딩과 관련되지만, 해결하려는 핵심 문제는 다르다. 내 논문은 '학습 중 보지 못한(unseen) 이벤트 카테고리까지 명시적 카테고리로 예측하는 개방어휘 AVEL'이라는 특정 태스크의 정식화와 데이터셋·평가에 초점을 둔다. 반면 ImageBind는 '모든 모달리티가 함께 등장하는 데이터 없이도 이미지-텍스트 쌍을 중심으로 여러 모달리티를 하나의 공유 임베딩 공간에 정렬하는 것'이라는 더 일반적인 표현 학습 문제를 다룬다. 즉 ImageBind의 문제는 개방어휘 AVEL을 가능하게 하는 기반 표현 공간을 제공하는 성격이 있어 연관되지만, 동일한 해결 문제를 직접 다루지는 않는다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
+          "source_text": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다."
+        },
+        {
+          "field": "problem",
+          "index": 1,
+          "quote": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다.",
+          "source_text": "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.",
+          "source_text": "Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training."
+        },
+        {
+          "field": "problem",
+          "index": 1,
+          "quote": "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together.",
+          "source_text": "Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "unknown",
+      "reason": "판정 형식 또는 양쪽 추출 근거를 확인할 수 없습니다.",
+      "my_evidence": [],
+      "prior_evidence": []
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "두 논문은 구체적 방법 측면에서 공통/확장 관계를 가진다. 내 논문은 ImageBind의 통합 멀티모달 임베딩 공간을 직접 활용하여 오디오·비주얼·텍스트 특징을 추출하고, 이를 기반으로 학습 없는 베이스라인(오디오-텍스트와 비주얼-텍스트 유사도의 일치성 비교)과 경량 temporal layer(표준 Transformer 블록 스택)를 추가한 미세조정 베이스라인을 제안한다. 이는 ImageBind가 제공하는 공유 임베딩 공간을 구성 요소로 차용하고, 그 위에 AVEL 태스크를 위한 시간적 모델링과 분류 헤드를 덧붙인 확장으로 볼 수 있다. ImageBind 자체는 각 모달리티 인코더 뒤에 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 만들고, InfoNCE 대조학습 손실로 이미지-다른 모달리티 정렬을 학습하며, 모든 인코더에 Transformer 아키텍처를 사용한다. 내 논문은 이러한 ImageBind의 임베딩 공간과 Transformer 기반 구조를 활용하지만, ImageBind의 대조학습 정렬 절차를 직접 재수행하지는 않고 사전학습된 공간을 전제로 AVEL에 맞게 temporal layer와 cross entropy 미세조정을 추가한다. 따라서 구체적 기법·모듈 수준에서 ImageBind의 공유 임베딩 공간과 Transformer 기반 인코더 구조를 공통 기반으로 삼고, 내 논문이 이를 AVEL 태스크로 확장한 관계가 성립한다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+          "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
+          "source_text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입",
+          "source_text": "[1] lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입"
+        },
+        {
+          "field": "core_techniques",
+          "index": 6,
+          "quote": "a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화",
+          "source_text": "[3.2] a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "we use the natural, self-supervised pairing of other modalities - audio, depth, thermal, and In- tertial Measurement Unit (IMU) - with images | 오디오·깊이·열·IMU와 이미지의 자연적 자기지도 페어링을 사용함",
+          "source_text": "[3.2] we use the natural, self-supervised pairing of other modalities - audio, depth, thermal, and In- tertial Measurement Unit (IMU) - with images | 오디오·깊이·열·IMU와 이미지의 자연적 자기지도 페어링을 사용함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "are optimized using an InfoNCE [54] loss | 모달리티-이미지 정렬을 위해 InfoNCE 대조학습 손실을 사용함",
+          "source_text": "[3.2] are optimized using an InfoNCE [54] loss | 모달리티-이미지 정렬을 위해 InfoNCE 대조학습 손실을 사용함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "we use a symmetric loss LI,M + LM,I | 양방향 대칭 손실로 두 모달리티 정렬을 학습함",
+          "source_text": "[3.2] we use a symmetric loss LI,M + LM,I | 양방향 대칭 손실로 두 모달리티 정렬을 학습함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+          "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 7,
+          "quote": "We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함",
+          "source_text": "[3.3] We add a modality- specific linear projection head on each encoder to obtain a fixed size d dimensional embedding | 각 인코더 뒤에 모달리티별 선형 프로젝션 헤드를 붙여 고정 차원 임베딩을 생성함"
+        }
+      ]
+    }
+  },
+  "comparison_allowed": false,
+  "evidence_basis": "extracted_text",
+  "warnings": [
+    "연구 범위·대상: 근거 확인 실패로 판단을 보류했습니다."
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}
