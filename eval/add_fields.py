@@ -81,19 +81,25 @@ def add_fields(sample: str, side: str, new: dict, fields: list[str]) -> dict:
 
 
 def main(argv: list[str]) -> int:
-    if len(argv) < 4 or argv[1] not in SIDES:
+    if len(argv) < 3 or argv[1] not in SIDES:
         print(__doc__)
         return 1
     sample, side = argv[0], argv[1]
-    if argv[2] == "--from-json":
-        new = json.loads(Path(argv[3]).expanduser().read_text(encoding="utf-8"))
-        fields = argv[4:]
-    else:
-        new = extract(side, Path(argv[2]).expanduser())
-        fields = argv[3:]
-    if not fields:
-        print(__doc__)
+    from_json = argv[2] == "--from-json"
+    source, fields = (argv[3] if len(argv) > 3 else None, argv[4:]) if from_json else (argv[2], argv[3:])
+    # API 를 부르기 전에 인자를 모두 확인한다 (필드 이름을 빠뜨리면 호출 비용만 쓰고 끝나므로).
+    if not source or not fields:
+        print("가져올 필드 이름이 없습니다. 명령 끝에 필드 이름을 붙이세요.")
+        print(f"  예) python eval/add_fields.py {sample} {side} {source or '<PDF 경로>'} contributions")
         return 1
+    if not (SAMPLES_DIR / sample / SIDES[side]).exists():
+        print(f"샘플 파일이 없습니다: eval/samples/{sample}/{SIDES[side]}")
+        return 1
+    if not Path(source).expanduser().exists():
+        print(f"파일이 없습니다: {source}")
+        return 1
+    new = (json.loads(Path(source).expanduser().read_text(encoding="utf-8")) if from_json
+           else extract(side, Path(source).expanduser()))
     try:
         add_fields(sample, side, new, fields)
     except ValueError as exc:

@@ -44,6 +44,17 @@ def test_refuses_protected_fields(sample):
         add_fields.add_fields("S1", "prior", {"core_techniques": ["x"]}, ["core_techniques"])
 
 
-def test_empty_new_field_is_not_written(sample):
+def test_empty_new_field_keeps_existing_value(sample):
+    before = json.loads((sample / "prior_paper.json").read_text()).get("contributions")
     add_fields.add_fields("S1", "prior", {"contributions": []}, ["contributions"])
-    assert "contributions" not in json.loads((sample / "prior_paper.json").read_text())
+    assert json.loads((sample / "prior_paper.json").read_text()).get("contributions") == before
+
+
+def test_missing_field_name_stops_before_api_call(sample, monkeypatch, capsys):
+    called = []
+    monkeypatch.setattr(add_fields, "extract", lambda *a: called.append(a) or {})
+    pdf = sample / "x.pdf"
+    pdf.write_bytes(b"%PDF")
+    assert add_fields.main(["S1", "prior", str(pdf)]) == 1
+    assert not called
+    assert "필드 이름이 없습니다" in capsys.readouterr().out

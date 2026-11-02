@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "axes": {
+    "problem": {
+      "relation": "same",
+      "relation_agreed": true,
+      "relation_answers": {
+        "claude": "same"
+      },
+      "relation_from_sheet": "related",
+      "relation_from_sheet_agreed": true,
+      "relation_from_sheet_answers": {
+        "claude": "related"
+      },
+      "extraction_gap": true
+    },
+    "scope": {
+      "relation": "comparable",
+      "relation_agreed": true,
+      "relation_answers": {
+        "claude": "comparable"
+      },
+      "relation_from_sheet": "comparable",
+      "relation_from_sheet_agreed": true,
+      "relation_from_sheet_answers": {
+        "claude": "comparable"
+      },
+      "extraction_gap": false
+    },
+    "method": {
+      "relation": "specific_shared",
+      "relation_agreed": true,
+      "relation_answers": {
+        "claude": "specific_shared"
+      },
+      "relation_from_sheet": "specific_shared",
+      "relation_from_sheet_agreed": true,
+      "relation_from_sheet_answers": {
+        "claude": "specific_shared"
+      },
+      "extraction_gap": false
+    }
+  },
+  "routes_by_labeler": {
+    "claude": "research"
+  },
+  "routes_from_sheet_by_labeler": {
+    "claude": "partial"
+  },
+  "intuition_by_labeler": {
+    "claude": "research"
+  },
+  "expected_route": "research",
+  "acceptable_routes": [
+    "research"
+  ],
+  "disputed": false,
+  "comparison_expected": true,
+  "from_sheet": {
+    "expected_route": "partial",
+    "acceptable_routes": [
+      "partial"
+    ],
+    "disputed": false,
+    "comparison_expected": true
+  },
+  "route_changed_by_extraction": true,
+  "intuition_mismatch": [],
+  "needs_element_labels": true
+}

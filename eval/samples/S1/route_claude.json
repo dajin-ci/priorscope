@@ -1,8 +1,8 @@
 {
   "problem": {
     "relation": "related",
-    "relation_from_sheet": "different",
-    "memo": "실제: OV-AVEL은 ImageBind가 연 통합 임베딩 기반 zero-shot 인식을 이벤트 위치 추정으로 확장한 문제라 연관됨. 시트: ImageBind problem이 '모달리티 쌍 제한·페어 데이터 부족'만 적고 Prior 스키마에 contributions가 없어 OV-AVEL 문제(closed-set 한계)와 연결이 보이지 않음"
+    "relation_from_sheet": "related",
+    "memo": "실제: OV-AVEL은 ImageBind가 연 통합 임베딩 기반 zero-shot 인식을 이벤트 위치 추정으로 확장한 문제라 연관됨. 시트: ImageBind problem이 '모달리티 쌍 제한·페어 데이터 부족'만 적고 Prior 스키마에 contributions가 없어 OV-AVEL 문제(closed-set 한계)와 연결이 보이지 않음 / [갱신 2026-11-02] Prior 기여점 추가(config v7) 후 시트 기준 different→related: ImageBind 기여점의 모달리티별 emergent zero-shot 분류·검색, 이미지 속 소리 출처 탐지가 OV-AVEL의 unseen 이벤트 인식 문제와 연결됨"
   },
   "scope": {
     "relation": "partial",
@@ -15,5 +15,5 @@
     "memo": "M4가 ImageBind 사전학습 임베딩 공간을 그대로 쓰고, M5가 그 공간의 교차 모달 유사도에 기반함. 시트에서도 M4에 ImageBind가 명시됨"
   },
   "route_intuition": "method",
-  "memo": "LLM(Claude) 임시 라벨. 실제 경로는 related+partial로 partial, 시트 기준은 different+specific_shared로 method. 직감은 method: ImageBind는 경쟁 연구라기보다 백본이라 방법 활용 방식을 보는 게 사용자에게 유용해 보임. 직감과 규칙이 갈리는 사례로 select_route 점검 자료"
+  "memo": "LLM(Claude) 임시 라벨. 실제 경로는 related+partial로 partial, 시트 기준은 different+specific_shared로 method. 직감은 method: ImageBind는 경쟁 연구라기보다 백본이라 방법 활용 방식을 보는 게 사용자에게 유용해 보임. 직감과 규칙이 갈리는 사례로 select_route 점검 자료 / [갱신] 기여점 추가 후 시트 기준 경로가 실제 경로와 같아짐. 수정 전 기록은 route_label.before_contributions.json"
 }

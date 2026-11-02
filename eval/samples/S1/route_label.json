@@ -7,12 +7,12 @@
       "relation_answers": {
         "claude": "related"
       },
-      "relation_from_sheet": "different",
+      "relation_from_sheet": "related",
       "relation_from_sheet_agreed": true,
       "relation_from_sheet_answers": {
-        "claude": "different"
+        "claude": "related"
       },
-      "extraction_gap": true
+      "extraction_gap": false
     },
     "scope": {
       "relation": "partial",
@@ -45,7 +45,7 @@
     "claude": "partial"
   },
   "routes_from_sheet_by_labeler": {
-    "claude": "method"
+    "claude": "partial"
   },
   "intuition_by_labeler": {
     "claude": "method"
@@ -57,14 +57,14 @@
   "disputed": false,
   "comparison_expected": true,
   "from_sheet": {
-    "expected_route": "method",
+    "expected_route": "partial",
     "acceptable_routes": [
-      "method"
+      "partial"
     ],
     "disputed": false,
     "comparison_expected": true
   },
-  "route_changed_by_extraction": true,
+  "route_changed_by_extraction": false,
   "intuition_mismatch": [
     "claude"
   ],

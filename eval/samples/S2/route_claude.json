@@ -1,8 +1,8 @@
 {
   "problem": {
     "relation": "same",
-    "relation_from_sheet": "related",
-    "memo": "실제: 둘 다 다운스트림 NLU를 위한 언어 표현 사전학습 문제이고 RoBERTa는 BERT 사전학습을 재검토·개선. 시트: RoBERTa problem은 '학습 부족·비교 어려움', BERT problem은 '단방향 LM 한계'로 적혀 같은 문제로 읽히지 않음"
+    "relation_from_sheet": "same",
+    "memo": "실제: 둘 다 다운스트림 NLU를 위한 언어 표현 사전학습 문제이고 RoBERTa는 BERT 사전학습을 재검토·개선. 시트: RoBERTa problem은 '학습 부족·비교 어려움', BERT problem은 '단방향 LM 한계'로 적혀 같은 문제로 읽히지 않음 / [갱신 2026-11-02] Prior 기여점 추가(config v7) 후 시트 기준 related→same: BERT 기여점(양방향 사전학습의 중요성, 사전학습 표현이 과제별 구조를 대체)과 RoBERTa 기여점(올바른 설계의 MLM 사전학습)이 같은 문제를 다룸. S1보다 경계에 가까운 판단"
   },
   "scope": {
     "relation": "comparable",
@@ -15,5 +15,5 @@
     "memo": "MLM(P1)·NSP(P2)·WordPiece(P6)를 직접 변형·제거·교체"
   },
   "route_intuition": "research",
-  "memo": "LLM(Claude) 임시 라벨. 실제 경로 research, 시트 기준 경로 partial(problem이 related로 읽힘)"
+  "memo": "LLM(Claude) 임시 라벨. 실제 경로 research, 시트 기준 경로 partial(problem이 related로 읽힘) / [갱신] 기여점 추가 후 시트 기준 경로가 실제 경로와 같아짐. 수정 전 기록은 route_label.before_contributions.json"
 }

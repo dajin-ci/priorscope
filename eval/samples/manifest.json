@@ -12,7 +12,7 @@
         "elements"
       ],
       "legacy": "설계서 원안의 S1(학회판 ↔ 저널판, High)과 다른 쌍이다. 원안 쌍은 S6(선택)으로 옮긴다",
-      "finding": "문제 축 추출 공백: 시트만 보면 different(→method), 원문 기준 related(→partial). Prior Paper Agent 스키마에 contributions 가 없어 기존 논문 문제가 자기 한계로만 추출되는 것이 원인 후보"
+      "finding": "[해결] 문제 축 추출 공백: Prior Paper Agent에 contributions가 없어 시트 기준 different(→method)였으나, config v7에서 contributions 추가 후 시트 기준 related(→partial)로 원문 기준과 일치. 재추출 시 core_techniques 8→9개로 변동"
     },
     "S2": {
       "pair": "RoBERTa ↔ BERT",
@@ -25,7 +25,7 @@
         "grade"
       ],
       "expected_grade_if_research": "Medium Overlap (설계서 원안 유지. 경로가 research 일 때만 등급을 평가한다)",
-      "finding": "문제 축 추출 공백: 시트 기준 related(→partial), 원문 기준 same(→research). 요소 M4·M5가 같은 기법(동적 마스킹) 중복 추출, M3는 BERT 원문 A.2 내용이 P 목록에서 누락"
+      "finding": "[해결] 문제 축 추출 공백: 시트 기준 related(→partial)였으나 contributions 추가 후 same(→research)으로 원문 기준과 일치. 재추출 시 core_techniques 8→4개로 크게 변동. 요소 M4·M5 동적 마스킹 중복 추출, M3는 BERT 원문 A.2 내용이 P 목록에서 누락"
     },
     "S3": {
       "pair": "선정 필요",
