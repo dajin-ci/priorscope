@@ -56,6 +56,63 @@ def _require_dict(step, result):
     return result
 
 
+def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step=None) -> dict:
+    """
+    추출이 끝난 두 논문 JSON으로 3~7단계(적합성 → 비교 PDF → Compare Agent → 임베딩 → 검증)를 실행한다.
+
+    run_compare_service 와 eval/evaluate.py 가 같은 경로를 쓰게 하려고 분리했다.
+    반환: suitability, report, compare_result, similarity, verified (부적합/보류면 뒤 셋은 None)
+    """
+
+    on_step = on_step or (lambda name: None)
+    run_dir = Path(run_dir)
+
+    # 추출 직후 적합성을 판단한다. 부적합/정보 부족은 일반 비교로 보내지 않는다.
+    on_step("3단계 · 비교 적합성 판단")
+    suitability = assess_suitability(my_paper, prior_paper)
+    _save_json(suitability, run_dir / "suitability.json")
+    if not suitability["comparison_allowed"]:
+        report = build_report(suitability)
+        _save_json(report, run_dir / "report.json")
+        return {"suitability": suitability, "compare_result": None, "similarity": None,
+                "verified": None, "report": report}
+
+    # 3. 비교용 PDF
+    step = "4단계 · 비교용 PDF 생성"
+    compare_pdf = run_dir / "Compare_Input.pdf"
+    _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH, suitability=suitability))
+
+    # 4. 비교 분석
+    step = "5단계 · 비교 분석"
+    compare_result = _require_dict(step, _run_step(step, on_step, lambda: analyze_matching(upload_file(compare_pdf))))
+    _save_json(compare_result, run_dir / "compare_result.json")
+
+    # 5. 임베딩 유사도 (보조 지표: 실패해도 계속)
+    step = "6단계 · 임베딩 유사도"
+    on_step(step)
+    similarity, similarity_error = None, None
+    try:
+        # 캐시를 실행 폴더 안에 둬서, runs/ 삭제 정책 하나로 벡터까지 함께 지워지게 한다.
+        embedder = UpstageEmbedder(cache_path=run_dir / "embedding_cache.json")
+        similarity = compute_similarity(my_paper, prior_paper, embedder)
+        _save_json(similarity, run_dir / "similarity.json")
+    except Exception as exc:  # noqa: BLE001
+        similarity_error = f"{type(exc).__name__}: {exc}"
+
+    # 6. 검증
+    step = "7단계 · 코드 검증"
+    verified = _run_step(step, on_step, lambda: validate(my_paper, prior_paper, compare_result, similarity=similarity))
+    if similarity_error:
+        verified.setdefault("similarity", {})["error"] = similarity_error
+    verified = apply_scope_policy(verified, suitability)
+    _save_json(verified, run_dir / "validated_result.json")
+    report = build_report(suitability, verified)
+    _save_json(report, run_dir / "report.json")
+
+    return {"suitability": suitability, "compare_result": compare_result, "similarity": similarity,
+            "verified": verified, "report": report}
+
+
 def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
     """
     내 논문 PDF bytes, 기존 논문 PDF bytes → 결과 dict
@@ -97,61 +154,8 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
     prior_paper = _require_dict(step, _run_step(step, on_step, lambda: analyze_jd(upload_file(prior_path))))
     _save_json(prior_paper, run_dir / "prior_paper.json")
 
-    # 추출 직후 적합성을 판단한다. 부적합/정보 부족은 일반 비교로 보내지 않는다.
-    on_step("3단계 · 비교 적합성 판단")
-    suitability = assess_suitability(my_paper, prior_paper)
-    _save_json(suitability, run_dir / "suitability.json")
-    if not suitability["comparison_allowed"]:
-        report = build_report(suitability)
-        _save_json(report, run_dir / "report.json")
-        on_step("완료")
-        return {
-            "run_dir": str(run_dir), "my_paper": my_paper, "prior_paper": prior_paper,
-            "suitability": suitability, "compare_result": None, "similarity": None,
-            "verified": None, "report": report,
-        }
-
-    # 3. 비교용 PDF
-    step = "4단계 · 비교용 PDF 생성"
-    compare_pdf = run_dir / "Compare_Input.pdf"
-    _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH, suitability=suitability))
-
-    # 4. 비교 분석
-    step = "5단계 · 비교 분석"
-    compare_result = _require_dict(step, _run_step(step, on_step, lambda: analyze_matching(upload_file(compare_pdf))))
-    _save_json(compare_result, run_dir / "compare_result.json")
-
-    # 5. 임베딩 유사도 (보조 지표: 실패해도 계속)
-    step = "6단계 · 임베딩 유사도"
-    on_step(step)
-    similarity, similarity_error = None, None
-    try:
-        # 캐시를 실행 폴더 안에 둬서, runs/ 삭제 정책 하나로 벡터까지 함께 지워지게 한다.
-        embedder = UpstageEmbedder(cache_path=run_dir / "embedding_cache.json")
-        similarity = compute_similarity(my_paper, prior_paper, embedder)
-        _save_json(similarity, run_dir / "similarity.json")
-    except Exception as exc:  # noqa: BLE001
-        similarity_error = f"{type(exc).__name__}: {exc}"
-
-    # 6. 검증
-    step = "7단계 · 코드 검증"
-    verified = _run_step(step, on_step, lambda: validate(my_paper, prior_paper, compare_result, similarity=similarity))
-    if similarity_error:
-        verified.setdefault("similarity", {})["error"] = similarity_error
-    verified = apply_scope_policy(verified, suitability)
-    _save_json(verified, run_dir / "validated_result.json")
-    report = build_report(suitability, verified)
-    _save_json(report, run_dir / "report.json")
+    result = run_from_extracted(my_paper, prior_paper, run_dir, on_step)
 
     on_step("완료")
 
-    return {
-        "run_dir": str(run_dir),
-        "my_paper": my_paper,
-        "prior_paper": prior_paper,
-        "compare_result": compare_result,
-        "similarity": similarity,
-        "verified": verified,
-        "suitability": suitability,
-        "report": report,
-    }
+    return {"run_dir": str(run_dir), "my_paper": my_paper, "prior_paper": prior_paper, **result}

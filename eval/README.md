@@ -49,3 +49,23 @@ python eval/add_fields.py S1 prior ~/papers/ImageBind.pdf contributions
 ```
 
 번호를 만드는 `core_techniques`, `experiment_results` 는 거부한다. 새 추출본 전체는 `reextract_prior_paper.json` 으로 남고, 끝나면 label_sheet.md 가 다시 만들어진다.
+
+## 평가 실행 (evaluate.py)
+
+```
+python eval/evaluate.py compare --tag v7            # 고정 추출본으로 3~7단계 실행 후 채점 (API 사용)
+python eval/evaluate.py score eval/results/v7       # 저장된 결과 재채점 (API 없음)
+python eval/evaluate.py stability --pdf-dir ~/papers --runs 3 S1 S2   # PDF로 전체를 N번, 흔들림 측정
+```
+
+compare 는 `service.run_from_extracted` 를 그대로 호출하므로 실제 서비스와 같은 코드 경로를 평가한다. 결과는 `eval/results/<tag>/<샘플>/` 에 실행 폴더와 같은 파일로 남고 `report.json` 이 함께 만들어진다. 라벨을 고친 뒤에는 API 를 다시 부르지 않고 score 만 돌리면 된다. stability 의 PDF 이름은 `S1_my.pdf`, `S1_prior.pdf` 형식이다.
+
+| 지표 | 뜻 | 목표 |
+|---|---|---|
+| false_novelty_rate | 정답이 일치·유사인 M 중 최종 판정이 없음인 비율 (주 지표) | 10% 이하 |
+| element_accuracy | 최종 판정이 정답과 같은 M 비율 | 80% 이상 |
+| route_accuracy | 예측 경로가 정답 경로에 든 비율 (의견 갈린 샘플 제외) | 80% 이상 |
+| gate_leak_rate | 비교가 막혀야 할 쌍이 비교로 넘어간 비율 | 0% |
+| grade_agreement | research 정답 샘플에서 확정 등급이 기대 등급과 같은 비율 (보류는 별도) | 80% 이상 |
+| route_accuracy_vs_sheet | 시트 기준 경로 대비 정확도. 실제 경로 정확도와 차이가 크면 추출 문제 | 참고 |
+| false_novelty_rate_agent | 검증 전 Compare Agent 원판정의 허위 신규 주장률. 위 값과 차이가 validator 효과 | 참고 |
