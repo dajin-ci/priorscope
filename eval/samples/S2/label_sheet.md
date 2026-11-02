@@ -93,7 +93,7 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 
 ## 기존 논문 contributions
 
-- (추출되지 않음)
+- [1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks.
 
 ## 기존 논문 limitations
 

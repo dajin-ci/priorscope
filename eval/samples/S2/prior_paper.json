@@ -1,72 +1,75 @@
 {
-    "title": [
-        "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
-    ],
-    "language": [
-        "en"
-    ],
-    "research_field": [
-        "자연어처리"
-    ],
-    "problem": [
-        "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
-        "Standard language models are unidirectional, limiting the architectures that can be used during pre-training and preventing effective use of both left and right context.",
-        "Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context."
-    ],
-    "core_techniques": [
-        "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
-        "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
-        "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
-        "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
-        "[3] unified architecture across different tasks | 다양한 다운스트림 과제에서 거의 동일한 구조를 유지하는 통합 아키텍처",
-        "[3] WordPiece embeddings | 30,000개 어휘의 WordPiece 임베딩을 입력 표현으로 사용",
-        "[3] [CLS] | 분류 작업을 위한 집계 시퀀스 표현으로 사용하는 특수 토큰",
-        "[3] [SEP] | 문장 쌍을 구분하는 특수 구분 토큰"
-    ],
-    "experiment_results": [
-        "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
-        "MNLI-mm | BERTLARGE | test | single | 없음 | Acc. | 85.9 | ↑ | [Table 1]",
-        "QQP | BERTLARGE | test | single | 없음 | F1 | 72.1 | ↑ | [Table 1]",
-        "QNLI | BERTLARGE | test | single | 없음 | Acc. | 92.7 | ↑ | [Table 1]",
-        "SST-2 | BERTLARGE | test | single | 없음 | Acc. | 94.9 | ↑ | [Table 1]",
-        "CoLA | BERTLARGE | test | single | 없음 | Acc. | 60.5 | ↑ | [Table 1]",
-        "STS-B | BERTLARGE | test | single | 없음 | Spearman correlations | 86.5 | ↑ | [Table 1]",
-        "MRPC | BERTLARGE | test | single | 없음 | F1 | 89.3 | ↑ | [Table 1]",
-        "RTE | BERTLARGE | test | single | 없음 | Acc. | 70.1 | ↑ | [Table 1]",
-        "Average | BERTLARGE | test | single | 없음 | ? | 82.1 | ↑ | [Table 1]",
-        "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | F1 | 90.9 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Ensemble) | dev | ensemble | 없음 | EM | 85.8 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Ensemble) | dev | ensemble | 없음 | F1 | 91.8 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | dev | single | TriviaQA | EM | 84.2 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | dev | single | TriviaQA | F1 | 91.1 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | test | single | TriviaQA | EM | 85.1 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | test | single | TriviaQA | F1 | 91.8 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | dev | ensemble | TriviaQA | EM | 86.2 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | dev | ensemble | TriviaQA | F1 | 92.2 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | test | ensemble | TriviaQA | EM | 87.4 | ↑ | [Table 2]",
-        "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | test | ensemble | TriviaQA | F1 | 93.2 | ↑ | [Table 2]",
-        "SQuAD v2.0 | BERTLARGE (Single) | dev | single | 없음 | EM | 78.7 | ↑ | [Table 3]",
-        "SQuAD v2.0 | BERTLARGE (Single) | dev | single | 없음 | F1 | 81.9 | ↑ | [Table 3]",
-        "SQuAD v2.0 | BERTLARGE (Single) | test | single | 없음 | EM | 80.0 | ↑ | [Table 3]",
-        "SQuAD v2.0 | BERTLARGE (Single) | test | single | 없음 | F1 | 83.1 | ↑ | [Table 3]",
-        "SWAG | BERTLARGE | dev | single | 없음 | accuracies | 86.6 | ↑ | [Table 4]",
-        "SWAG | BERTLARGE | test | single | 없음 | accuracies | 86.3 | ↑ | [Table 4]"
-    ],
-    "keywords": [
-        "BERT",
-        "bidirectional Transformer",
-        "masked language model",
-        "next sentence prediction",
-        "fine-tuning",
-        "WordPiece embeddings"
-    ],
-    "citation_info": [
-        "Devlin et al., arXiv, 2019",
-        "Devlin et al., arXiv, 2019"
-    ],
-    "limitations": [
-        "[3.1] a downside is that we are creating a mismatch between pre-training and fine-tuning, since the [MASK] token does not appear during fine-tuning.",
-        "[5.3] not all tasks can be easily represented by a Transformer encoder architecture, and therefore require a task-specific model architecture to be added."
-    ]
+  "title": [
+    "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding"
+  ],
+  "language": [
+    "en"
+  ],
+  "research_field": [
+    "자연어처리"
+  ],
+  "problem": [
+    "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+    "Standard language models are unidirectional, limiting the architectures that can be used during pre-training and preventing effective use of both left and right context.",
+    "Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context."
+  ],
+  "core_techniques": [
+    "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+    "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+    "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+    "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
+    "[3] unified architecture across different tasks | 다양한 다운스트림 과제에서 거의 동일한 구조를 유지하는 통합 아키텍처",
+    "[3] WordPiece embeddings | 30,000개 어휘의 WordPiece 임베딩을 입력 표현으로 사용",
+    "[3] [CLS] | 분류 작업을 위한 집계 시퀀스 표현으로 사용하는 특수 토큰",
+    "[3] [SEP] | 문장 쌍을 구분하는 특수 구분 토큰"
+  ],
+  "experiment_results": [
+    "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+    "MNLI-mm | BERTLARGE | test | single | 없음 | Acc. | 85.9 | ↑ | [Table 1]",
+    "QQP | BERTLARGE | test | single | 없음 | F1 | 72.1 | ↑ | [Table 1]",
+    "QNLI | BERTLARGE | test | single | 없음 | Acc. | 92.7 | ↑ | [Table 1]",
+    "SST-2 | BERTLARGE | test | single | 없음 | Acc. | 94.9 | ↑ | [Table 1]",
+    "CoLA | BERTLARGE | test | single | 없음 | Acc. | 60.5 | ↑ | [Table 1]",
+    "STS-B | BERTLARGE | test | single | 없음 | Spearman correlations | 86.5 | ↑ | [Table 1]",
+    "MRPC | BERTLARGE | test | single | 없음 | F1 | 89.3 | ↑ | [Table 1]",
+    "RTE | BERTLARGE | test | single | 없음 | Acc. | 70.1 | ↑ | [Table 1]",
+    "Average | BERTLARGE | test | single | 없음 | ? | 82.1 | ↑ | [Table 1]",
+    "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | F1 | 90.9 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Ensemble) | dev | ensemble | 없음 | EM | 85.8 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Ensemble) | dev | ensemble | 없음 | F1 | 91.8 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | dev | single | TriviaQA | EM | 84.2 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | dev | single | TriviaQA | F1 | 91.1 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | test | single | TriviaQA | EM | 85.1 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | test | single | TriviaQA | F1 | 91.8 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | dev | ensemble | TriviaQA | EM | 86.2 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | dev | ensemble | TriviaQA | F1 | 92.2 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | test | ensemble | TriviaQA | EM | 87.4 | ↑ | [Table 2]",
+    "SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | test | ensemble | TriviaQA | F1 | 93.2 | ↑ | [Table 2]",
+    "SQuAD v2.0 | BERTLARGE (Single) | dev | single | 없음 | EM | 78.7 | ↑ | [Table 3]",
+    "SQuAD v2.0 | BERTLARGE (Single) | dev | single | 없음 | F1 | 81.9 | ↑ | [Table 3]",
+    "SQuAD v2.0 | BERTLARGE (Single) | test | single | 없음 | EM | 80.0 | ↑ | [Table 3]",
+    "SQuAD v2.0 | BERTLARGE (Single) | test | single | 없음 | F1 | 83.1 | ↑ | [Table 3]",
+    "SWAG | BERTLARGE | dev | single | 없음 | accuracies | 86.6 | ↑ | [Table 4]",
+    "SWAG | BERTLARGE | test | single | 없음 | accuracies | 86.3 | ↑ | [Table 4]"
+  ],
+  "keywords": [
+    "BERT",
+    "bidirectional Transformer",
+    "masked language model",
+    "next sentence prediction",
+    "fine-tuning",
+    "WordPiece embeddings"
+  ],
+  "citation_info": [
+    "Devlin et al., arXiv, 2019",
+    "Devlin et al., arXiv, 2019"
+  ],
+  "limitations": [
+    "[3.1] a downside is that we are creating a mismatch between pre-training and fine-tuning, since the [MASK] token does not appear during fine-tuning.",
+    "[5.3] not all tasks can be easily represented by a Transformer encoder architecture, and therefore require a task-specific model architecture to be added."
+  ],
+  "contributions": [
+    "[1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks."
+  ]
 }
