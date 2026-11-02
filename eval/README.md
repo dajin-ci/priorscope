@@ -39,3 +39,13 @@ python eval/labeling.py merge S2                    # route_label.json, labels.j
 ## 의견이 갈렸을 때
 
 축 관계가 갈려도 계산 경로가 같으면 그 경로가 정답이다. 계산 경로까지 갈리면 `expected_route` 는 비우고 `acceptable_routes` 에 모두 남기며 `disputed: true` 로 표시한다. 평가에서는 확정 경로 샘플과 분리해 집계한다(설계서의 "보류는 별도 집계"와 같은 원칙). `comparison_expected` 는 라벨러 전원이 "비교 진행" 또는 "비교 차단"에 동의할 때만 true/false 이고, 그래야 게이트 누수·과잉 차단 계산에 쓴다.
+
+## 에이전트 스키마에 필드를 추가했을 때
+
+샘플을 통째로 다시 추출하면 core_techniques 순서가 바뀌어 M·P 번호와 요소 라벨이 어긋난다. 새 필드만 고정본에 끼워 넣는다.
+
+```
+python eval/add_fields.py S1 prior ~/papers/ImageBind.pdf contributions
+```
+
+번호를 만드는 `core_techniques`, `experiment_results` 는 거부한다. 새 추출본 전체는 `reextract_prior_paper.json` 으로 남고, 끝나면 label_sheet.md 가 다시 만들어진다.

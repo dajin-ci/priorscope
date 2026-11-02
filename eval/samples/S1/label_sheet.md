@@ -66,6 +66,10 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 - Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together.
 - Acquiring all types and combinations of paired data with the same set of images is infeasible.
 
+## 기존 논문 contributions
+
+- (추출되지 않음)
+
 ## 기존 논문 limitations
 
 - [6] Our embeddings are trained without a specific downstream task, and thus lag the performance of specialist models.

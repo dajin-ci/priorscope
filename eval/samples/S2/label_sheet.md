@@ -91,6 +91,10 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 - Standard language models are unidirectional, limiting the architectures that can be used during pre-training and preventing effective use of both left and right context.
 - Left-to-right self-attention in prior models is sub-optimal for sentence-level tasks and harmful for token-level tasks such as question answering that require bidirectional context.
 
+## 기존 논문 contributions
+
+- (추출되지 않음)
+
 ## 기존 논문 limitations
 
 - [3.1] a downside is that we are creating a mismatch between pre-training and fine-tuning, since the [MASK] token does not appear during fine-tuning.

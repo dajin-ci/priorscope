@@ -190,7 +190,7 @@ def template(sample: str, labelers: list[str]) -> None:
              f"- 내 논문: {first(my, 'title')}",
              f"- 기존 논문: {first(prior, 'title')}", "", GUIDE, ROUTE_GUIDE]
     for heading, paper, fields in (("내 논문", my, ("problem", "contributions", "experiment_results")),
-                                   ("기존 논문", prior, ("problem", "limitations", "experiment_results"))):
+                                   ("기존 논문", prior, ("problem", "contributions", "limitations", "experiment_results"))):
         for field in fields:
             lines += [f"## {heading} {field}", ""]
             lines += [f"- {text}" for text in as_list(paper.get(field))] or ["- (추출되지 않음)"]
