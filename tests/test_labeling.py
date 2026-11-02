@@ -8,9 +8,12 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "eval"))
 import labeling  # noqa: E402
 
 
-def sheet(problem, scope, method, intuition):
-    return {"problem": {"relation": problem}, "scope": {"relation": scope},
-            "method": {"relation": method}, "route_intuition": intuition}
+def sheet(problem, scope, method, intuition, from_sheet=None):
+    """from_sheet 를 주지 않으면 시트 기준 관계를 실제 관계와 같게 둔다."""
+    from_sheet = from_sheet or (problem, scope, method)
+    return {axis: {"relation": actual, "relation_from_sheet": seen}
+            for axis, actual, seen in zip(("problem", "scope", "method"), (problem, scope, method), from_sheet)
+            } | {"route_intuition": intuition}
 
 
 def test_route_of_uses_select_route_rules():
@@ -36,7 +39,8 @@ def test_merge_agreeing_routes_even_if_axes_differ():
     assert not problems
     assert merged["expected_route"] == "unsuitable" and not merged["disputed"]
     assert merged["comparison_expected"] is False
-    assert merged["axes"]["scope"]["agreed"] is False and merged["axes"]["scope"]["relation"] is None
+    assert merged["axes"]["scope"]["relation_agreed"] is False and merged["axes"]["scope"]["relation"] is None
+    assert merged["route_changed_by_extraction"] is False
     assert merged["needs_element_labels"] is False
 
 
@@ -78,8 +82,10 @@ def test_template_creates_route_sheets_and_keeps_existing(tmp_path, monkeypatch)
     assert json.loads((folder / "route_a.json").read_text()) == {"keep": True}
     blank = json.loads((folder / "route_b.json").read_text())
     assert set(blank) == {"problem", "scope", "method", "route_intuition", "memo"}
+    assert set(blank["problem"]) == {"relation", "relation_from_sheet", "memo"}
     text = (folder / "label_sheet.md").read_text(encoding="utf-8")
     assert "경로 라벨 기준" in text and "내 논문 problem" in text
+    assert "기존 논문 experiment_results" in text
 
 
 def test_merge_route_only_when_comparison_blocked(tmp_path, monkeypatch):
@@ -91,6 +97,53 @@ def test_merge_route_only_when_comparison_blocked(tmp_path, monkeypatch):
     merged = json.loads((folder / "route_label.json").read_text())
     assert merged["expected_route"] == "unsuitable"
     assert not (folder / "labels.json").exists()
+    assert json.loads((folder / "label_status.json").read_text())["provisional"] is False
+
+
+def test_extraction_gap_changes_route():
+    merged, _ = labeling.merge_routes({
+        "a": sheet("related", "partial", "specific_shared", "partial",
+                   from_sheet=("different", "partial", "specific_shared")),
+        "b": sheet("related", "partial", "specific_shared", "partial"),
+    })
+    assert merged["expected_route"] == "partial"
+    assert merged["axes"]["problem"]["extraction_gap"] is True
+    assert merged["axes"]["method"]["extraction_gap"] is False
+    assert merged["from_sheet"]["acceptable_routes"] == ["partial", "method"]
+    assert merged["route_changed_by_extraction"] is True
+
+
+def test_missing_sheet_relation_is_reported():
+    broken = sheet("same", "comparable", "specific_shared", "research")
+    broken["scope"]["relation_from_sheet"] = ""
+    merged, problems = labeling.merge_routes({"a": broken, "b": broken})
+    assert merged is None and "scope.relation_from_sheet" in problems[0]
+
+
+def test_provisional_merge_with_one_labeler_and_blank_forms_ignored(tmp_path, monkeypatch):
+    folder = _sample(tmp_path, monkeypatch)
+    labeling.template("S2", ["kim", "claude"])  # kim 의 양식은 빈 채로 둔다
+    (folder / "route_claude.json").write_text(json.dumps(
+        sheet("same", "comparable", "specific_shared", "research")), encoding="utf-8")
+    labels = json.loads((folder / "labels_claude.json").read_text())
+    for m_id in labels:
+        labels[m_id] = {"verdict": "없음", "prior": []}
+    (folder / "labels_claude.json").write_text(json.dumps(labels, ensure_ascii=False), encoding="utf-8")
+
+    labeling.merge("S2", provisional=True)
+    status = json.loads((folder / "label_status.json").read_text())
+    assert status == status | {"provisional": True, "labelers": ["claude"]}
+    assert json.loads((folder / "route_label.json").read_text())["expected_route"] == "research"
+    assert set(json.loads((folder / "labels.json").read_text())) == set(labels)
+
+
+def test_non_provisional_merge_refuses_single_labeler(tmp_path, monkeypatch):
+    folder = _sample(tmp_path, monkeypatch)
+    (folder / "route_claude.json").write_text(json.dumps(
+        sheet("same", "comparable", "specific_shared", "research")), encoding="utf-8")
+    import pytest
+    with pytest.raises(SystemExit):
+        labeling.merge("S2")
 
 
 def test_manifest_is_consistent():

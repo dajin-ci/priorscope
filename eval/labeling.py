@@ -10,10 +10,17 @@ eval/labeling.py
 2) 두 사람 라벨 합치기: 같으면 그대로, 다르면 확인필요로 labels.json 을 만든다.
        python eval/labeling.py merge S1
 
+3) 임시 라벨: 라벨러가 한 명(예: LLM)뿐일 때 임시로 합친다. label_status.json 에
+   provisional=true 와 라벨러를 남기고, 사람 라벨 두 개로 merge 하면 false 로 바뀐다.
+       python eval/labeling.py merge S1 --provisional
+
 경로 라벨 (비교 적합성, 10/31 분기 구조 반영)
 - template 은 요소 라벨 양식과 함께 라벨러별 route_<이름>.json 도 만든다.
 - 라벨러는 경로를 직접 고르지 않고 세 축(문제·범위·방법)의 관계를 고른다.
   정답 경로는 suitability.select_route 와 같은 규칙으로 코드가 계산한다.
+- 축마다 relation(원문을 알고 내린 실제 관계, 정답)과 relation_from_sheet(시트만 읽었을 때의
+  관계)를 함께 받는다. 둘이 다르면 추출 단계가 정보를 놓친 것이고, 평가에서
+  추출 오류와 판단 오류를 나눠 세는 데 쓴다.
 - route_intuition 에는 규칙을 생각하지 않고 직감으로 고른 경로를 적는다.
   계산 경로와 다르면 merge 가 알려 주며, 경로 규칙 자체를 점검하는 자료로 쓴다.
 - merge 는 route_label.json 을 만든다. 라벨러끼리 경로가 갈리면 acceptable_routes 에
@@ -52,7 +59,10 @@ COMPARABLE_ROUTES = ("research", "partial", "method")
 ROUTE_GUIDE = """## 경로 라벨 기준 (route_<이름>.json)
 
 경로를 직접 고르지 말고 세 축의 관계를 고른다. 경로는 코드가 계산한다.
-아래 문제·기여·요소 목록을 보고 판단하되, 애매하면 원문 PDF를 확인한다.
+축마다 두 값을 적는다.
+- relation: 원문 PDF까지 알고 내린 실제 관계 (정답으로 쓴다)
+- relation_from_sheet: 이 시트만 읽었을 때의 관계 (모델이 보는 자료와 같다)
+시트만 읽으면 달라 보이지만 원문을 알면 연결되는 경우, 두 값을 다르게 적고 memo 에 이유를 남긴다.
 
 - problem (해결 문제·목적)
   - same: 같은 문제를 푼다 / related: 연관되지만 다른 문제 / different: 연결 없음 / unknown: 판단 불가
@@ -74,69 +84,95 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 """
 
 
+RELATION_KEYS = ("relation", "relation_from_sheet")
+
+
 def _blank_route_sheet() -> dict:
-    sheet = {axis: {"relation": "", "memo": ""} for axis in RELATIONS}
+    sheet = {axis: {"relation": "", "relation_from_sheet": "", "memo": ""} for axis in RELATIONS}
     sheet["route_intuition"] = ""
     sheet["memo"] = ""
     return sheet
 
 
-def route_of(sheet) -> tuple[str | None, str | None]:
-    """라벨러 한 명의 세 축 관계로 경로를 계산한다. 형식이 틀리면 (None, 문제 설명)."""
+def _relation(sheet, axis, key="relation") -> str:
+    entry = sheet.get(axis) if isinstance(sheet, dict) else None
+    value = entry.get(key) if isinstance(entry, dict) else (entry if key == "relation" else None)
+    return value.strip() if isinstance(value, str) else ""
+
+
+def route_of(sheet, key: str = "relation") -> tuple[str | None, str | None]:
+    """라벨러 한 명의 세 축 관계로 경로를 계산한다. 형식이 틀리면 (None, 문제 설명).
+
+    key="relation" 은 실제 관계, key="relation_from_sheet" 는 시트 기준 관계로 계산한다.
+    """
     if not isinstance(sheet, dict):
         return None, "양식이 객체가 아닙니다"
     axes = {}
     for axis, allowed in RELATIONS.items():
-        entry = sheet.get(axis)
-        relation = entry.get("relation") if isinstance(entry, dict) else entry
-        relation = relation.strip() if isinstance(relation, str) else ""
+        relation = _relation(sheet, axis, key)
         if relation not in allowed:
-            return None, f"{axis}='{relation}' (허용값: {', '.join(allowed)})"
+            return None, f"{axis}.{key}='{relation}' (허용값: {', '.join(allowed)})"
         axes[axis] = {"relation": relation}
     return select_route(axes), None
 
 
+def _combine(routes: dict[str, str]) -> dict:
+    acceptable = sorted(set(routes.values()), key=list(ROUTE_LABELS).index)
+    allowed_flags = {route in COMPARABLE_ROUTES for route in acceptable}
+    return {
+        "expected_route": acceptable[0] if len(acceptable) == 1 else None,
+        "acceptable_routes": acceptable,
+        "disputed": len(acceptable) > 1,
+        # 라벨러 전원이 비교 진행/차단에 동의할 때만 True/False. 섞이면 None.
+        "comparison_expected": allowed_flags.pop() if len(allowed_flags) == 1 else None,
+    }
+
+
 def merge_routes(sheets: dict[str, dict]) -> tuple[dict | None, list[str]]:
     """라벨러별 route 양식을 합친다. 반환: (route_label, 형식 문제 목록)."""
-    problems, routes, intuitions = [], {}, {}
+    problems, routes, sheet_routes, intuitions = [], {}, {}, {}
     for name, sheet in sheets.items():
         route, problem = route_of(sheet)
-        if problem:
-            problems.append(f"{name}: {problem}")
+        sheet_route, sheet_problem = route_of(sheet, "relation_from_sheet")
+        if problem or sheet_problem:
+            problems.extend(f"{name}: {p}" for p in (problem, sheet_problem) if p)
             continue
         intuition = sheet.get("route_intuition")
         intuition = intuition.strip() if isinstance(intuition, str) else ""
         if intuition not in ROUTE_LABELS:
             problems.append(f"{name}: route_intuition='{intuition}' (허용값: {', '.join(ROUTE_LABELS)})")
             continue
-        routes[name], intuitions[name] = route, intuition
+        routes[name], sheet_routes[name], intuitions[name] = route, sheet_route, intuition
     if problems:
         return None, problems
 
     axes = {}
     for axis in RELATIONS:
-        answers = {}
-        for name, sheet in sheets.items():
-            entry = sheet[axis]
-            answers[name] = (entry.get("relation") if isinstance(entry, dict) else entry).strip()
-        agreed = len(set(answers.values())) == 1
-        axes[axis] = {"relation": next(iter(answers.values())) if agreed else None,
-                      "agreed": agreed, "answers": answers}
+        info = {}
+        for key in RELATION_KEYS:
+            answers = {name: _relation(sheet, axis, key) for name, sheet in sheets.items()}
+            agreed = len(set(answers.values())) == 1
+            info[key] = next(iter(answers.values())) if agreed else None
+            info[f"{key}_agreed"] = agreed
+            info[f"{key}_answers"] = answers
+        # 라벨러 중 한 명이라도 실제 관계와 시트 기준 관계를 다르게 봤으면 추출 공백으로 표시한다.
+        info["extraction_gap"] = any(info["relation_answers"][n] != info["relation_from_sheet_answers"][n]
+                                     for n in sheets)
+        axes[axis] = info
 
-    acceptable = sorted(set(routes.values()), key=list(ROUTE_LABELS).index)
-    allowed_flags = {route in COMPARABLE_ROUTES for route in acceptable}
+    actual, from_sheet = _combine(routes), _combine(sheet_routes)
     merged = {
-        "version": 1,
+        "version": 2,
         "axes": axes,
         "routes_by_labeler": routes,
+        "routes_from_sheet_by_labeler": sheet_routes,
         "intuition_by_labeler": intuitions,
-        "expected_route": acceptable[0] if len(acceptable) == 1 else None,
-        "acceptable_routes": acceptable,
-        "disputed": len(acceptable) > 1,
-        # 라벨러 전원이 비교 진행/차단에 동의할 때만 True/False. 섞이면 None.
-        "comparison_expected": allowed_flags.pop() if len(allowed_flags) == 1 else None,
+        **actual,
+        "from_sheet": from_sheet,
+        # 시트 기준 경로가 실제 경로와 다르면, 모델이 시트를 완벽히 읽어도 틀릴 수 있는 샘플이다.
+        "route_changed_by_extraction": from_sheet["acceptable_routes"] != actual["acceptable_routes"],
         "intuition_mismatch": sorted(n for n in routes if routes[n] != intuitions[n]),
-        "needs_element_labels": any(route in COMPARABLE_ROUTES for route in acceptable),
+        "needs_element_labels": any(route in COMPARABLE_ROUTES for route in actual["acceptable_routes"]),
     }
     return merged, []
 
@@ -153,8 +189,8 @@ def template(sample: str, labelers: list[str]) -> None:
     lines = [f"# {sample} 라벨 시트", "",
              f"- 내 논문: {first(my, 'title')}",
              f"- 기존 논문: {first(prior, 'title')}", "", GUIDE, ROUTE_GUIDE]
-    for heading, paper, fields in (("내 논문", my, ("problem", "contributions")),
-                                   ("기존 논문", prior, ("problem", "limitations"))):
+    for heading, paper, fields in (("내 논문", my, ("problem", "contributions", "experiment_results")),
+                                   ("기존 논문", prior, ("problem", "limitations", "experiment_results"))):
         for field in fields:
             lines += [f"## {heading} {field}", ""]
             lines += [f"- {text}" for text in as_list(paper.get(field))] or ["- (추출되지 않음)"]
@@ -188,9 +224,9 @@ def _verdict(entry) -> str:
     return value.strip() if isinstance(value, str) else ""
 
 
-def merge_route_files(folder: Path) -> dict | None:
-    files = sorted(folder.glob("route_*.json"))
-    if len(files) < 2:
+def merge_route_files(folder: Path, minimum: int = 2) -> dict | None:
+    files = sorted(f for f in folder.glob("route_*.json") if f.stem != "route_label" and _filled(f))
+    if len(files) < minimum:
         return None
     sheets = {f.stem.removeprefix("route_"): load(f) for f in files}
     merged, problems = merge_routes(sheets)
@@ -202,8 +238,14 @@ def merge_route_files(folder: Path) -> dict | None:
     (folder / "route_label.json").write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
     print(f"  [생성] {(folder / 'route_label.json').relative_to(ROOT)}")
     for axis, info in merged["axes"].items():
-        if not info["agreed"]:
-            print(f"  축 의견 갈림  {AXIS_LABELS[axis]}: " + ", ".join(f"{n} {v}" for n, v in info["answers"].items()))
+        if not info["relation_agreed"]:
+            print(f"  축 의견 갈림  {AXIS_LABELS[axis]}: "
+                  + ", ".join(f"{n} {v}" for n, v in info["relation_answers"].items()))
+        if info["extraction_gap"]:
+            print(f"  추출 공백  {AXIS_LABELS[axis]}: 실제 관계와 시트 기준 관계가 다름")
+    if merged["route_changed_by_extraction"]:
+        print(f"  시트 기준 경로 {merged['from_sheet']['acceptable_routes']} ≠ 실제 경로 {merged['acceptable_routes']}"
+              " → 추출 단계 때문에 경로가 바뀌는 샘플")
     if merged["disputed"]:
         print(f"  경로 갈림 → 허용 경로 {merged['acceptable_routes']} (평가에서 별도 집계)")
     else:
@@ -215,18 +257,44 @@ def merge_route_files(folder: Path) -> dict | None:
     return merged
 
 
-def merge(sample: str) -> None:
+def _filled(path: Path) -> bool:
+    """빈 양식(판정 칸이 모두 빈 파일)은 라벨러 수에 넣지 않는다."""
+    data = load(path)
+    if path.name.startswith("route_"):
+        return any(_relation(data, axis) for axis in RELATIONS)
+    return any(_verdict(entry) for entry in data.values())
+
+
+def write_status(folder: Path, provisional: bool) -> None:
+    labelers = sorted({f.stem.split("_", 1)[1]
+                       for f in [*folder.glob("route_*.json"), *folder.glob("labels_*.json")]
+                       if f.stem != "route_label" and _filled(f)})
+    status = {"provisional": provisional, "labelers": labelers,
+              "note": ("라벨러가 두 명 미만인 임시 라벨이다. 사람 라벨 두 개가 모이면 merge 를 다시 실행한다."
+                       if provisional else "라벨러 두 명 이상의 라벨을 합친 정답이다.")}
+    (folder / "label_status.json").write_text(json.dumps(status, ensure_ascii=False, indent=2), encoding="utf-8")
+    print(f"  [생성] {(folder / 'label_status.json').relative_to(ROOT)}  provisional={provisional} {labelers}")
+
+
+def merge(sample: str, provisional: bool = False) -> None:
     folder = SAMPLES_DIR / sample
-    route = merge_route_files(folder)
-    files = sorted(folder.glob("labels_*.json"))
-    if len(files) < 2:
+    minimum = 1 if provisional else 2
+    for path in folder.glob("*_*.json"):
+        if path.stem.startswith(("route_", "labels_")) and path.stem != "route_label" and not _filled(path):
+            print(f"  [제외] {path.name}: 아직 채우지 않은 양식")
+    route_files = [f for f in folder.glob("route_*.json") if f.stem != "route_label" and _filled(f)]
+    label_files = sorted(f for f in folder.glob("labels_*.json") if _filled(f))
+    route = merge_route_files(folder, minimum) if len(route_files) >= minimum else None
+    if len(label_files) < minimum:
         if route is None:
-            print("route_<이름>.json 또는 labels_<이름>.json 이 두 개 이상 있어야 합칠 수 있습니다.")
+            print(f"채운 route_<이름>.json 또는 labels_<이름>.json 이 {minimum}개 이상 있어야 합칠 수 있습니다."
+                  + ("" if provisional else " 한 명뿐이면 --provisional 을 붙이세요."))
             sys.exit(1)
         if route["needs_element_labels"]:
-            print("  [대기] 요소 라벨(labels_<이름>.json)이 두 개 이상 모이면 다시 merge 하세요.")
-        return
-    merge_elements(folder, files)
+            print(f"  [대기] 요소 라벨(labels_<이름>.json)이 {minimum}개 이상 모이면 다시 merge 하세요.")
+    else:
+        merge_elements(folder, label_files)
+    write_status(folder, provisional)
 
 
 def merge_elements(folder: Path, files: list[Path]) -> None:
@@ -259,7 +327,10 @@ def merge_elements(folder: Path, files: list[Path]) -> None:
     (folder / "labels.json").write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
     agree = len(m_ids) - len(disagreements)
     print(f"  [생성] {(folder / 'labels.json').relative_to(ROOT)}")
-    print(f"  라벨러 일치 {agree}/{len(m_ids)}개 ({agree / len(m_ids):.0%})")
+    if len(sheets) < 2:
+        print("  라벨러 1명: 일치율을 계산하지 않습니다 (임시 라벨)")
+    else:
+        print(f"  라벨러 일치 {agree}/{len(m_ids)}개 ({agree / len(m_ids):.0%})")
     for d in disagreements:
         print(f"  의견 갈림 → 확인필요  {d}")
 
@@ -267,8 +338,11 @@ def merge_elements(folder: Path, files: list[Path]) -> None:
 if __name__ == "__main__":
     if len(sys.argv) >= 4 and sys.argv[1] == "template":
         template(sys.argv[2], sys.argv[3:])
-    elif len(sys.argv) == 3 and sys.argv[1] == "merge":
-        merge(sys.argv[2])
+    elif len(sys.argv) in (3, 4) and sys.argv[1] == "merge":
+        if len(sys.argv) == 4 and sys.argv[3] != "--provisional":
+            print(__doc__)
+            sys.exit(1)
+        merge(sys.argv[2], provisional=len(sys.argv) == 4)
     else:
         print(__doc__)
         sys.exit(1)

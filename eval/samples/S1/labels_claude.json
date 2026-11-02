@@ -1,0 +1,47 @@
+{
+  "M1": {
+    "verdict": "없음",
+    "prior": [],
+    "memo": "OV-AVEL 과제 정식화는 ImageBind에 없음"
+  },
+  "M2": {
+    "verdict": "없음",
+    "prior": [],
+    "memo": "OV-AVEBench 데이터셋은 이 논문이 구축"
+  },
+  "M3": {
+    "verdict": "없음",
+    "prior": [],
+    "memo": "segment/event-level F1 평가 체계는 ImageBind에 없음"
+  },
+  "M4": {
+    "verdict": "일치",
+    "prior": [
+      "P1",
+      "P8"
+    ],
+    "memo": "ImageBind의 통합 임베딩 공간(P1 정렬 방식으로 학습, P8 투영 헤드로 생성) 자체를 사용. 가이드상 '가져다 씀'은 유사로도 읽히나, 기법이 기존 논문의 것과 동일해 일치로 봄"
+  },
+  "M5": {
+    "verdict": "유사",
+    "prior": [
+      "P1"
+    ],
+    "memo": "공유 공간의 오디오-텍스트, 비주얼-텍스트 유사도로 zero-shot 예측하는 기반은 P1의 emergent alignment. 두 유사도의 일치성을 따지는 규칙은 새로움"
+  },
+  "M6": {
+    "verdict": "없음",
+    "prior": [],
+    "memo": "모달리티 내부 시간 관계를 학습하는 temporal layer는 ImageBind에 없음"
+  },
+  "M7": {
+    "verdict": "없음",
+    "prior": [],
+    "memo": "표준 Transformer 블록 사용은 범용 기법(P6와 공통이지만 가이드상 없음)"
+  },
+  "M8": {
+    "verdict": "없음",
+    "prior": [],
+    "memo": "seen 클래스 cross entropy 미세조정. ImageBind는 InfoNCE(P4) 대조학습"
+  }
+}

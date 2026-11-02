@@ -16,7 +16,10 @@ prior 에는 대응하는 P 번호를 적는다 (일치·유사일 때만, 없�
 ## 경로 라벨 기준 (route_<이름>.json)
 
 경로를 직접 고르지 말고 세 축의 관계를 고른다. 경로는 코드가 계산한다.
-아래 문제·기여·요소 목록을 보고 판단하되, 애매하면 원문 PDF를 확인한다.
+축마다 두 값을 적는다.
+- relation: 원문 PDF까지 알고 내린 실제 관계 (정답으로 쓴다)
+- relation_from_sheet: 이 시트만 읽었을 때의 관계 (모델이 보는 자료와 같다)
+시트만 읽으면 달라 보이지만 원문을 알면 연결되는 경우, 두 값을 다르게 적고 memo 에 이유를 남긴다.
 
 - problem (해결 문제·목적)
   - same: 같은 문제를 푼다 / related: 연관되지만 다른 문제 / different: 연결 없음 / unknown: 판단 불가
@@ -48,6 +51,15 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 - [1] Besides, we establish standard evaluation metrics that encompass typical accuracy, as well as segment-level and event-level Fl-scores.
 - [1] We present two simple baselines: one adopting a training-free paradigm, which can be upgraded through further fine-tuning on available training data.
 
+## 내 논문 experiment_results
+
+- OV-AVEBench | Training-free (our), total | Avg. | 46.6 | ↑ | [Table 2]
+- OV-AVEBench | Training-free (our), seen | Avg. | 45.5 | ↑ | [Table 2]
+- OV-AVEBench | Training-free (our), unseen | Avg. | 47.0 | ↑ | [Table 2]
+- OV-AVEBench | Fine-tuning (our), total | Avg. | 57.8 | ↑ | [Table 2]
+- OV-AVEBench | Fine-tuning (our), seen | Avg. | 62.9 | ↑ | [Table 2]
+- OV-AVEBench | Fine-tuning (our), unseen | Avg. | 55.8 | ↑ | [Table 2]
+
 ## 기존 논문 problem
 
 - Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.
@@ -62,6 +74,31 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 - [F] IMAGEBIND leverages the image-text embeddings learned by a pretrained model on large web-based data which has biases as documented in different studies [60].
 - [F] These joint embeddings are thus limited to the concepts present in the datasets.
 - [F] the thermal datasets we used are limited to outdoor street scenes, while the depth datasets are limited to indoor scenes.
+
+## 기존 논문 experiment_results
+
+- IN1K | IMAGEBIND | Acc. | 77.7 | ↑ | [Table 2]
+- P365 | IMAGEBIND | Acc. | 45.4 | ↑ | [Table 2]
+- K400 | IMAGEBIND | Acc. | 50.0 | ↑ | [Table 2]
+- MSR-VTT | IMAGEBIND | Recall@1 | 36.1 | ↑ | [Table 2]
+- NYU-D | IMAGEBIND | Acc. | 54.0 | ↑ | [Table 2]
+- SUN-D | IMAGEBIND | Acc. | 35.1 | ↑ | [Table 2]
+- AS-A | IMAGEBIND | mAP | 17.6 | ↑ | [Table 2]
+- VGGS | IMAGEBIND | Acc. | 27.8 | ↑ | [Table 2]
+- ESC | IMAGEBIND | Acc. | 66.9 | ↑ | [Table 2]
+- LLVIP | IMAGEBIND | Acc. | 63.4 | ↑ | [Table 2]
+- Ego4D | IMAGEBIND | Acc. | 25.0 | ↑ | [Table 2]
+- Clotho | IMAGEBIND | R@1 | 6.0 | ↑ | [Table 3]
+- Clotho | IMAGEBIND | R@10 | 28.4 | ↑ | [Table 3]
+- AudioCaps | IMAGEBIND | R@1 | 9.3 | ↑ | [Table 3]
+- AudioCaps | IMAGEBIND | R@10 | 42.3 | ↑ | [Table 3]
+- ESC | IMAGEBIND | Top-1 | 66.9 | ↑ | [Table 3]
+- MSR-VTT 1K-A | IMAGEBIND, A | R@1 | 6.8 | ↑ | [Table 4]
+- MSR-VTT 1K-A | IMAGEBIND, A | R@5 | 18.5 | ↑ | [Table 4]
+- MSR-VTT 1K-A | IMAGEBIND, A | R@10 | 27.2 | ↑ | [Table 4]
+- MSR-VTT 1K-A | IMAGEBIND, A+V | R@1 | 36.8 | ↑ | [Table 4]
+- MSR-VTT 1K-A | IMAGEBIND, A+V | R@5 | 61.8 | ↑ | [Table 4]
+- MSR-VTT 1K-A | IMAGEBIND, A+V | R@10 | 70.0 | ↑ | [Table 4]
 
 ## 내 논문 요소 (M)
 

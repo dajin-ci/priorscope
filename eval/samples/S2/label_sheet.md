@@ -16,7 +16,10 @@ prior 에는 대응하는 P 번호를 적는다 (일치·유사일 때만, 없�
 ## 경로 라벨 기준 (route_<이름>.json)
 
 경로를 직접 고르지 말고 세 축의 관계를 고른다. 경로는 코드가 계산한다.
-아래 문제·기여·요소 목록을 보고 판단하되, 애매하면 원문 PDF를 확인한다.
+축마다 두 값을 적는다.
+- relation: 원문 PDF까지 알고 내린 실제 관계 (정답으로 쓴다)
+- relation_from_sheet: 이 시트만 읽었을 때의 관계 (모델이 보는 자료와 같다)
+시트만 읽으면 달라 보이지만 원문을 알면 연결되는 경우, 두 값을 다르게 적고 memo 에 이유를 남긴다.
 
 - problem (해결 문제·목적)
   - same: 같은 문제를 푼다 / related: 연관되지만 다른 문제 / different: 연결 없음 / unknown: 판단 불가
@@ -49,6 +52,39 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 - [1] We use a novel dataset, CC-NEWS, and confirm that using more data for pretraining further improves performance on downstream tasks.
 - [1] Our training improvements show that masked language model pretraining, under the right design choices, is competitive with all other recently published methods.
 
+## 내 논문 experiment_results
+
+- SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]
+- SQuAD v1.1 | RoBERTa | dev | single | 없음 | F1 | 94.6 | ↑ | [Table 6]
+- SQuAD v2.0 | RoBERTa | dev | single | 없음 | EM | 86.5 | ↑ | [Table 6]
+- SQuAD v2.0 | RoBERTa | dev | single | 없음 | F1 | 89.4 | ↑ | [Table 6]
+- SQuAD 2.0 | RoBERTa | test | single | 없음 | ? | 86.8 | ↑ | [Table 6]
+- SQuAD 2.0 | RoBERTa | test | single | 없음 | ? | 89.8 | ↑ | [Table 6]
+- RACE | RoBERTa | test | single | 없음 | Accuracy | 83.2 | ↑ | [Table 7]
+- RACE-Middle | RoBERTa | test | single | 없음 | Accuracy | 86.5 | ↑ | [Table 7]
+- RACE-High | RoBERTa | test | single | 없음 | Accuracy | 81.3 | ↑ | [Table 7]
+- MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]
+- MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]
+- QNLI | RoBERTa | dev | single | 없음 | ? | 94.7 | ↑ | [Table 5]
+- QQP | RoBERTa | dev | single | 없음 | ? | 92.2 | ↑ | [Table 5]
+- RTE | RoBERTa | dev | single | 없음 | ? | 86.6 | ↑ | [Table 5]
+- SST | RoBERTa | dev | single | 없음 | ? | 96.4 | ↑ | [Table 5]
+- MRPC | RoBERTa | dev | single | 없음 | ? | 90.9 | ↑ | [Table 5]
+- CoLA | RoBERTa | dev | single | 없음 | ? | 68.0 | ↑ | [Table 5]
+- STS | RoBERTa | dev | single | 없음 | ? | 92.4 | ↑ | [Table 5]
+- WNLI | RoBERTa | dev | single | 없음 | ? | 91.3 | ↑ | [Table 5]
+- MNLI | RoBERTa | test | ensemble | 없음 | ? | 90.8 | ↑ | [Table 5]
+- MNLI | RoBERTa | test | ensemble | 없음 | ? | 90.2 | ↑ | [Table 5]
+- QNLI | RoBERTa | test | ensemble | 없음 | ? | 98.9 | ↑ | [Table 5]
+- QQP | RoBERTa | test | ensemble | 없음 | ? | 90.2 | ↑ | [Table 5]
+- RTE | RoBERTa | test | ensemble | 없음 | ? | 88.2 | ↑ | [Table 5]
+- SST | RoBERTa | test | ensemble | 없음 | ? | 96.7 | ↑ | [Table 5]
+- MRPC | RoBERTa | test | ensemble | 없음 | ? | 92.3 | ↑ | [Table 5]
+- CoLA | RoBERTa | test | ensemble | 없음 | ? | 67.8 | ↑ | [Table 5]
+- STS | RoBERTa | test | ensemble | 없음 | ? | 92.2 | ↑ | [Table 5]
+- WNLI | RoBERTa | test | ensemble | 없음 | ? | 89.0 | ↑ | [Table 5]
+- GLUE Avg | RoBERTa | test | ensemble | 없음 | Avg | 88.5 | ↑ | [Table 5]
+
 ## 기존 논문 problem
 
 - Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.
@@ -59,6 +95,37 @@ problem=different 이고 method=specific_shared → method, generic_only·differ
 
 - [3.1] a downside is that we are creating a mismatch between pre-training and fine-tuning, since the [MASK] token does not appear during fine-tuning.
 - [5.3] not all tasks can be easily represented by a Transformer encoder architecture, and therefore require a task-specific model architecture to be added.
+
+## 기존 논문 experiment_results
+
+- MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]
+- MNLI-mm | BERTLARGE | test | single | 없음 | Acc. | 85.9 | ↑ | [Table 1]
+- QQP | BERTLARGE | test | single | 없음 | F1 | 72.1 | ↑ | [Table 1]
+- QNLI | BERTLARGE | test | single | 없음 | Acc. | 92.7 | ↑ | [Table 1]
+- SST-2 | BERTLARGE | test | single | 없음 | Acc. | 94.9 | ↑ | [Table 1]
+- CoLA | BERTLARGE | test | single | 없음 | Acc. | 60.5 | ↑ | [Table 1]
+- STS-B | BERTLARGE | test | single | 없음 | Spearman correlations | 86.5 | ↑ | [Table 1]
+- MRPC | BERTLARGE | test | single | 없음 | F1 | 89.3 | ↑ | [Table 1]
+- RTE | BERTLARGE | test | single | 없음 | Acc. | 70.1 | ↑ | [Table 1]
+- Average | BERTLARGE | test | single | 없음 | ? | 82.1 | ↑ | [Table 1]
+- SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | F1 | 90.9 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Ensemble) | dev | ensemble | 없음 | EM | 85.8 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Ensemble) | dev | ensemble | 없음 | F1 | 91.8 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | dev | single | TriviaQA | EM | 84.2 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | dev | single | TriviaQA | F1 | 91.1 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | test | single | TriviaQA | EM | 85.1 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Sgl.+TriviaQA) | test | single | TriviaQA | F1 | 91.8 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | dev | ensemble | TriviaQA | EM | 86.2 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | dev | ensemble | TriviaQA | F1 | 92.2 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | test | ensemble | TriviaQA | EM | 87.4 | ↑ | [Table 2]
+- SQuAD v1.1 | BERTLARGE (Ens.+TriviaQA) | test | ensemble | TriviaQA | F1 | 93.2 | ↑ | [Table 2]
+- SQuAD v2.0 | BERTLARGE (Single) | dev | single | 없음 | EM | 78.7 | ↑ | [Table 3]
+- SQuAD v2.0 | BERTLARGE (Single) | dev | single | 없음 | F1 | 81.9 | ↑ | [Table 3]
+- SQuAD v2.0 | BERTLARGE (Single) | test | single | 없음 | EM | 80.0 | ↑ | [Table 3]
+- SQuAD v2.0 | BERTLARGE (Single) | test | single | 없음 | F1 | 83.1 | ↑ | [Table 3]
+- SWAG | BERTLARGE | dev | single | 없음 | accuracies | 86.6 | ↑ | [Table 4]
+- SWAG | BERTLARGE | test | single | 없음 | accuracies | 86.3 | ↑ | [Table 4]
 
 ## 내 논문 요소 (M)
 

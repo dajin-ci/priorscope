@@ -1,0 +1,48 @@
+{
+  "M1": {
+    "verdict": "유사",
+    "prior": [
+      "P1"
+    ]
+  },
+  "M2": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M3": {
+    "verdict": "유사",
+    "prior": []
+  },
+  "M4": {
+    "verdict": "유사",
+    "prior": [
+      "P1"
+    ]
+  },
+  "M5": {
+    "verdict": "유사",
+    "prior": [
+      "P1"
+    ]
+  },
+  "M6": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M7": {
+    "verdict": "유사",
+    "prior": [
+      "P1"
+    ]
+  },
+  "M8": {
+    "verdict": "유사",
+    "prior": [
+      "P6"
+    ]
+  },
+  "M9": {
+    "verdict": "없음",
+    "prior": []
+  }
+}

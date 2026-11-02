@@ -1,0 +1,19 @@
+{
+  "problem": {
+    "relation": "related",
+    "relation_from_sheet": "different",
+    "memo": "실제: OV-AVEL은 ImageBind가 연 통합 임베딩 기반 zero-shot 인식을 이벤트 위치 추정으로 확장한 문제라 연관됨. 시트: ImageBind problem이 '모달리티 쌍 제한·페어 데이터 부족'만 적고 Prior 스키마에 contributions가 없어 OV-AVEL 문제(closed-set 한계)와 연결이 보이지 않음"
+  },
+  "scope": {
+    "relation": "partial",
+    "relation_from_sheet": "partial",
+    "memo": "오디오·비주얼·텍스트 모달리티와 학습 때 보지 못한 범주 인식이 공통. OV-AVEL은 동영상 segment 단위 위치 추정, ImageBind는 6개 모달리티 임베딩 학습과 분류·검색"
+  },
+  "method": {
+    "relation": "specific_shared",
+    "relation_from_sheet": "specific_shared",
+    "memo": "M4가 ImageBind 사전학습 임베딩 공간을 그대로 쓰고, M5가 그 공간의 교차 모달 유사도에 기반함. 시트에서도 M4에 ImageBind가 명시됨"
+  },
+  "route_intuition": "method",
+  "memo": "LLM(Claude) 임시 라벨. 실제 경로는 related+partial로 partial, 시트 기준은 different+specific_shared로 method. 직감은 method: ImageBind는 경쟁 연구라기보다 백본이라 방법 활용 방식을 보는 게 사용자에게 유용해 보임. 직감과 규칙이 갈리는 사례로 select_route 점검 자료"
+}

@@ -20,6 +20,16 @@ python eval/labeling.py merge S2                    # route_label.json, labels.j
 
 이미 양식이 있는 샘플에 template 을 다시 돌려도 기존 라벨 파일은 덮어쓰지 않는다. S1 처럼 label_sheet.md 만 있던 샘플도 다시 돌리면 경로 라벨 기준과 문제·기여 목록이 시트에 추가된다.
 
+## 실제 관계와 시트 기준 관계
+
+경로 라벨의 축마다 `relation`(원문까지 알고 내린 실제 관계, 정답)과 `relation_from_sheet`(label_sheet.md 만 읽었을 때의 관계)를 함께 적는다. 적합성 모델은 시트와 같은 추출본만 보기 때문에, 시트만으로는 연결이 안 보이면 모델이 완벽하게 판단해도 틀린다. merge 는 두 값이 다른 축을 "추출 공백"으로, 시트 기준 경로가 실제 경로와 다른 샘플을 `route_changed_by_extraction: true` 로 표시한다. 평가에서는 모델 결과를 실제 경로와 비교해 전체 정확도를, 시트 기준 경로와 비교해 판단 단계만의 정확도를 따로 낸다.
+
+## 임시 라벨 (provisional)
+
+라벨러가 한 명뿐일 때는 `merge S1 --provisional` 로 임시로 합칠 수 있다. 이때 `label_status.json` 에 `provisional: true` 와 라벨러 이름이 남고, 평가 결과에도 임시 라벨 기준이라고 표시해야 한다. 빈 양식(판정을 하나도 채우지 않은 파일)은 라벨러 수에 넣지 않는다. 사람 두 명이 라벨을 채운 뒤 `--provisional` 없이 merge 하면 정답 파일과 `label_status.json` 이 교체된다. 이때 `route_claude.json`, `labels_claude.json` 처럼 LLM 라벨 파일이 폴더에 남아 있으면 라벨러로 함께 합쳐지므로, 사람 라벨만으로 정답을 만들려면 먼저 `eval/samples/<샘플>/llm/` 같은 하위 폴더로 옮긴다.
+
+현재 S1, S2 의 정답은 Claude 가 만든 임시 라벨이다 (2026-11-02).
+
 ## 경로 라벨을 축으로 받는 이유
 
 라벨러가 경로를 바로 고르면 "그 경로가 맞는가"와 "경로 규칙이 맞는가"를 구분할 수 없다. 그래서 세 축(문제·범위·방법)의 관계만 받고, 경로는 `suitability.select_route` 와 같은 함수로 계산한다. 덕분에 모델이 어느 축을 틀렸는지 축 단위로 볼 수 있다.
