@@ -24,9 +24,9 @@
         "elements",
         "grade"
       ],
-      "expected_grade_if_research": "Medium Overlap (설계서 원안 유지. 경로가 research 일 때만 등급을 평가한다)",
       "finding": "[해결] 문제 축 추출 공백: 시트 기준 related(→partial)였으나 contributions 추가 후 same(→research)으로 원문 기준과 일치. 재추출 시 core_techniques 8→4개로 크게 변동. 요소 M4·M5 동적 마스킹 중복 추출, M3는 BERT 원문 A.2 내용이 P 목록에서 누락",
-      "expected_grade": "Medium Overlap"
+      "expected_grade": "Medium Overlap",
+      "grade_note": "설계서 원안의 기대 등급(Medium)이다. 요소 라벨이 있으면 evaluate.py 는 라벨에서 등급을 계산하므로 이 값은 쓰지 않는다. 2026-11-02 판정 기준 확정 후 라벨 기준 커버리지 16.7%로 Low. RoBERTa 추출 요소가 BERT에서 바꾼 점 위주라(MLM·Transformer 인코더 같은 계승 요소가 M에 없음) 커버리지가 낮게 나온다"
     },
     "S3": {
       "pair": "선정 필요",

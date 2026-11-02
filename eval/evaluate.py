@@ -88,9 +88,25 @@ def load_truth(sample: str, folder: Path | None = None, manifest: dict | None = 
     if (folder / "labels.json").exists():
         elements = {m_id: _verdict(v) for m_id, v in _load(folder / "labels.json").items()}
 
-    grade = info.get("expected_grade")
-    return {"sample": sample, "route": route, "elements": elements, "expected_grade": grade,
+    # 등급 정답은 요소 라벨이 있으면 라벨에서 validator 와 같은 규칙으로 계산한다.
+    # 사람이 적은 기대 등급(manifest)은 요소 라벨이 없을 때만 쓴다. 두 값이 어긋나는 일을 막기 위해서다.
+    grade, grade_source = info.get("expected_grade"), "manifest"
+    if elements:
+        grade, grade_source = grade_from_labels(elements), "labels"
+    return {"sample": sample, "route": route, "elements": elements, "expected_grade": grade, "grade_source": grade_source,
             "provisional": bool(status.get("provisional")), "labelers": status.get("labelers", [])}
+
+
+def grade_from_labels(elements: dict[str, str]) -> str | None:
+    """정답 라벨의 커버리지 범위가 한 등급 안에 있으면 그 등급, 확인필요 때문에 갈리면 None."""
+    from validator import _level_of
+    total = len(elements)
+    if not total:
+        return None
+    known = sum({"일치": 1.0, "유사": 0.5}.get(v, 0.0) for v in elements.values())
+    uncertain = sum(v == "확인필요" for v in elements.values())
+    low, high = _level_of(known / total * 100), _level_of((known + uncertain) / total * 100)
+    return low if low == high else None
 
 
 ##################################################

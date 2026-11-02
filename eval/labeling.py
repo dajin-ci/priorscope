@@ -38,17 +38,15 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from ids import as_list, assign_ids, first  # noqa: E402
+from verdict_rules import rule_lines  # noqa: E402
 from suitability import AXIS_LABELS, RELATIONS, ROUTE_LABELS, select_route  # noqa: E402
 
 SAMPLES_DIR = ROOT / "eval" / "samples"
 VERDICTS = ("일치", "유사", "없음", "확인필요")
 
-GUIDE = """## 라벨 기준
+GUIDE = """## 라벨 기준 (verdict_rules.py, 2026-11-02 확정)
 
-- 일치: 기존 논문에 같은 기법이 있다 (용어·언어가 달라도 같은 것)
-- 유사: 기존 논문의 핵심 아이디어를 가져다 쓰거나 변형했다
-- 없음: 기존 논문에 없다. Transformer 사용, 손실 함수 학습처럼 흔한 기법만 같으면 없음
-- 확인필요: 논문을 다시 봐도 판단이 어렵다
+""" + "\n".join(f"- {line}" for line in rule_lines()) + """
 
 각자 따로 라벨링하고 서로의 답을 보지 않는다. LLM 결과(compare_result)도 보지 않는다.
 prior 에는 대응하는 P 번호를 적는다 (일치·유사일 때만, 없으면 빈 칸).

@@ -1,16 +1,14 @@
 {
   "M1": {
-    "verdict": "유사",
-    "prior": [
-      "P1"
-    ]
+    "verdict": "없음",
+    "prior": []
   },
   "M2": {
     "verdict": "없음",
     "prior": []
   },
   "M3": {
-    "verdict": "유사",
+    "verdict": "없음",
     "prior": []
   },
   "M4": {
@@ -30,10 +28,8 @@
     "prior": []
   },
   "M7": {
-    "verdict": "유사",
-    "prior": [
-      "P1"
-    ]
+    "verdict": "없음",
+    "prior": []
   },
   "M8": {
     "verdict": "유사",

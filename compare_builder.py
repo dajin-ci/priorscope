@@ -25,6 +25,7 @@ from reportlab.pdfbase import pdfmetrics
 from reportlab.pdfbase.ttfonts import TTFont
 from reportlab.platypus import PageBreak, Paragraph, SimpleDocTemplate, Spacer
 
+from verdict_rules import rule_lines
 from ids import as_list, assign_ids, first
 
 ##################################################
@@ -197,9 +198,7 @@ GUIDE_LINES = [
     "반드시 이 문서에 적힌 번호만 사용하고, 새 번호를 만들지 않는다.",
     "element_mapping은 M 요소마다 한 줄씩 'M2 ↔ P4,P5 | 유사 | M[3.1] / P[2.3] | 설명' 형식으로 쓴다. "
     "대응하는 P가 없으면 'M3 ↔ - | 없음 | 검토 범위 | 설명'으로 쓴다.",
-    "판정은 일치, 유사, 없음, 확인필요 중 하나다. "
-    "같은 기술을 다른 용어나 다른 언어(국문/영문)로 쓴 경우도 대응으로 본다. "
-    "대응을 확신하지 못하면 '없음'이 아니라 '확인필요'로 적는다.",
+    "판정은 일치, 유사, 없음, 확인필요 중 하나다. " + " ".join(rule_lines()),
     "result_pairs는 데이터셋과 지표가 같은 쌍만 'R-M1 ~ R-P2 | 동일 조건 | 설명' 형식으로 쓴다. "
     "지표 표기가 달라도(예: Top-1과 top-1 accuracy, R@1과 Recall@1) 같은 지표면 쌍으로 본다. "
     "2열에는 반드시 '동일 조건' 또는 '조건 다름'을 적는다. "

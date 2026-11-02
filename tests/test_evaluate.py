@@ -28,22 +28,24 @@ def verified_from_labels(sample, flip=None, level="Medium Overlap"):
 
 def test_perfect_prediction_on_s2():
     truth = evaluate.load_truth("S2")
+    assert truth["grade_source"] == "labels"
     pred = {"suitability": suit("research", {"problem": "same", "scope": "comparable", "method": "specific_shared"}),
-            "verified": verified_from_labels("S2")}
+            "verified": verified_from_labels("S2", level=truth["expected_grade"])}
     s = evaluate.score_sample(truth, pred)
     assert s["route_correct"] and s["route_correct_vs_sheet"] and not s["gate_leak"]
     assert all(a["correct"] for a in s["axes"].values())
-    assert s["grade"] == {"pred": "Medium Overlap", "truth": "Medium Overlap", "held": False, "correct": True}
+    assert s["grade"]["correct"] is True and s["grade"]["truth"] == truth["expected_grade"]
     m = evaluate.aggregate([s])
     assert m["false_novelty_rate"] == 0 and m["element_accuracy"] == 1 and m["provisional"] is True
 
 
 def test_false_novelty_counts_overlap_judged_none():
     truth = evaluate.load_truth("S2")
-    # S2 정답의 유사 6개 중 M1, M4 를 '없음'으로 틀리게 예측
-    pred = {"suitability": suit("research"), "verified": verified_from_labels("S2", {"M1": "없음", "M4": "없음"})}
+    overlap = [m for m, v in truth["elements"].items() if v in evaluate.OVERLAP]
+    flip = {m: "없음" for m in overlap[:2]}  # 정답이 일치·유사인 요소 2개를 '없음'으로 틀리게 예측
+    pred = {"suitability": suit("research"), "verified": verified_from_labels("S2", flip)}
     m = evaluate.aggregate([evaluate.score_sample(truth, pred)])
-    assert m["false_novelty_rate"] == pytest.approx(2 / 6)
+    assert m["false_novelty_rate"] == pytest.approx(2 / len(overlap))
     assert m["element_accuracy"] == pytest.approx(7 / 9)
     assert evaluate.check_targets(m)["false_novelty_rate"] is False
 
@@ -51,7 +53,8 @@ def test_false_novelty_counts_overlap_judged_none():
 def test_validator_effect_is_visible():
     truth = evaluate.load_truth("S2")
     verified = verified_from_labels("S2")
-    verified["mappings"][0].update(agent_verdict="없음", final_verdict="확인필요")  # 검증이 강등해 막은 경우
+    target = next(r for r in verified["mappings"] if truth["elements"][r["id"]] in evaluate.OVERLAP)
+    target.update(agent_verdict="없음", final_verdict="확인필요")  # 검증이 강등해 막은 경우
     m = evaluate.aggregate([evaluate.score_sample(truth, {"suitability": suit("research"), "verified": verified})])
     assert m["false_novelty_rate_agent"] > m["false_novelty_rate"] == 0
 
@@ -119,3 +122,17 @@ def test_stability_summary_flags_drift():
 
 def test_cli_usage_returns_error():
     assert evaluate.main([]) == 1 and evaluate.main(["score"]) == 1
+
+
+@pytest.mark.parametrize("labels,grade", [
+    ({"M1": "일치", "M2": "일치", "M3": "일치", "M4": "유사"}, "High Overlap"),   # 87.5%
+    ({"M1": "일치", "M2": "일치", "M3": "유사", "M4": "없음"}, "Medium Overlap"),  # 62.5%
+    ({"M1": "유사", "M2": "없음", "M3": "없음"}, "Low Overlap"),                  # 16.7%
+    ({"M1": "일치", "M2": "없음", "M3": "확인필요"}, "Medium Overlap"),            # 33%~67% 모두 Medium
+])
+def test_grade_from_labels(labels, grade):
+    assert evaluate.grade_from_labels(labels) == grade
+
+
+def test_grade_from_labels_held_when_uncertain_spans_levels():
+    assert evaluate.grade_from_labels({"M1": "일치", "M2": "없음", "M3": "확인필요", "M4": "확인필요"}) is None
