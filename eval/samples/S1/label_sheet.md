@@ -13,6 +13,56 @@
 각자 따로 라벨링하고 서로의 답을 보지 않는다. LLM 결과(compare_result)도 보지 않는다.
 prior 에는 대응하는 P 번호를 적는다 (일치·유사일 때만, 없으면 빈 칸).
 
+## 경로 라벨 기준 (route_<이름>.json)
+
+경로를 직접 고르지 말고 세 축의 관계를 고른다. 경로는 코드가 계산한다.
+아래 문제·기여·요소 목록을 보고 판단하되, 애매하면 원문 PDF를 확인한다.
+
+- problem (해결 문제·목적)
+  - same: 같은 문제를 푼다 / related: 연관되지만 다른 문제 / different: 연결 없음 / unknown: 판단 불가
+  - 분야 이름이나 키워드가 같다는 이유만으로 same 을 고르지 않는다.
+- scope (연구 범위·대상: 입출력, 연구 대상, 전제 조건)
+  - comparable: 연구 내용을 견줄 수 있을 만큼 대응 / partial: 일부만 공통 / different: 다름 / unknown
+  - 실험 조건이 같은지와는 별개다.
+- method (핵심 방법)
+  - specific_shared: 구체적 기법·모듈·학습 절차를 공유·변형·확장
+  - generic_only: Transformer, 딥러닝 같은 범용 기반만 공통 / different: 연결 없음 / unknown
+- route_intuition: 규칙을 떠올리지 말고 직감으로 고른 경로
+  (research, partial, method, unsuitable, insufficient 중 하나)
+
+경로 계산 규칙 (suitability.select_route):
+problem=same 이고 scope=comparable → research, scope=partial·different → partial /
+problem=related 이고 scope 판단 가능 → partial /
+problem=different 이고 method=specific_shared → method, generic_only·different → unsuitable /
+그 밖 → insufficient
+
+## 내 논문 problem
+
+- 기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.
+- 기존 open-set AVEL은 unseen 이벤트를 "unknown"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다.
+
+## 내 논문 contributions
+
+- [1] We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos.
+- [1] To facilitate this new task, we construct the OV-AVEBench dataset, which includes segment-level manual event annotations.
+- [1] Besides, we establish standard evaluation metrics that encompass typical accuracy, as well as segment-level and event-level Fl-scores.
+- [1] We present two simple baselines: one adopting a training-free paradigm, which can be upgraded through further fine-tuning on available training data.
+
+## 기존 논문 problem
+
+- Existing methods typically learn embeddings for only a single pair or a few visual modalities, so the final embeddings are limited to the pairs of modalities used for training.
+- Learning a true joint embedding is hindered by the absence of large quantities of multimodal data where all modalities are present together.
+- Acquiring all types and combinations of paired data with the same set of images is infeasible.
+
+## 기존 논문 limitations
+
+- [6] Our embeddings are trained without a specific downstream task, and thus lag the performance of specialist models.
+- [6] Our model is a research prototype and cannot be readily used for real world applications ( Appendix F).
+- [F] joint embedding models, including IMAGEBIND must be studied carefully with a lens towards measuring such associations, and their implications.
+- [F] IMAGEBIND leverages the image-text embeddings learned by a pretrained model on large web-based data which has biases as documented in different studies [60].
+- [F] These joint embeddings are thus limited to the concepts present in the datasets.
+- [F] the thermal datasets we used are limited to outdoor street scenes, while the depth datasets are limited to indoor scenes.
+
 ## 내 논문 요소 (M)
 
 - **M1** [1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화

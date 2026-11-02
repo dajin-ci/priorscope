@@ -1,0 +1,62 @@
+{
+  "version": 1,
+  "note": "샘플 정의. design_intent 는 이 샘플로 무엇을 시험하려는지이며 정답이 아니다. label_mode=blind 인 샘플의 정답은 라벨러 두 명의 route_label.json 이다. label_mode=designed 인 샘플만 이 파일의 acceptable_routes 를 정답으로 쓴다.",
+  "samples": {
+    "S1": {
+      "pair": "Towards Open-Vocabulary Audio-Visual Event Localization ↔ IMAGEBIND",
+      "status": "추출 고정됨 (my_paper.json, prior_paper.json, similarity.json). 라벨 시트만 있음",
+      "design_intent": "method 후보. 해결 문제는 다르지만 내 논문이 ImageBind 통합 임베딩 공간을 구체적으로 가져다 쓴다. 문제를 related 로 보면 partial 이 될 수 있는 경계 사례",
+      "label_mode": "blind",
+      "checks": ["route", "elements"],
+      "legacy": "설계서 원안의 S1(학회판 ↔ 저널판, High)과 다른 쌍이다. 원안 쌍은 S6(선택)으로 옮긴다"
+    },
+    "S2": {
+      "pair": "RoBERTa ↔ BERT",
+      "status": "추출 고정됨. 라벨 없음",
+      "design_intent": "research 후보. 같은 사전학습 문제를 다루고 학습 절차를 변형·확장한 후속 논문",
+      "label_mode": "blind",
+      "checks": ["route", "elements", "grade"],
+      "expected_grade_if_research": "Medium Overlap (설계서 원안 유지. 경로가 research 일 때만 등급을 평가한다)"
+    },
+    "S3": {
+      "pair": "선정 필요",
+      "status": "미선정",
+      "design_intent": "unsuitable 후보. 문제도 구체적 방법도 다르고 Transformer 같은 범용 기반만 공통인 쌍",
+      "selection_criteria": "분야가 아예 다른 쌍보다, 둘 다 Transformer·대조학습처럼 흔한 기반을 쓰는 쌍을 고른다. 범용 기반만으로 method 로 새는지 시험하기 위해서다",
+      "label_mode": "blind",
+      "checks": ["route"]
+    },
+    "S4": {
+      "pair": "선정 필요 (국문 논문 ↔ 같은 기술의 영문 논문)",
+      "status": "미선정",
+      "design_intent": "research 후보. 언어가 달라도 적합성 판단과 요소 대응이 유지되는지",
+      "selection_criteria": "국문 논문이 영문 논문의 기법을 적용·확장한 쌍. 국문 저널 논문의 참고문헌에서 찾으면 빠르다",
+      "label_mode": "blind",
+      "checks": ["route", "elements", "cross_language"]
+    },
+    "S5": {
+      "pair": "선정 필요 (논문이 아닌 문서 ↔ 아무 논문)",
+      "status": "미선정",
+      "design_intent": "비교가 진행되지 않아야 한다",
+      "selection_criteria": "기술 백서나 제품 소개서처럼 논문처럼 보이는 문서를 고른다. 영수증처럼 명백한 문서는 추출 단계에서 걸러져 게이트를 시험하지 못한다",
+      "label_mode": "designed",
+      "acceptable_routes": ["insufficient", "unsuitable"],
+      "preferred_route": "insufficient",
+      "checks": ["route"]
+    }
+  },
+  "optional": {
+    "S6": {
+      "pair": "같은 연구의 학회판 ↔ 저널 확장판",
+      "design_intent": "research + High Overlap. 설계서 원안의 S1",
+      "label_mode": "blind",
+      "checks": ["route", "elements", "grade"]
+    },
+    "S7": {
+      "pair": "같은 문제를 다루되 연구 범위가 다른 쌍",
+      "design_intent": "partial. 현재 S1~S5 중 partial 을 확실히 겨냥한 샘플이 없어 경로 커버리지를 채운다",
+      "label_mode": "blind",
+      "checks": ["route", "elements"]
+    }
+  }
+}
