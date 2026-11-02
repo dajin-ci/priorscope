@@ -154,3 +154,50 @@ def test_failed_validation_cannot_produce_novelty_or_performance():
     out["status"] = "FAILED"
     report = build_report(gate, out)
     assert not any(report[key] for key in ("show_overall_grade", "show_mappings", "show_numeric"))
+
+
+# 인용 대조 개선 (v7 평가에서 S1·S2 가 근거 확인 실패로 판단 보류된 문제)
+from suitability import quote_in_source  # noqa: E402
+
+
+@pytest.mark.parametrize("quote,source", [
+    ("dynamic masking", "[5] dynamic mask-ing | 동적 마스킹"),
+    ("self-supervised pairing", "we use the natural, self- supervised pairing of other modalities"),
+    ("thermal images", "images, text, audio, ther- mal images"),
+    ("We use a Transformer architecture", "[3.3] we use a  Transformer\narchitecture [73]"),
+    ("the model's “joint” space", "the model’s \"joint\" space"),
+    ("We present IMAGEBIND ... emergent alignment", "We present IMAGEBIND, which learns ... leads to an emergent alignment"),
+])
+def test_quote_matches_despite_pdf_artifacts(quote, source):
+    assert quote_in_source(quote, source)
+
+
+@pytest.mark.parametrize("quote,source", [
+    ("dynamic batching", "[5] dynamic mask-ing"),
+    ("alignment ... We present", "We present X. leads to alignment"),  # 순서가 뒤집힌 중략
+    ("mask", "[5] dynamic mask-ing"),  # 너무 짧은 인용
+    ("Inertial Measurement Unit", "and In- tertial Measurement Unit (IMU)"),  # 철자가 실제로 다르면 거부
+    ("...", "아무 문장"),
+])
+def test_quote_still_rejects_absent_or_trivial_text(quote, source):
+    assert not quote_in_source(quote, source)
+
+
+def test_partial_bad_citations_keep_axis_and_are_recorded():
+    raw = assessment("same", "comparable", "specific_shared")
+    good = raw["scope"]["my_evidence"][0]
+    raw["scope"]["my_evidence"] = [good, {"field": "problem", "index": 0, "quote": "원문에 없는 주장입니다"}]
+    out = normalize_assessment(raw, PAPER, PAPER)
+    assert out["axes"]["scope"]["relation"] == "comparable" and out["route"] == "research"
+    assert len(out["axes"]["scope"]["my_evidence"]) == 1
+    assert out["evidence_failures"] == [{"axis": "scope", "side": "my", "field": "problem", "index": 0,
+                                         "quote": "원문에 없는 주장입니다", "reason": "인용 문구가 해당 항목에 없습니다."}]
+
+
+def test_all_bad_citations_still_defer_but_keep_model_view_for_diagnosis():
+    raw = assessment("same", "comparable", "specific_shared")
+    raw["scope"]["prior_evidence"] = [{"field": "problem", "index": 0, "quote": "원문에 없는 주장입니다"}]
+    out = normalize_assessment(raw, PAPER, PAPER)
+    assert out["axes"]["scope"]["relation"] == "unknown" and not out["comparison_allowed"]
+    assert out["axes"]["scope"]["rejected_model_view"]["relation"] == "comparable"
+    assert any(f["axis"] == "scope" and f["side"] == "prior" for f in out["evidence_failures"])
