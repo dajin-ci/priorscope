@@ -4,7 +4,7 @@ import re
 import unicodedata
 from ids import as_list, clean_text
 
-VERSION = "2"  # 2: 인용 정규화 대조, 일부 탈락 허용, 탈락 사유 기록
+VERSION = "3"  # 2: 인용 정규화 대조, 일부 탈락 허용, 탈락 사유 기록 / 3: 잘못 센 번호 정정
 ROUTE_LABELS = {
     "research": "연구 내용 비교", "partial": "공통 범위만 비교",
     "method": "방법론 중심 비교", "unsuitable": "비교 부적합 안내",
@@ -106,11 +106,20 @@ def _checked_evidence(items, source, axis):
             failures.append(record | {"reason": f"이 축에서 쓸 수 없는 필드입니다 ({sorted(AXIS_FIELDS[axis])})."})
         elif type(index) is not int or index < 0 or index >= len(source.get(field, [])):
             failures.append(record | {"reason": f"index 가 범위 밖입니다 (항목 {len(source.get(field, []))}개)."})
-        elif not isinstance(quote, str) or not quote_in_source(quote, source[field][index]):
-            failures.append(record | {"reason": "인용 문구가 해당 항목에 없습니다."})
-        else:
+        elif not isinstance(quote, str):
+            failures.append(record | {"reason": "인용 문구가 문자열이 아닙니다."})
+        elif quote_in_source(quote, source[field][index]):
             checked.append({"field": field, "index": index, "quote": clean_text(quote),
                             "source_text": source[field][index]})
+        else:
+            # 모델은 문구를 정확히 옮기고도 긴 목록의 번호를 자주 잘못 센다.
+            # 같은 필드의 다른 항목에 문구가 있으면 번호만 바로잡는다 (문구 존재는 그대로 코드가 확인).
+            found = [i for i, text in enumerate(source[field]) if quote_in_source(quote, text)]
+            if found:
+                checked.append({"field": field, "index": found[0], "quote": clean_text(quote),
+                                "source_text": source[field][found[0]], "index_corrected_from": index})
+            else:
+                failures.append(record | {"reason": "인용 문구가 해당 필드 어디에도 없습니다."})
     return (checked or None), failures
 
 
@@ -166,6 +175,11 @@ def normalize_assessment(raw, my_paper, prior_paper):
             "comparison_allowed": route in ("research", "partial", "method"),
             "evidence_basis": "extracted_text", "warnings": warnings,
             "evidence_failures": evidence_failures,
+            # 번호를 바로잡은 인용 수. 늘 같은 방향으로 어긋나면 프롬프트의 번호 안내를 고친다.
+            "index_corrections": [
+                {"axis": axis, "side": side, "field": e["field"], "from": e["index_corrected_from"], "to": e["index"]}
+                for axis, a in axes.items() for side in ("my", "prior")
+                for e in a[f"{side}_evidence"] if "index_corrected_from" in e],
             "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다."}
 
 

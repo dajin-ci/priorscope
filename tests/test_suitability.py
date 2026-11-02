@@ -191,7 +191,7 @@ def test_partial_bad_citations_keep_axis_and_are_recorded():
     assert out["axes"]["scope"]["relation"] == "comparable" and out["route"] == "research"
     assert len(out["axes"]["scope"]["my_evidence"]) == 1
     assert out["evidence_failures"] == [{"axis": "scope", "side": "my", "field": "problem", "index": 0,
-                                         "quote": "원문에 없는 주장입니다", "reason": "인용 문구가 해당 항목에 없습니다."}]
+                                         "quote": "원문에 없는 주장입니다", "reason": "인용 문구가 해당 필드 어디에도 없습니다."}]
 
 
 def test_all_bad_citations_still_defer_but_keep_model_view_for_diagnosis():
@@ -201,3 +201,24 @@ def test_all_bad_citations_still_defer_but_keep_model_view_for_diagnosis():
     assert out["axes"]["scope"]["relation"] == "unknown" and not out["comparison_allowed"]
     assert out["axes"]["scope"]["rejected_model_view"]["relation"] == "comparable"
     assert any(f["axis"] == "scope" and f["side"] == "prior" for f in out["evidence_failures"])
+
+
+def test_miscounted_index_is_corrected_when_quote_exists_elsewhere_in_field():
+    paper = deepcopy(PAPER)
+    paper["core_techniques"] = ["[1] first technique text", "[2] We use a Transformer architecture for encoders"]
+    raw = assessment("same", "comparable", "specific_shared")
+    raw["method"]["prior_evidence"] = [{"field": "core_techniques", "index": 0,
+                                        "quote": "We use a Transformer architecture for encoders"}]
+    raw["method"]["my_evidence"] = [{"field": "core_techniques", "index": 1, "quote": "first technique text"}]
+    out = normalize_assessment(raw, paper, paper)
+    assert out["axes"]["method"]["relation"] == "specific_shared" and out["evidence_failures"] == []
+    assert {c["side"]: (c["from"], c["to"]) for c in out["index_corrections"]} == {"my": (1, 0), "prior": (0, 1)}
+
+
+def test_index_correction_does_not_cross_fields():
+    paper = deepcopy(PAPER)
+    raw = assessment("same", "comparable", "specific_shared")
+    # problem 문구를 core_techniques 로 가리키면 다른 필드까지 찾아 주지 않는다
+    raw["method"]["prior_evidence"] = [{"field": "core_techniques", "index": 0, "quote": PAPER["problem"][0]}]
+    out = normalize_assessment(raw, paper, paper)
+    assert out["axes"]["method"]["relation"] == "unknown"
