@@ -1516,6 +1516,41 @@ def _apply_similarity(
     return out
 
 
+def _summarize(mappings: list[dict[str, Any]], compare_result: Mapping[str, Any]) -> dict[str, Any]:
+    """최종 판정 목록으로 커버리지 범위·등급·확인필요 목록을 계산한다 (단일 실행과 합친 결과가 같이 쓴다)."""
+    total = len(mappings)
+    known = sum(_VERDICT_SCORE.get(r["final_verdict"], 0.0) for r in mappings if r["final_verdict"] != "확인필요")
+    uncertain = [r for r in mappings if r["final_verdict"] == "확인필요"]
+    if total:
+        coverage_min = round(known / total * 100, 1)
+        coverage_max = round((known + len(uncertain)) / total * 100, 1)
+        level_min, level_max = _level_of(coverage_min), _level_of(coverage_max)
+        final_level = level_min if level_min == level_max else "판정 보류"
+    else:
+        coverage_min = coverage_max = None
+        final_level = "판정 보류"
+
+    classify_level = _first(compare_result, "overlap_level")
+    counts = Counter(r["final_verdict"] for r in mappings)
+    return {
+        "final_level": final_level,
+        "classify_level": classify_level,
+        "classify_agrees": final_level != "판정 보류" and classify_level == final_level,
+        "llm_score": _first(compare_result, "llm_score"),
+        "coverage": {
+            "min": coverage_min,
+            "max": coverage_max,
+            "uncertain_count": len(uncertain),
+            "verdict_counts": {v: counts.get(v, 0) for v in ("일치", "유사", "없음", "확인필요")},
+            "thresholds": {"high": HIGH_THRESHOLD, "medium": MEDIUM_THRESHOLD},
+        },
+        "uncertain_items": [
+            {"id": r["id"], "text": r["text"], "reasons": r["demoted_reasons"] or [r["explanation"]]}
+            for r in uncertain
+        ],
+    }
+
+
 def validate(
     my_paper: Mapping[str, Any],
     prior_paper: Mapping[str, Any],
@@ -1602,40 +1637,8 @@ def validate(
         report["block_final_decision"] = True
 
     # 3) 커버리지 범위와 등급
-    total = len(mappings)
-    known = sum(_VERDICT_SCORE.get(r["final_verdict"], 0.0) for r in mappings if r["final_verdict"] != "확인필요")
-    uncertain = [r for r in mappings if r["final_verdict"] == "확인필요"]
-    if total:
-        coverage_min = round(known / total * 100, 1)
-        coverage_max = round((known + len(uncertain)) / total * 100, 1)
-        level_min, level_max = _level_of(coverage_min), _level_of(coverage_max)
-        final_level = level_min if level_min == level_max else "판정 보류"
-    else:
-        coverage_min = coverage_max = None
-        final_level = "판정 보류"
-
-    classify_level = _first(compare_result, "overlap_level")
-    classify_agrees = final_level != "판정 보류" and classify_level == final_level
-
-    counts = Counter(r["final_verdict"] for r in mappings)
-    result = {
-        "status": report["status"],
-        "final_level": final_level,
-        "classify_level": classify_level,
-        "classify_agrees": classify_agrees,
-        "llm_score": _first(compare_result, "llm_score"),
-        "coverage": {
-            "min": coverage_min,
-            "max": coverage_max,
-            "uncertain_count": len(uncertain),
-            "verdict_counts": {v: counts.get(v, 0) for v in ("일치", "유사", "없음", "확인필요")},
-            "thresholds": {"high": HIGH_THRESHOLD, "medium": MEDIUM_THRESHOLD},
-        },
+    result = {"status": report["status"], **_summarize(mappings, compare_result),
         "mappings": mappings,
-        "uncertain_items": [
-            {"id": r["id"], "text": r["text"], "reasons": r["demoted_reasons"] or [r["explanation"]]}
-            for r in uncertain
-        ],
         "numeric_checks": report["numeric_checks"],
         "expected_result_pairs": expected_items["result_pairs"],
         "result_warnings": {
@@ -1647,4 +1650,90 @@ def validate(
     }
     result["similarity"] = sim_report
     result["weaknesses"] = derive_weaknesses(result, ids)
+    return result
+
+
+
+##################################################
+# 여러 번 실행한 Compare Agent 결과 합치기 (2026-11-02 팀 확정)
+##################################################
+
+_OVERLAP_VERDICTS = ("일치", "유사")
+
+
+def consensus_verdict(votes: Sequence[str]) -> tuple[str, str | None]:
+    """실행별 최종 판정(검증 후)을 하나로 합친다. 반환: (판정, 확인필요로 바꾼 이유 또는 None)
+
+    1) 과반이 같은 판정이면 그 판정을 쓴다.
+    2) 단, 과반이 '없음'인데 한 번이라도 일치·유사가 나왔으면 확인필요로 둔다.
+       같은 입력에 겹침을 본 실행이 있다는 것 자체가 '없음'을 확신할 수 없다는 신호이기 때문이다
+       (허위 신규 주장 방지가 제1원칙).
+    3) 과반이 없으면 확인필요.
+    검증은 강등만 한다는 원칙대로, 이 규칙은 어떤 실행에도 없던 판정을 만들지 않는다.
+    """
+    votes = list(votes)
+    if len(votes) == 1:
+        return votes[0], None
+    verdict, count = Counter(votes).most_common(1)[0]
+    shown = " / ".join(votes)
+    if count * 2 <= len(votes):
+        return "확인필요", f"실행 {len(votes)}회의 판정이 갈렸습니다 ({shown})."
+    if verdict == "없음" and any(v in _OVERLAP_VERDICTS for v in votes):
+        return "확인필요", f"과반은 없음이지만 겹침으로 본 실행이 있어 없음으로 단정하지 않았습니다 ({shown})."
+    return verdict, None
+
+
+def combine_runs(
+    my_paper: Mapping[str, Any],
+    prior_paper: Mapping[str, Any],
+    compare_results: Sequence[Mapping[str, Any]],
+    similarity: Mapping[str, Any] | None = None,
+    demote_threshold: float | None = None,
+    failed_runs: Sequence[str] = (),
+) -> dict[str, Any]:
+    """실행마다 validate() 로 검증한 뒤 M 요소별 판정을 consensus_verdict() 로 합친다.
+
+    요약·주의 지점·서술 제안·정량 비교는 합친 판정과 가장 많이 일치하는 실행(대표 실행)의 것을 쓴다.
+    """
+    from copy import deepcopy
+    from ids import assign_ids
+
+    if not compare_results:
+        raise ValueError("합칠 Compare Agent 결과가 없습니다.")
+    runs = [validate(my_paper, prior_paper, r, similarity=similarity, demote_threshold=demote_threshold)
+            for r in compare_results]
+    decided = []
+    for i, base in enumerate(runs[0]["mappings"]):
+        votes = [run["mappings"][i]["final_verdict"] for run in runs]
+        decided.append((votes, *consensus_verdict(votes)))
+
+    agreement = [sum(run["mappings"][i]["final_verdict"] == d[1] for i, d in enumerate(decided)) for run in runs]
+    rep = agreement.index(max(agreement))
+    result = deepcopy(runs[rep])
+    changed = []
+    for i, (votes, verdict, reason) in enumerate(decided):
+        row = result["mappings"][i]
+        if row["final_verdict"] != verdict:
+            changed.append(row["id"])
+            donor = next((run["mappings"][i] for run in runs if run["mappings"][i]["final_verdict"] == verdict), None)
+            if donor is not None:
+                for key in ("prior_ids", "evidence", "explanation"):
+                    row[key] = donor[key]
+            row["final_verdict"] = verdict
+        if reason:
+            row["demoted_reasons"] = [*row["demoted_reasons"], reason]
+        row["votes"] = votes
+
+    result.update(_summarize(result["mappings"], compare_results[rep]))
+    if changed and result["status"] == "PASSED":
+        result["status"] = "NEEDS_REVIEW"
+    result["weaknesses"] = derive_weaknesses(result, assign_ids(my_paper, prior_paper))
+    result["consensus"] = {
+        "runs": len(runs),
+        "representative_run": rep + 1,
+        "agreement_rate": round(sum(len(set(d[0])) == 1 for d in decided) / len(decided), 3) if decided else None,
+        "changed_from_representative": changed,
+        "rule": "과반 판정. 과반이 없거나, 과반이 없음인데 겹침 판정이 섞이면 확인필요",
+        "failed_runs": list(failed_runs),
+    }
     return result

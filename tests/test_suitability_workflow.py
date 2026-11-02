@@ -35,7 +35,7 @@ def test_blocked_routes_never_build_compare_or_request_similarity(service_module
             if route == "unsuitable" else deferred_assessment("정보 부족"))
     monkeypatch.setattr(svc, "assess_suitability", lambda *args: gate)
     downstream = {}
-    for name in ("create_compare_input", "analyze_matching", "UpstageEmbedder", "compute_similarity", "validate"):
+    for name in ("create_compare_input", "analyze_matching", "UpstageEmbedder", "compute_similarity", "combine_runs"):
         downstream[name] = Mock(side_effect=AssertionError("후속 단계 호출 금지"))
         monkeypatch.setattr(svc, name, downstream[name])
     bundle = svc.run_compare_service(b"my pdf", b"prior pdf")
@@ -62,7 +62,7 @@ def test_allowed_routes_propagate_scope_to_pdf_report_and_verified(service_modul
     monkeypatch.setattr(svc, "analyze_matching", Mock(return_value={}))
     monkeypatch.setattr(svc, "UpstageEmbedder", Mock())
     monkeypatch.setattr(svc, "compute_similarity", Mock(return_value={"matrix": {}}))
-    monkeypatch.setattr(svc, "validate", Mock(return_value=verified()))
+    monkeypatch.setattr(svc, "combine_runs", Mock(return_value=verified() | {"consensus": {"representative_run": 1}}))
     steps = []
     bundle = svc.run_compare_service(b"my pdf", b"prior pdf", on_step=steps.append)
     assert builder.call_args.kwargs["suitability"]["route"] == route
@@ -176,3 +176,33 @@ def test_checker_accepts_blocked_run_without_old_compare_files(tmp_path):
                          env={**os.environ, "PYTHONUTF8": "1"}, timeout=20)
     assert out.returncode == 0, out.stderr
     assert "후속 분석 생략: True" in out.stdout
+
+
+def test_compare_agent_runs_three_times_on_one_upload_and_combines(service_module, monkeypatch):
+    svc, run_dir = service_module
+    gate = normalize_assessment(assessment("same", "comparable", "specific_shared"), PAPER, PAPER)
+    monkeypatch.setattr(svc, "assess_suitability", lambda *args: gate)
+    monkeypatch.setattr(svc, "create_compare_input", Mock(side_effect=lambda a, b, path, font, **k: path.write_bytes(b"pdf")))
+    agent = Mock(side_effect=[{"run": 1}, {"run": 2}, {"run": 3}])
+    monkeypatch.setattr(svc, "analyze_matching", agent)
+    monkeypatch.setattr(svc, "UpstageEmbedder", Mock())
+    monkeypatch.setattr(svc, "compute_similarity", Mock(return_value={"matrix": {}}))
+    combine = Mock(return_value=verified() | {"consensus": {"representative_run": 2}})
+    monkeypatch.setattr(svc, "combine_runs", combine)
+    upload = Mock(return_value="file-test")
+    monkeypatch.setattr(svc, "upload_file", upload)
+    bundle = svc.run_from_extracted(PAPER, PAPER, run_dir, compare_runs=3)
+    assert agent.call_count == 3 and upload.call_count == 1
+    assert sorted(r["run"] for r in combine.call_args.args[2]) == [1, 2, 3]
+    assert len(json.loads((run_dir / "compare_result_runs.json").read_text())) == 3
+    assert bundle["compare_result"] == json.loads((run_dir / "compare_result.json").read_text())
+
+
+def test_one_failed_run_out_of_three_continues_but_two_failures_stop(service_module, monkeypatch):
+    svc, run_dir = service_module
+    monkeypatch.setattr(svc, "analyze_matching", Mock(side_effect=[{"ok": 1}, RuntimeError("boom"), {"ok": 3}]))
+    results, failed = svc._run_compare_agents("5단계", "file", 3)
+    assert len(results) == 2 and len(failed) == 1 and "boom" in failed[0]
+    monkeypatch.setattr(svc, "analyze_matching", Mock(side_effect=[{"ok": 1}, RuntimeError("a"), RuntimeError("b")]))
+    with pytest.raises(svc.StepError, match="합칠 수 없습니다"):
+        svc._run_compare_agents("5단계", "file", 3)

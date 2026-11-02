@@ -6,6 +6,7 @@ PriorScope 평가 (설계서 7장 + 10/31 적합성 분기 반영)
     # 1) 고정 추출본으로 3~7단계 실행 (API 사용: Solar 1회 + 비교 경로면 Compare Agent·임베딩)
     python eval/evaluate.py compare                    # 라벨이 있는 모든 샘플
     python eval/evaluate.py compare S1 S2 --tag v7     # 결과 폴더 이름 지정
+    python eval/evaluate.py compare --runs 1 --tag x   # Compare Agent 반복 횟수 지정 (기본: .env 의 COMPARE_RUNS)
 
     # 2) 저장된 결과를 라벨과 비교해 채점 (API 없음. 라벨을 고친 뒤 다시 채점할 때)
     python eval/evaluate.py score eval/results/<tag>
@@ -148,7 +149,7 @@ def score_sample(truth: dict, pred: dict) -> dict:
             if not t:
                 continue
             rows.append({"id": mapping["id"], "truth": t, "agent": mapping.get("agent_verdict"),
-                         "final": mapping.get("final_verdict"),
+                         "final": mapping.get("final_verdict"), "votes": mapping.get("votes"),
                          "demoted": bool(mapping.get("demoted_reasons"))})
         missing = sorted(set(truth["elements"]) - {r["id"] for r in rows})
         out["elements"] = {"rows": rows, "missing_in_pred": missing}
@@ -207,6 +208,12 @@ def aggregate(scores: list[dict]) -> dict:
         "element_accuracy": _rate(sum(r["final"] == r["truth"] for r in rows), len(rows)),
         "uncertain_rate": _rate(sum(r["final"] == "확인필요" for r in rows), len(rows)),
         "grade_agreement": _rate(sum(g["correct"] for g in decided), len(decided)),
+        # 반복 실행(COMPARE_RUNS>1) 결과일 때: 모든 실행의 판정이 같았던 M 비율과,
+        # 실행 하나라도 허위 신규 주장을 낸 비율(합치기 전 위험).
+        "vote_agreement": _rate(sum(len(set(r["votes"])) == 1 for r in rows if r.get("votes")),
+                                sum(1 for r in rows if r.get("votes"))),
+        "false_novelty_any_run": _rate(sum("없음" in (r.get("votes") or []) for r in overlap_rows if r.get("votes")),
+                                       sum(1 for r in overlap_rows if r.get("votes"))),
         "grade_held": len(grades) - len(decided),
     }
 
@@ -245,6 +252,9 @@ def print_report(report: dict) -> None:
     print(f"  {'over_block_rate':<26}{_pct(m['over_block_rate']):>6}")
     print(f"  {'false_novelty_rate_agent':<26}{_pct(m['false_novelty_rate_agent']):>6}   (검증 전)")
     print(f"  {'uncertain_rate':<26}{_pct(m['uncertain_rate']):>6}")
+    if m.get("vote_agreement") is not None:
+        print(f"  {'vote_agreement':<26}{_pct(m['vote_agreement']):>6}   (반복 실행 판정이 모두 같은 M)")
+        print(f"  {'false_novelty_any_run':<26}{_pct(m['false_novelty_any_run']):>6}   (합치기 전, 실행 하나라도 허위 신규)")
     for axis, value in m["axis_accuracy"].items():
         sheet = m["axis_accuracy_vs_sheet"].get(axis)
         print(f"  axis {axis:<21}{_pct(value):>6}   (시트 기준 {_pct(sheet)})")
@@ -294,7 +304,7 @@ def score_dir(results: Path) -> dict:
     return report
 
 
-def cmd_compare(samples: list[str], tag: str | None) -> dict:
+def cmd_compare(samples: list[str], tag: str | None, runs: int | None = None) -> dict:
     from service import run_from_extracted  # API 설정이 필요한 import 는 실행할 때만 한다
     from config import validate_config
     validate_config()
@@ -309,7 +319,7 @@ def cmd_compare(samples: list[str], tag: str | None) -> dict:
         my, prior = _load(SAMPLES_DIR / sample / "my_paper.json"), _load(SAMPLES_DIR / sample / "prior_paper.json")
         print(f"\n[{sample}] 3~7단계 실행")
         started = time.time()
-        run_from_extracted(my, prior, out, on_step=lambda name: print("  ", name))
+        run_from_extracted(my, prior, out, on_step=lambda name: print("  ", name), compare_runs=runs)
         (out / "timing.json").write_text(json.dumps({"seconds": round(time.time() - started, 1)}), encoding="utf-8")
     return score_dir(results)
 
@@ -383,7 +393,8 @@ def main(argv: list[str]) -> int:
             return 1
         score_dir(Path(rest[0]))
     elif command == "compare":
-        cmd_compare(rest, tag)
+        runs = option("--runs")
+        cmd_compare(rest, tag, int(runs) if runs else None)
     else:
         pdf_dir, runs = option("--pdf-dir"), int(option("--runs", "3"))
         if not pdf_dir or not rest:

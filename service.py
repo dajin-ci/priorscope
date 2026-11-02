@@ -13,13 +13,13 @@ import hashlib
 import json
 from pathlib import Path
 
-from config import FONT_PATH, validate_config
+from config import COMPARE_RUNS, FONT_PATH, validate_config
 from upload import upload_file
 from resume_agent import analyze_resume
 from jd_agent import analyze_jd
 from matching_agent import analyze_matching
 from compare_builder import create_compare_input
-from validator import validate
+from validator import combine_runs
 from similarity import UpstageEmbedder, compute_similarity
 from run_storage import cleanup_old_runs, new_run_dir
 from suitability import assess_suitability
@@ -56,7 +56,29 @@ def _require_dict(step, result):
     return result
 
 
-def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step=None) -> dict:
+def _run_compare_agents(step, file_id, runs):
+    """Compare Agent 를 runs 번 동시에 실행한다. 과반이 성공하면 진행하고, 실패한 실행은 기록한다."""
+    from concurrent.futures import ThreadPoolExecutor
+
+    def one(_):
+        try:
+            result = analyze_matching(file_id)
+        except Exception as exc:  # noqa: BLE001
+            return None, f"{type(exc).__name__}: {exc}"
+        return (result, None) if isinstance(result, dict) else (None, "에이전트 결과가 JSON 객체가 아닙니다.")
+
+    with ThreadPoolExecutor(max_workers=runs) as pool:
+        outcomes = list(pool.map(one, range(runs)))
+    results = [r for r, _ in outcomes if r is not None]
+    failed = [f"{i}회차: {err}" for i, (_, err) in enumerate(outcomes, start=1) if err]
+    needed = runs // 2 + 1 if runs > 1 else 1
+    if len(results) < needed:
+        raise StepError(step, f"{runs}회 중 {len(results)}회만 성공해 판정을 합칠 수 없습니다. " + "; ".join(failed))
+    return results, failed
+
+
+def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step=None,
+                       compare_runs: int | None = None) -> dict:
     """
     추출이 끝난 두 논문 JSON으로 3~7단계(적합성 → 비교 PDF → Compare Agent → 임베딩 → 검증)를 실행한다.
 
@@ -82,10 +104,12 @@ def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step
     compare_pdf = run_dir / "Compare_Input.pdf"
     _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH, suitability=suitability))
 
-    # 4. 비교 분석
+    # 4. 비교 분석: 같은 PDF를 compare_runs 번 동시에 분석해 판정 흔들림을 잡는다.
     step = "5단계 · 비교 분석"
-    compare_result = _require_dict(step, _run_step(step, on_step, lambda: analyze_matching(upload_file(compare_pdf))))
-    _save_json(compare_result, run_dir / "compare_result.json")
+    runs = compare_runs if compare_runs is not None else COMPARE_RUNS
+    file_id = _run_step(step, on_step, lambda: upload_file(compare_pdf))
+    compare_results, failed_runs = _run_compare_agents(step, file_id, runs)
+    _save_json(compare_results, run_dir / "compare_result_runs.json")
 
     # 5. 임베딩 유사도 (보조 지표: 실패해도 계속)
     step = "6단계 · 임베딩 유사도"
@@ -101,7 +125,11 @@ def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step
 
     # 6. 검증
     step = "7단계 · 코드 검증"
-    verified = _run_step(step, on_step, lambda: validate(my_paper, prior_paper, compare_result, similarity=similarity))
+    verified = _run_step(step, on_step, lambda: combine_runs(my_paper, prior_paper, compare_results,
+                                                             similarity=similarity, failed_runs=failed_runs))
+    # 화면·다운로드용 compare_result 는 합친 판정과 가장 많이 일치한 대표 실행의 결과다.
+    compare_result = compare_results[verified["consensus"]["representative_run"] - 1]
+    _save_json(compare_result, run_dir / "compare_result.json")
     if similarity_error:
         verified.setdefault("similarity", {})["error"] = similarity_error
     verified = apply_scope_policy(verified, suitability)

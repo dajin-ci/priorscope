@@ -57,6 +57,10 @@ MATCHING_CONFIG_ID = os.getenv("COMPARE_CONFIG_ID")
 # 적합성 사전 분류: Studio Compare Agent와 독립된 구조화 출력 호출.
 SUITABILITY_MODEL = os.getenv("SUITABILITY_MODEL", "solar-pro4")
 
+# Compare Agent 를 몇 번 실행해 판정을 합칠지 (2026-11-02 확정: 3회, 동시 실행).
+# 같은 입력에 판정이 흔들리면 확인필요로 둔다. 1이면 예전처럼 한 번만 실행한다.
+COMPARE_RUNS = max(1, int(os.getenv("COMPARE_RUNS", "3")))
+
 ##################################################
 # Project Directory
 ##################################################

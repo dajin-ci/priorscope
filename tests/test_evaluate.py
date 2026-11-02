@@ -94,7 +94,7 @@ def test_compare_runs_shared_service_path_and_scores(tmp_path, monkeypatch):
     monkeypatch.setattr(config, "validate_config", lambda: None)
     import service
 
-    def fake_run(my, prior, out, on_step=None):
+    def fake_run(my, prior, out, on_step=None, compare_runs=None):
         sample = out.name
         route = {"S1": "partial", "S2": "research"}[sample]
         (out / "suitability.json").write_text(json.dumps(suit(route)), encoding="utf-8")
@@ -136,3 +136,15 @@ def test_grade_from_labels(labels, grade):
 
 def test_grade_from_labels_held_when_uncertain_spans_levels():
     assert evaluate.grade_from_labels({"M1": "일치", "M2": "없음", "M3": "확인필요", "M4": "확인필요"}) is None
+
+
+def test_vote_metrics_from_repeated_runs():
+    truth = evaluate.load_truth("S2")
+    verified = verified_from_labels("S2")
+    for row in verified["mappings"]:
+        row["votes"] = [row["final_verdict"]] * 3
+    overlap = next(r for r in verified["mappings"] if truth["elements"][r["id"]] in evaluate.OVERLAP)
+    overlap["votes"] = [overlap["final_verdict"], "없음", overlap["final_verdict"]]
+    m = evaluate.aggregate([evaluate.score_sample(truth, {"suitability": suit("research"), "verified": verified})])
+    assert m["vote_agreement"] == pytest.approx(8 / 9)
+    assert m["false_novelty_any_run"] > 0 and m["false_novelty_rate"] == 0

@@ -150,6 +150,8 @@ def render_mapping_table(verified, ids):
             "근거": clean_text(m["evidence"]),
             "설명": clean_text(m["explanation"]),
             "강등 사유": " / ".join(m["demoted_reasons"]),
+            # 반복 실행 결과가 있으면 실행별 판정을 함께 보여 준다 (흔들린 판정은 확인필요로 합쳐짐).
+            **({"실행별 판정": " / ".join(m["votes"])} if m.get("votes") and len(m["votes"]) > 1 else {}),
         })
     st.dataframe(rows, hide_index=True)
 
