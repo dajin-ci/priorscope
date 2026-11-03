@@ -1,0 +1,122 @@
+{
+  "version": "3",
+  "route": "unsuitable",
+  "label": "비교 부적합 안내",
+  "axes": {
+    "problem": {
+      "relation": "different",
+      "reason": "두 논문은 해결하려는 문제 영역이 서로 다르다. 내 논문은 객체 검출을 간접 방식(앵커/제안/윈도우 중심)이 아닌 직접 집합 예측 문제로 정식화하는 것을 목표로 하며, 중복 제거 후처리·앵커 설계·타겟-앵커 할당 휴리스틱에 의존하는 기존 검출기의 한계를 지적한다. 반면 상대 논문은 음성 인식에서 Transformer의 전역 문맥 모델링과 CNN의 지역 특징 추출이 각각 갖는 한계를 함께 해결하려는 문제를 다룬다. 두 문제는 입력 모달리티와 과제 자체가 달라 같은 해결 문제로 볼 수 없다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Modern detectors address this set prediction task in an indirect way, by defining surrogate regression and classification problems on a large set of proposals, anchors, or window centers.",
+          "source_text": "Modern detectors address this set prediction task in an indirect way, by defining surrogate regression and classification problems on a large set of proposals, anchors, or window centers."
+        },
+        {
+          "field": "problem",
+          "index": 1,
+          "quote": "Their performances are significantly influenced by postprocessing steps to collapse near-duplicate predictions, by the design of the anchor sets and by the heuristics that assign target boxes to anchors.",
+          "source_text": "Their performances are significantly influenced by postprocessing steps to collapse near-duplicate predictions, by the design of the anchor sets and by the heuristics that assign target boxes to anchors."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively.",
+          "source_text": "Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "While Transformers are good at modeling long-range global context, they are less capable to extract fine-grained local feature patterns.",
+          "source_text": "While Transformers are good at modeling long-range global context, they are less capable to extract fine-grained local feature patterns."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "different",
+      "reason": "연구 대상과 입출력 전제가 다르다. 내 논문은 COCO 객체 검출(및 범분할 세그멘테이션 확장)을 대상으로 이미지에서 객체 집합(클래스·박스)을 직접 예측하는 설정을 다룬다. 상대 논문은 LibriSpeech 음성 인식 벤치마크에서 음성 특징 시퀀스를 텍스트로 변환하는 설정을 다루며, 지역 문맥 포착을 위한 합성곱 모듈과 전역 문맥 모델링을 함께 사용하는 구조를 연구한다. 두 연구의 대상·입출력·과제 전제가 대응하지 않으므로 비교 가능한 범위로 보기 어렵다.",
+      "my_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "COCO | Faster RCNN-DC5 | dev | single | 없음 | AP | 39.0 | ↑ | [Table 1]",
+          "source_text": "COCO | Faster RCNN-DC5 | dev | single | 없음 | AP | 39.0 | ↑ | [Table 1]"
+        },
+        {
+          "field": "contributions",
+          "index": 5,
+          "quote": "DETR can be easily generalized to produce panoptic segmentation in a unified manner.",
+          "source_text": "[1] DETR can be easily generalized to produce panoptic segmentation in a unified manner."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "LibriSpeech | Conformer(S) | test | single | 없음 | WER | 2.7 | ↓ | [Table 2]",
+          "source_text": "LibriSpeech | Conformer(S) | test | single | 없음 | WER | 2.7 | ↓ | [Table 2]"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다.",
+          "source_text": "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다."
+        }
+      ]
+    },
+    "method": {
+      "relation": "generic_only",
+      "reason": "두 논문이 공통으로 언급하는 기반 요소는 Transformer 계열 구조라는 점뿐이며, 구체적인 기법·모듈·학습 절차상의 직접적인 연결은 추출본에서 확인되지 않는다. 내 논문은 객체 검출을 위해 이분 매칭 기반 집합 전역 손실, 트랜스포머 인코더-디코더, 학습된 객체 쿼리, CNN 백본, FFN 예측 헤드, 보조 디코딩 손실 등을 사용한다. 상대 논문은 음성 인식을 위해 다중 헤드 자기어텐션, 상대적 사인파 위치 인코딩, 사전 정규화 잔차 유닛, 포인트와이즈 합성곱+GLU, 1차원 depthwise convolution, 배치정규화, Swish 활성화, 두 FFN이 어텐션·합성곱 모듈을 감싸는 샌드위치 구조, Macaron-Net에서 영감한 이중 FFN, half-step residual, SpecAugment, 얕은 결합 등을 사용한다. 두 방법의 구체적 구성 요소는 서로 다르며, 공통점은 Transformer를 사용한다는 범용적 기반 수준에 그친다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[1] direct set prediction problem | 객체 검출을 직접 집합 예측 문제로 정식화하는 접근",
+          "source_text": "[1] direct set prediction problem | 객체 검출을 직접 집합 예측 문제로 정식화하는 접근"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[1] a set-based global loss that forces unique predictions via bipartite matching | 이분 매칭을 통해 중복 없는 유일한 예측을 강제하는 집합 기반 전역 손실",
+          "source_text": "[1] a set-based global loss that forces unique predictions via bipartite matching | 이분 매칭을 통해 중복 없는 유일한 예측을 강제하는 집합 기반 전역 손실"
+        },
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "[1] a transformer encoder-decoder architecture | 트랜스포머 인코더-디코더 구조",
+          "source_text": "[1] a transformer encoder-decoder architecture | 트랜스포머 인코더-디코더 구조"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[2.1] multi-headed self-attention (MHSA) | 다중 헤드 자기어텐션 모듈을 사용한다.",
+          "source_text": "[2.1] multi-headed self-attention (MHSA) | 다중 헤드 자기어텐션 모듈을 사용한다."
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[2.1] relative sinusoidal positional encoding scheme | 상대적 사인파 위치 인코딩을 사용해 길이 일반화와 강건성을 높인다.",
+          "source_text": "[2.1] relative sinusoidal positional encoding scheme | 상대적 사인파 위치 인코딩을 사용해 길이 일반화와 강건성을 높인다."
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다.",
+          "source_text": "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다."
+        }
+      ]
+    }
+  },
+  "comparison_allowed": false,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

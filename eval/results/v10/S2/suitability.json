@@ -1,0 +1,157 @@
+{
+  "version": "3",
+  "route": "research",
+  "label": "연구 내용 비교",
+  "axes": {
+    "problem": {
+      "relation": "same",
+      "reason": "두 논문 모두 언어 모델 사전학습(pretraining) 방법의 설계와 학습 조건이 다운스트림 과제 성능에 미치는 영향을 규명하고, 더 효과적인 사전학습 접근법을 제시하는 것을 공통된 해결 문제로 삼는다. 내 논문은 BERT를 포함한 기존 자기지도 사전학습 방법들이 계산 비용, 비공개 데이터셋, 하이퍼파라미터 민감성 때문에 비교가 어렵고, BERT가 충분히 학습되지 않아 이후 개선 요인의 해석이 어렵다는 점을 문제로 제기한다. 상대 논문은 단방향 언어 모델 기반 사전학습이 양방향 문맥 활용을 제한해 표현력과 과제별 아키텍처 의존도를 높인다는 점을 문제로 삼는다. 두 문제는 사전학습 표현/절차의 한계를 지적하고 더 나은 사전학습 설계를 찾는다는 점에서 같은 해결 목적을 공유한다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+          "source_text": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+          "source_text": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+          "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks.",
+          "source_text": "[1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks."
+        }
+      ]
+    },
+    "scope": {
+      "relation": "comparable",
+      "reason": "두 논문 모두 자연어처리를 대상으로 하며, 사전학습된 언어 표현을 다운스트림 과제에서 미세조정해 평가하는 동일한 입출력·과제 범위를 공유한다. 내 논문은 BERT의 설계 선택과 학습 전략을 대체해 다운스트림 과제 성능을 높이는 것을 범위로 하고, 상대 논문은 양방향 Transformer 인코더 사전학습과 종단간 미세조정을 통해 다양한 과제에서 통합 아키텍처를 사용하는 것을 범위로 한다. 둘 다 GLUE, SQuAD 등 공통 다운스트림 과제에서 단일/앙상블 설정으로 성능을 비교하므로 연구 내용 비교에 대응한다.",
+      "my_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]",
+          "source_text": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]"
+        },
+        {
+          "field": "experiment_results",
+          "index": 9,
+          "quote": "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+          "source_text": "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+          "index_corrected_from": 13
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance.",
+          "source_text": "[1] We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 10,
+          "quote": "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]",
+          "source_text": "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]"
+        },
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+          "source_text": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+          "index_corrected_from": 8
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "unified architecture across different tasks | 다양한 다운스트림 과제에서 거의 동일한 구조를 유지하는 통합 아키텍처",
+          "source_text": "[3] unified architecture across different tasks | 다양한 다운스트림 과제에서 거의 동일한 구조를 유지하는 통합 아키텍처"
+        }
+      ]
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "두 논문은 마스킹된 언어 모델(MLM) 사전학습 목표를 공통 기반으로 사용하며, 내 논문은 상대 논문의 MLM과 NSP 구성을 명시적으로 변형·확장한다. 내 논문은 NSP 목적함수를 제거하고, 더 긴 시퀀스, 동적 마스킹, 더 큰 미니배치, 더 큰 byte-level BPE, 추가 데이터셋(CC-NEWS) 등을 도입해 상대 논문의 사전학습 절차를 구체적으로 수정한다. 따라서 단순 범용 기반 공유가 아니라 구체적 기법·학습 절차에 공통/변형/확장 관계가 있다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+          "source_text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+          "source_text": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "dynamic mask-ing | 동적 마스킹",
+          "source_text": "[5] dynamic mask-ing | 동적 마스킹"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+          "source_text": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "\"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "\"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+          "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+          "source_text": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용"
+        }
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [
+    {
+      "axis": "scope",
+      "side": "my",
+      "field": "experiment_results",
+      "from": 13,
+      "to": 9
+    },
+    {
+      "axis": "scope",
+      "side": "prior",
+      "field": "experiment_results",
+      "from": 8,
+      "to": 0
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4"
+}

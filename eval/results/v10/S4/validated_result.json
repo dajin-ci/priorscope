@@ -1,0 +1,527 @@
+{
+  "status": "FAILED",
+  "final_level": "적용 안 함",
+  "classify_level": null,
+  "classify_agrees": null,
+  "llm_score": null,
+  "coverage": {
+    "min": null,
+    "max": null,
+    "uncertain_count": 0,
+    "verdict_counts": {
+      "일치": 0,
+      "유사": 1,
+      "없음": 8,
+      "확인필요": 0
+    },
+    "thresholds": {
+      "high": 70.0,
+      "medium": 30.0
+    }
+  },
+  "uncertain_items": [],
+  "mappings": [
+    {
+      "id": "M1",
+      "text": "[3.1.1] Python 언어와 Selenium, BeautifulSoup 라이브러리 등을 활용하여 웹 스크래핑을 진행한다. | Python, Selenium, BeautifulSoup를 이용해 리뷰 데이터를 수집하는 웹 스크래핑 절차",
+      "section": "3.1.1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "Python, Selenium, BeautifulSoup를 이용한 리뷰 데이터 웹 스크래핑 절차는 기존 논문의 핵심 기술 요소 범위에 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P3",
+        "max_score": 0.4109,
+        "top": [
+          {
+            "id": "P3",
+            "score": 0.4109
+          },
+          {
+            "id": "P2",
+            "score": 0.3881
+          },
+          {
+            "id": "P1",
+            "score": 0.3879
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M2",
+      "text": "[3.1.2] GPT-4의 API를 사용하여 진행한다. | GPT-4 API로 구매 만족도 라벨을 재조정하는 절차",
+      "section": "3.1.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "GPT-4 API로 구매 만족도 라벨을 재조정하는 절차는 기존 논문의 추가 사전학습, 멀티태스크 미세 조정, 긴 텍스트 처리, 층별 학습률과 대응되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P4",
+        "max_score": 0.4134,
+        "top": [
+          {
+            "id": "P4",
+            "score": 0.4134
+          },
+          {
+            "id": "P2",
+            "score": 0.3902
+          },
+          {
+            "id": "P1",
+            "score": 0.3866
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M3",
+      "text": "[3.1.2] 긍정과 부정의 비율을 약 6:4로 설정하여 긍정 리뷰의 개수를 그 비율에 맞게 랜덤하게 삭제하는 작업을 진행한다. | 데이터 불균형 완화를 위해 언더샘플링으로 6:4 비율을 맞추는 절차",
+      "section": "3.1.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "데이터 불균형 완화를 위한 언더샘플링 절차는 기존 논문의 핵심 기술 요소에 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P5",
+        "max_score": 0.3887,
+        "top": [
+          {
+            "id": "P5",
+            "score": 0.3887
+          },
+          {
+            "id": "P1",
+            "score": 0.3591
+          },
+          {
+            "id": "P6",
+            "score": 0.3504
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M4",
+      "text": "[3.2.1] 16, 32, 64, 128으로 설정하여 결과를 비교한다. | 입력 시퀀스 길이를 여러 값으로 설정해 성능과 효율을 비교하는 방법",
+      "section": "3.2.1",
+      "prior_ids": [
+        "P5"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[3.2.1] / P[4.1]",
+      "explanation": "둘 다 입력 길이가 긴 텍스트를 처리하기 위한 설정이라는 점에서 관련되지만, 제안 논문은 입력 시퀀스 길이 16/32/64/128을 비교하고 기존 논문은 head+tail 절단 방식을 사용하므로 구체 방법은 다르다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P5",
+        "max_score": 0.4837,
+        "top": [
+          {
+            "id": "P5",
+            "score": 0.4837
+          },
+          {
+            "id": "P4",
+            "score": 0.415
+          },
+          {
+            "id": "P6",
+            "score": 0.4118
+          }
+        ],
+        "cited_max": 0.4837
+      },
+      "votes": [
+        "유사",
+        "유사",
+        "유사"
+      ]
+    },
+    {
+      "id": "M5",
+      "text": "[3.2.2] klue/bert, klue/roberta, kykim/albert-kor*, beomi/kcbert**, beomi/KcELECTRA* *** 모델 | 5개의 한국어 BERT 계열 사전학습 모델을 미세 조정 대상으로 사용",
+      "section": "3.2.2",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "5개의 한국어 BERT 계열 사전학습 모델을 미세 조정 대상으로 사용하는 구성은 기존 논문의 핵심 기술 요소로 제시되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P1",
+        "max_score": 0.5844,
+        "top": [
+          {
+            "id": "P1",
+            "score": 0.5844
+          },
+          {
+            "id": "P2",
+            "score": 0.5749
+          },
+          {
+            "id": "P4",
+            "score": 0.5739
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M6",
+      "text": "[3.3] BERTopic[18]을 사용하여 토픽 모델링을 진행한다. | BERTopic으로 리뷰 카테고리를 분류하는 토픽 모델링",
+      "section": "3.3",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "BERTopic을 이용한 토픽 모델링은 기존 논문의 텍스트 분류 미세 조정 방법론 범위에 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.5352,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.5352
+          },
+          {
+            "id": "P1",
+            "score": 0.5077
+          },
+          {
+            "id": "P4",
+            "score": 0.4895
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M7",
+      "text": "[3.3] 엘보우 방법(Elbow Method)으로 토픽의 개수를 선정한다. | 토픽 수를 엘보우 방법으로 결정하는 절차",
+      "section": "3.3",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "엘보우 방법으로 토픽 수를 결정하는 절차는 기존 논문의 핵심 기술 요소에 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P5",
+        "max_score": 0.3987,
+        "top": [
+          {
+            "id": "P5",
+            "score": 0.3987
+          },
+          {
+            "id": "P1",
+            "score": 0.3238
+          },
+          {
+            "id": "P2",
+            "score": 0.3127
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M8",
+      "text": "[3.3] Okt 형태소 분석기****를 사용하여 | Okt 형태소 분석기로 명사를 추출해 카테고리별 키워드 사전을 구축",
+      "section": "3.3",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "Okt 형태소 분석기로 명사를 추출해 키워드 사전을 구축하는 절차는 기존 논문에 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.3984,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.3984
+          },
+          {
+            "id": "P1",
+            "score": 0.3813
+          },
+          {
+            "id": "P3",
+            "score": 0.3789
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M9",
+      "text": "[3.4] sotfmax 함수를 활용하여 구한다. | Softmax로 부정/긍정 확률을 계산해 감성 점수를 산출",
+      "section": "3.4",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "검토 범위 P1~P6",
+      "explanation": "Softmax로 부정·긍정 확률을 계산해 감성 점수를 산출하는 절차는 범용적 분류 출력 활용에 가깝고 기존 논문의 핵심 기술 요소와 직접 대응되지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P6",
+        "max_score": 0.3307,
+        "top": [
+          {
+            "id": "P6",
+            "score": 0.3307
+          },
+          {
+            "id": "P2",
+            "score": 0.328
+          },
+          {
+            "id": "P5",
+            "score": 0.325
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    }
+  ],
+  "numeric_checks": [],
+  "expected_result_pairs": [],
+  "result_warnings": {
+    "duplicates": {
+      "R-P35": "R-P12"
+    },
+    "invalid_locations": []
+  },
+  "issues": [
+    {
+      "code": "RESULT_PAIR_FORMAT_INVALID",
+      "severity": "error",
+      "path": "comparison_result.result_pairs[0]",
+      "item_id": null,
+      "message": "정량 비교 쌍 형식이 'R-M번호 ~ R-P번호 | 조건 | 설명'과 맞지 않습니다."
+    }
+  ],
+  "not_checked": [
+    {
+      "code": "SEMANTIC_VALIDITY_NOT_CHECKED",
+      "path": "comparison_result.element_mapping",
+      "reason": "기법의 의미상 동일성, 원문 주장 전체의 참·거짓, 근거의 충분성은 규칙 기반으로 판정하지 않습니다."
+    },
+    {
+      "code": "SIMILARITY_THRESHOLD_UNSET",
+      "path": "similarity",
+      "reason": "유사도 임계값이 정해지지 않아 점수만 보고하고 판정은 바꾸지 않았습니다."
+    }
+  ],
+  "similarity": {
+    "available": true,
+    "model": "embedding-passage",
+    "threshold": null,
+    "demoted": [],
+    "stats": {
+      "min": 0.2629,
+      "max": 0.5844,
+      "mean": 0.3794
+    }
+  },
+  "weaknesses": null,
+  "consensus": {
+    "runs": 3,
+    "representative_run": 1,
+    "agreement_rate": 1.0,
+    "changed_from_representative": [],
+    "rule": "과반 판정. 과반이 없거나, 과반이 없음인데 겹침 판정이 섞이면 확인필요",
+    "failed_runs": []
+  },
+  "suitability": {
+    "version": "3",
+    "route": "partial",
+    "label": "공통 범위만 비교",
+    "axes": {
+      "problem": {
+        "relation": "related",
+        "reason": "두 논문 모두 BERT 기반 모델을 텍스트 분류(감성 분석/일반 텍스트 분류)에 미세 조정한다는 공통 목적을 가지지만, 내 논문은 한국어 의류 리뷰의 라벨 불일치·불균형·입력 길이 최적화라는 도메인 특화 문제를, 상대 논문은 BERT의 범용적 미세 조정 방법론과 긴 텍스트 처리·파국적 망각 같은 일반 문제를 다룬다. 따라서 해결 문제가 완전히 같지는 않고 연관된다.",
+        "my_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "리뷰 데이터는 종종 부정확하거나 불균형을 이루는 만족도 점수 분포와 텍스트의 다양성으로 인해 분석에 어려움을 겪는다[4].",
+            "source_text": "리뷰 데이터는 종종 부정확하거나 불균형을 이루는 만족도 점수 분포와 텍스트의 다양성으로 인해 분석에 어려움을 겪는다[4]."
+          },
+          {
+            "field": "problem",
+            "index": 2,
+            "quote": "긍정적인 리뷰와 부정적인 리뷰의 큰 불균형은 추후의 분석 결과를 방해하기 때문에 불균형 완화가 필요하다.",
+            "source_text": "긍정적인 리뷰와 부정적인 리뷰의 큰 불균형은 추후의 분석 결과를 방해하기 때문에 불균형 완화가 필요하다."
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "Although BERT has achieved amazing results in many natural language understanding (NLU) tasks, its potential has yet to be fully explored.",
+            "source_text": "Although BERT has achieved amazing results in many natural language understanding (NLU) tasks, its potential has yet to be fully explored."
+          },
+          {
+            "field": "problem",
+            "index": 2,
+            "quote": "The first problem of applying BERT to text classification is how processing the text with a length larger than 512.",
+            "source_text": "The first problem of applying BERT to text classification is how processing the text with a length larger than 512."
+          }
+        ]
+      },
+      "scope": {
+        "relation": "partial",
+        "reason": "두 논문 모두 BERT 계열 모델을 텍스트 분류에 적용하므로 입출력(텍스트→분류 라벨)과 연구 대상(사전학습 언어모델 미세 조정)의 일부가 대응한다. 그러나 내 논문은 한국어 의류 리뷰, GPT-4 라벨 재조정, 언더샘플링, BERTopic 토픽 모델링, Okt 형태소 분석 등 도메인·데이터 전처리 범위가 넓고, 상대 논문은 영어/중국어 일반 분류 데이터셋과 추가 사전학습·멀티태스크·층별 학습률 등 방법론적 범위를 다루어 연구 범위가 완전히 겹치지는 않는다.",
+        "my_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 4,
+            "quote": "klue/bert, klue/roberta, kykim/albert-kor*, beomi/kcbert**, beomi/KcELECTRA* *** 모델 | 5개의 한국어 BERT 계열 사전학습 모델을 미세 조정 대상으로 사용",
+            "source_text": "[3.2.2] klue/bert, klue/roberta, kykim/albert-kor*, beomi/kcbert**, beomi/KcELECTRA* *** 모델 | 5개의 한국어 BERT 계열 사전학습 모델을 미세 조정 대상으로 사용"
+          },
+          {
+            "field": "core_techniques",
+            "index": 1,
+            "quote": "GPT-4의 API를 사용하여 진행한다. | GPT-4 API로 구매 만족도 라벨을 재조정하는 절차",
+            "source_text": "[3.1.2] GPT-4의 API를 사용하여 진행한다. | GPT-4 API로 구매 만족도 라벨을 재조정하는 절차"
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 0,
+            "quote": "Within-task pre-training | 타깃 과제의 학습 데이터로 BERT를 추가 사전학습하는 방법",
+            "source_text": "[4.2] Within-task pre-training | 타깃 과제의 학습 데이터로 BERT를 추가 사전학습하는 방법"
+          },
+          {
+            "field": "core_techniques",
+            "index": 5,
+            "quote": "layer-wise learning rate | 하위 층에 더 작은 학습률을 적용하는 층별 감소 학습률",
+            "source_text": "[4.1] layer-wise learning rate | 하위 층에 더 작은 학습률을 적용하는 층별 감소 학습률",
+            "index_corrected_from": 4
+          }
+        ]
+      },
+      "method": {
+        "relation": "generic_only",
+        "reason": "두 논문 모두 BERT 계열 사전학습 모델을 미세 조정해 텍스트 분류를 수행한다는 점에서 Transformer 기반 언어모델이라는 범용 기반만 공통된다. 내 논문은 입력 시퀀스 길이(16/32/64/128) 비교, 한국어 모델 5종 미세 조정, Softmax 확률 기반 감성 점수 산출을 사용하고, 상대 논문은 추가 사전학습(Within-task/In-domain/Cross-domain), 멀티태스크 미세 조정, 긴 텍스트 절단(head+tail), 층별 학습률 등 구체적인 미세 조정 전략을 제안한다. 두 방법의 구체적 기법·모듈·학습 절차 사이에 변형·확장·공통 관계가 확인되지 않으므로 구체적 방법 연결은 없다.",
+        "my_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "16, 32, 64, 128으로 설정하여 결과를 비교한다. | 입력 시퀀스 길이를 여러 값으로 설정해 성능과 효율을 비교하는 방법",
+            "source_text": "[3.2.1] 16, 32, 64, 128으로 설정하여 결과를 비교한다. | 입력 시퀀스 길이를 여러 값으로 설정해 성능과 효율을 비교하는 방법"
+          },
+          {
+            "field": "core_techniques",
+            "index": 8,
+            "quote": "sotfmax 함수를 활용하여 구한다. | Softmax로 부정/긍정 확률을 계산해 감성 점수를 산출",
+            "source_text": "[3.4] sotfmax 함수를 활용하여 구한다. | Softmax로 부정/긍정 확률을 계산해 감성 점수를 산출",
+            "index_corrected_from": 6
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 4,
+            "quote": "head+tail | 긴 문서에서 앞 128개와 뒤 382개 토큰을 선택하는 절단 방식",
+            "source_text": "[4.1] head+tail | 긴 문서에서 앞 128개와 뒤 382개 토큰을 선택하는 절단 방식",
+            "index_corrected_from": 1
+          },
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "Multi-task Fine-Tuning | 여러 관련 과제를 동시에 학습하면서 BERT를 멀티태스크 방식으로 미세조정하는 방법",
+            "source_text": "[4.3] Multi-task Fine-Tuning | 여러 관련 과제를 동시에 학습하면서 BERT를 멀티태스크 방식으로 미세조정하는 방법"
+          }
+        ]
+      }
+    },
+    "comparison_allowed": true,
+    "evidence_basis": "extracted_text",
+    "warnings": [],
+    "evidence_failures": [],
+    "index_corrections": [
+      {
+        "axis": "scope",
+        "side": "prior",
+        "field": "core_techniques",
+        "from": 4,
+        "to": 5
+      },
+      {
+        "axis": "method",
+        "side": "my",
+        "field": "core_techniques",
+        "from": 6,
+        "to": 8
+      },
+      {
+        "axis": "method",
+        "side": "prior",
+        "field": "core_techniques",
+        "from": 1,
+        "to": 4
+      }
+    ],
+    "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+    "model": "solar-pro4"
+  },
+  "overall_assessment_applicable": false
+}

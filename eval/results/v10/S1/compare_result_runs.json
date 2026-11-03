@@ -1,0 +1,106 @@
+[
+  {
+    "overlap_level": [
+      "Medium Overlap"
+    ],
+    "llm_score": [
+      41
+    ],
+    "summary": [
+      "제안 논문은 기존 논문의 통합 멀티모달 임베딩 공간을 직접 활용하지만, 목표는 그 표현 학습 자체가 아니라 seen과 unseen 카테고리를 포함하는 오디오-비주얼 이벤트 위치 추정이다. 기존 논문은 여러 모달리티를 하나의 공유 임베딩 공간에 정렬하는 표현 학습에 초점을 두고, 제안 논문은 그 공간을 바탕으로 데이터셋, 평가 지표, temporal modeling, fine-tuning을 포함한 다운스트림 태스크를 구성한다."
+    ],
+    "element_mapping": [
+      "M1 ↔ - | 없음 | 검토 범위 P1~P8 | M1은 seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 OV-AVEL 문제 정식화이고, P1~P8은 공유 멀티모달 임베딩 정렬 학습과 인코더/프로젝션 설계에 관한 내용으로 오디오-비주얼 이벤트 위치 추정의 개방어휘 문제 자체는 제시하지 않는다.",
+      "M2 ↔ - | 없음 | 검토 범위 P1~P8 | M2는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 OV-AVEBench 데이터셋 구축이고, P1~P8에는 대규모 웹 기반 이미지-텍스트 및 이미지와 다른 모달리티의 자연적 페어링만 제시되어 있어 OV-AVEL용 데이터셋 구축이나 수동 segment-level 주석 데이터셋은 없다.",
+      "M3 ↔ - | 없음 | 검토 범위 P1~P8 | M3는 정확도와 segment-level/event-level F1을 포함한 평가 지표 정립이고, P1~P8은 표현 학습 방법에 대한 설명으로 이러한 평가 체계를 핵심 기술 요소로 제시하지 않는다.",
+      "M4 ↔ P1,P6,P7,P8 | 일치 | M[1] / P[3.2,3.3] | M4는 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하는 요소이고, P1은 공유 정렬 임베딩 공간, P6은 Transformer 인코더, P7은 모달리티별 분리 인코더, P8은 프로젝션 헤드를 통해 그 공간을 구성한다. 문서 기준상 기존 논문의 사전학습 모델·인코더·임베딩 공간을 그대로 쓰는 경우는 일치다.",
+      "M5 ↔ P1 | 유사 | M[1] / P[3.2] | M5는 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인으로, P1의 공유 임베딩 공간에서 모달리티 간 정렬이 성립한다는 성질을 직접 활용한다. 다만 P1이 동일한 예측 규칙 자체를 제시한 것은 아니므로 일치가 아니라 정렬 공간을 다운스트림에 활용한 변형·확장으로 보는 것이 타당하다.",
+      "M6 ↔ - | 없음 | 검토 범위 P1~P8 | M6는 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입이고, P1~P8에는 멀티모달 정렬용 인코더와 프로젝션은 있으나 AVEL 다운스트림을 위한 별도 temporal layer 삽입은 없다.",
+      "M7 ↔ - | 없음 | 검토 범위 P1~P8 | M7은 temporal layer를 표준 Transformer 블록 스택으로 구현한 요소인데, P6의 모든 모달리티 인코더에 Transformer 아키텍처 사용은 범용 기법 수준의 공통점일 뿐이므로 대응 요소로 보기 어렵다.",
+      "M8 ↔ - | 없음 | 검토 범위 P1~P8 | M8은 seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습하는 OV-AVEL용 파인튜닝 베이스라인이다. 반면 P1~P8은 멀티모달 정렬을 위한 InfoNCE와 대칭 손실을 사용하며, 다운스트림 AVEL 분류를 위한 cross entropy 미세조정 학습은 제시하지 않는다."
+    ],
+    "result_pairs": [],
+    "caution_points": [
+      "[M4 ↔ P1,P6,P7,P8] 제안 논문이 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간과 그 특징 추출 기반을 직접 사용한다는 점은 기존 논문의 핵심 구성과 동일하다고 지적될 수 있다. 본문에서는 이 요소가 새로운 표현 학습이 아니라 OV-AVEL 문제 설정에서 특징 추출 기반으로 사용된다는 적용 목적과 downstream 절차를 분명히 구분해 보강하는 것이 좋다.",
+      "[M5 ↔ P1] 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 방식은 기존 논문의 공유 정렬 공간 성질을 직접 활용한 다운스트림 변형으로 보일 수 있다. 본문에서는 예측 규칙, 적용 태스크, 그리고 학습 없는 localization 설정이 기존 논문의 표현 정렬 목표와 어떻게 다른지 구체적으로 적어 두는 것이 좋다."
+    ],
+    "differentiation_suggestions": [
+      "Our work uses the pretrained unified embedding space as a feature backbone for open-vocabulary audio-visual event localization, whereas the prior work focuses on learning a shared embedding space across modalities rather than defining a localization task.",
+      "Our work turns cross-modal alignment into a training-free prediction rule by comparing the consistency between audio-text and visual-text similarities, while the prior work describes emergent alignment in the shared space without specifying this inference procedure for event localization.",
+      "The manuscript should further clarify how the downstream objective, data annotations, and evaluation setting distinguish the proposed localization framework from the prior representation-learning setup built on the same embedding space."
+    ],
+    "related_work_draft": [
+      "The prior work, IMAGEBIND: One Embedding Space To Bind Them All (Girdhar et al., arXiv, 2023), learns a unified embedding space by aligning multiple modalities to image embeddings. In contrast, our work uses that pretrained space as a foundation for open-vocabulary audio-visual event localization with task-specific inference and adaptation procedures."
+    ]
+  },
+  {
+    "overlap_level": [
+      "Medium Overlap"
+    ],
+    "llm_score": [
+      58
+    ],
+    "summary": [
+      "제안 논문은 기존 논문의 통합 멀티모달 임베딩 공간을 직접 활용해 오디오-비주얼 이벤트 위치 추정 문제를 다룬다. 반면 기존 논문은 여러 모달리티를 하나의 공유 임베딩 공간에 정렬하는 표현 학습 자체를 목표로 하며, 제안 논문은 그 표현 공간을 unseen 이벤트까지 포함한 다운스트림 OV-AVEL 태스크에 적용한다."
+    ],
+    "element_mapping": [
+      "M1 ↔ - | 없음 | 검토 범위 P1~P8 | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 OV-AVEL 문제 정식화는 기존 논문의 공유 임베딩 표현 학습 범위를 넘어서는 다운스트림 태스크 설정이다.",
+      "M2 ↔ - | 없음 | 검토 범위 P1~P8 | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 OV-AVEBench 데이터셋 구축은 기존 논문에 없는 요소다.",
+      "M3 ↔ - | 없음 | 검토 범위 P1~P8 | 정확도와 segment-level/event-level F1을 포함한 OV-AVEL용 평가 지표 정립은 기존 논문의 핵심 기술 요소에 대응되지 않는다.",
+      "M4 ↔ P1,P6,P7,P8 | 일치 | M[1] / P[3.2],[3.3] | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하는 것은 기존 논문의 정렬된 공유 임베딩 공간과 인코더 구성을 그대로 활용하는 경우에 해당한다.",
+      "M5 ↔ P1 | 유사 | M[1] / P[3.2] | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교하는 학습 없는 베이스라인은 기존 논문의 정렬된 멀티모달 공간을 활용한 다운스트림 판단 규칙으로, 같은 역할의 표현 공간을 변형·확장해 사용한다.",
+      "M6 ↔ - | 없음 | 검토 범위 P1~P8 | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입은 기존 논문의 표현 정렬 구성에는 없는 다운스트림용 시간 모델링 요소다.",
+      "M7 ↔ - | 없음 | 검토 범위 P1~P8 | temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 Transformer 사용이라는 범용 기법 수준의 공통점만 있으므로 기존 논문과의 대응 요소로 보지 않는다.",
+      "M8 ↔ - | 없음 | 검토 범위 P1~P8 | seen 클래스 열만 사용한 정답과 예측 사이의 cross entropy로 미세조정하는 학습 절차는 기존 논문의 InfoNCE 및 대칭 손실 기반 정렬 학습과 다르며 대응 요소가 없다."
+    ],
+    "result_pairs": [],
+    "caution_points": [
+      "[M4 ↔ P1,P6,P7,P8] 제안 논문이 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간과 관련 인코더 구성을 직접 사용하므로 기존 논문의 핵심 기반을 그대로 썼다는 지적이 가능하다. 보강 방법은 이 기반 위에서 해결하는 문제가 open-vocabulary audio-visual event localization이며, unseen 이벤트 처리와 시간적 지역화 절차가 추가된다는 점을 본문에 분명히 구분해 적는 것이다.",
+      "[M5 ↔ P1] 오디오-텍스트와 비주얼-텍스트 유사도의 일치성을 비교하는 베이스라인은 기존 논문의 정렬된 공유 임베딩 공간을 활용한 변형으로 보일 수 있다. 보강 방법은 이 규칙이 open-vocabulary event localization에서 segment 단위 예측을 수행하도록 어떻게 적용되는지와 표현 학습 자체와의 차이를 명시하는 것이다."
+    ],
+    "differentiation_suggestions": [
+      "Our work uses the pretrained ImageBind space as a feature foundation, but its target problem is open-vocabulary audio-visual event localization rather than joint embedding learning itself. The method is designed to predict explicit event categories for both seen and unseen test videos.",
+      "Our training-free baseline applies the aligned multimodal space to compare the consistency between audio-text and visual-text similarities for event prediction. This use focuses on downstream localization behavior instead of constructing the shared embedding space.",
+      "Our work further introduces lightweight temporal layers and a fine-tuning procedure with seen-class supervision to model temporal relations within audio and visual streams. These components adapt the pretrained representation to segment-level event localization conditions."
+    ],
+    "related_work_draft": [
+      "The prior work (Girdhar et al., arXiv, 2023) learns a unified embedding space that aligns multiple modalities through image-centered representation learning. In contrast, our work uses this pretrained space as a foundation for open-vocabulary audio-visual event localization, including explicit prediction for unseen event categories."
+    ]
+  },
+  {
+    "overlap_level": [
+      "Medium Overlap"
+    ],
+    "llm_score": [
+      56
+    ],
+    "summary": [
+      "제안 논문은 기존 논문의 통합 멀티모달 임베딩 공간을 특징 추출 기반으로 직접 활용하지만, 목표는 open-vocabulary audio-visual event localization이라는 다운스트림 태스크에 있다. 반면 기존 논문은 여러 모달리티를 하나의 공유 임베딩 공간에 정렬하는 표현 학습 자체를 다루므로, 기반 표현은 겹치지만 문제 설정과 방법의 핵심 일부는 다르다."
+    ],
+    "element_mapping": [
+      "M1 ↔ - | 없음 | 검토 범위 P1~P8 | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 open-vocabulary AVEL 문제 정식화는 기존 논문의 공유 임베딩 표현 학습 요소들에는 제시되지 않는다.",
+      "M2 ↔ - | 없음 | 검토 범위 P1~P8 | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 OV-AVEBench 데이터셋 구축은 기존 논문의 웹 기반 이미지-텍스트 및 자연적 modality-image 페어링 데이터 사용과 다르며 대응 요소가 없다.",
+      "M3 ↔ - | 없음 | 검토 범위 P1~P8 | 정확도와 segment-level/event-level F1을 포함한 AVEL 평가 지표 정립은 기존 논문의 핵심 기술 요소에 없다.",
+      "M4 ↔ P1,P6,P7,P8 | 일치 | M[1] / P[3.2],[3.3] | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하는 것은 기존 논문의 사전학습 모델, 인코더, 임베딩 공간을 그대로 사용하는 경우에 해당한다.",
+      "M5 ↔ P1 | 유사 | M[1] / P[3.2] | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인은 기존 논문의 정렬된 공유 임베딩 공간을 활용해 크로스모달 유사도를 비교한다는 점에서 같은 역할의 확장이다.",
+      "M6 ↔ - | 없음 | 검토 범위 P1~P8 | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입은 기존 논문의 공유 임베딩 정렬 구성에는 없다.",
+      "M7 ↔ - | 없음 | 검토 범위 P1~P8 | temporal layer를 표준 Transformer 블록 스택으로 구현한 점은 Transformer 사용이라는 범용 공통점 수준이며, 기존 논문의 대응 기술 요소로 보기 어렵다.",
+      "M8 ↔ - | 없음 | 검토 범위 P1~P8 | seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습하는 절차는 기존 논문의 InfoNCE 및 양방향 대칭 손실 기반 정렬 학습과 목적과 방식이 다르며 대응 요소가 없다."
+    ],
+    "result_pairs": [
+      "해당 없음 | 조건 다름 | 데이터셋과 지표가 같은 R-M과 R-P 쌍이 문서에 없다."
+    ],
+    "caution_points": [
+      "[M4 ↔ P1,P6,P7,P8] 제안 논문이 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간을 직접 특징 추출 기반으로 사용하므로 기존 논문의 핵심 표현 공간을 그대로 썼다는 지적이 가능하다. 본문에서는 이 기반 위에 open-vocabulary AVEL 문제 설정과 temporal modeling, fine-tuning 절차가 추가된 다운스트림 구성임을 분리해 설명할 필요가 있다.",
+      "[M5 ↔ P1] 정렬된 공유 임베딩 공간에서 크로스모달 유사도를 비교한다는 점 때문에 기존 논문의 정렬 메커니즘 활용에 그친다는 지적이 가능하다. 본문에서는 유사도 정렬 자체가 아니라 audio-text와 visual-text consistency를 이용해 이벤트를 예측하는 추론 규칙과 적용 목적의 차이를 명확히 써야 한다."
+    ],
+    "differentiation_suggestions": [
+      "Our work uses the unified multimodal space from a pretrained ImageBind model as a feature backbone, but focuses on open-vocabulary audio-visual event localization rather than learning a general joint embedding space itself.",
+      "Our training-free baseline uses the consistency between audio-text and visual-text similarities for event prediction, which applies the shared embedding space to a task-specific inference procedure instead of constructing the alignment mechanism itself.",
+      "Our fine-tuning pipeline introduces lightweight temporal layers and optimizes cross entropy on seen-class columns, whereas the prior work is described as task-agnostic embedding alignment without a downstream AVEL fine-tuning procedure."
+    ],
+    "related_work_draft": [
+      "The prior work (Girdhar et al., arXiv, 2023) learns a unified embedding space by aligning multiple modalities to image embeddings. In contrast, our work builds on that pretrained space as a feature foundation for open-vocabulary audio-visual event localization and its task-specific inference and fine-tuning procedures."
+    ]
+  }
+]

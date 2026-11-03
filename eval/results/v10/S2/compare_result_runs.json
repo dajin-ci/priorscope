@@ -1,0 +1,197 @@
+[
+  {
+    "overlap_level": [
+      "Medium Overlap"
+    ],
+    "llm_score": [
+      58
+    ],
+    "summary": [
+      "제안 논문과 기존 논문은 모두 사전학습된 언어 표현을 다운스트림 과제에 미세조정해 평가하며, masked language model pre-training objective를 공통 기반으로 사용한다. 다만 제안 논문은 기존 논문의 MLM과 NSP 구성을 바탕으로 NSP 제거, 동적 마스킹, FULL-SENTENCES 입력, byte-level BPE, 추가 데이터셋 등 학습 절차와 입력 체계를 구체적으로 수정·확장한다."
+    ],
+    "element_mapping": [
+      "M1 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | training the model longer, with bigger batches, over more data는 학습 기간·배치 크기·데이터 양을 바꾸는 설정 변경으로, 문서 기준상 기존 논문의 고유 요소 대응이 없다.",
+      "M2 ↔ P2 | 유사 | M[1] / P[3.1] | removing the next sentence prediction objective는 기존 논문의 next sentence prediction task를 그대로 쓰는 것이 아니라 제거한 변형이다.",
+      "M3 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | training on longer sequences는 시퀀스 길이 설정을 늘린 절차 변경으로, 문서 기준상 기존 논문의 핵심 요소와 직접 대응하지 않는다.",
+      "M4 ↔ P1 | 유사 | M[1] / P[3.1] | dynamically changing the masking pattern은 masked language model pre-training objective를 유지하면서 마스킹 적용 방식을 동적으로 바꾼 것으로, 같은 역할의 변형이다.",
+      "M5 ↔ P1 | 유사 | M[5] / P[3.1] | dynamic masking은 기존 MLM 기반 위에서 마스킹 방식을 바꾼 것이므로 같은 사전학습 목표의 변형에 해당한다.",
+      "M6 ↔ P2,P5,P8 | 유사 | M[5] / P[3.1],[3],[3] | FULL-SENTENCES without NSP loss는 NSP 제거 측면에서 P2와, 문장 단위 입력 및 문장 구분 활용 측면에서 P5와 P8과 관련되지만 동일한 방식은 아니어서 유사하다.",
+      "M7 ↔ - | 없음 | M[5] / 검토 범위 P1~P8 | large mini-batches는 배치 크기만 키운 설정 변경으로, 문서 기준상 기존 논문의 핵심 기술 요소 대응이 없다.",
+      "M8 ↔ P6 | 유사 | M[5] / P[3] | a larger byte-level BPE는 입력 어휘·토크나이저 체계라는 역할은 WordPiece embeddings와 같지만 구현 방식과 단위가 다르다.",
+      "M9 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | CC-NEWS는 새로 수집한 대규모 뉴스 데이터셋 추가로, 데이터 범위 확장일 뿐 기존 논문의 핵심 요소와 직접 대응하지 않는다."
+    ],
+    "result_pairs": [
+      "R-M1 ~ R-P11 | 동일 조건 | 둘 다 SQuAD v1.1, dev, single, EM 결과이다.",
+      "R-M2 ~ R-P12 | 동일 조건 | 둘 다 SQuAD v1.1, dev, single, F1 결과이다.",
+      "R-M3 ~ R-P23 | 동일 조건 | 둘 다 SQuAD v2.0, dev, single, EM 결과이다.",
+      "R-M4 ~ R-P24 | 동일 조건 | 둘 다 SQuAD v2.0, dev, single, F1 결과이다.",
+      "R-M5 ~ R-P25 | 동일 조건 | 둘 다 SQuAD v2.0, test, single 결과이며, R-M5의 지표는 물음표로 적혔지만 수치 배열상 EM 위치와 대응한다.",
+      "R-M6 ~ R-P26 | 동일 조건 | 둘 다 SQuAD v2.0, test, single 결과이며, R-M6의 지표는 물음표로 적혔지만 짝이 되는 F1 위치와 대응한다.",
+      "R-M10 ~ R-P1 | 조건 다름 | 둘 다 MNLI 계열 결과지만 R-M10은 dev, single이고 R-P1은 test, single의 MNLI-m이라 조건이 다르다.",
+      "R-M11 ~ R-P1 | 조건 다름 | 둘 다 MNLI 계열 결과지만 R-M11은 dev, single이고 R-P1은 test, single의 MNLI-m이라 조건이 다르다.",
+      "R-M12 ~ R-P4 | 조건 다름 | 둘 다 QNLI 결과지만 R-M12는 dev, single이고 R-P4는 test, single이라 조건이 다르다.",
+      "R-M13 ~ R-P3 | 조건 다름 | 둘 다 QQP 결과지만 R-M13은 dev, single이고 R-P3는 test, single이라 조건이 다르다.",
+      "R-M14 ~ R-P9 | 조건 다름 | 둘 다 RTE 결과지만 R-M14는 dev, single이고 R-P9는 test, single이라 조건이 다르다.",
+      "R-M15 ~ R-P5 | 조건 다름 | 둘 다 SST 계열 결과지만 R-M15는 dev, single이고 R-P5는 test, single이라 조건이 다르다.",
+      "R-M16 ~ R-P8 | 조건 다름 | 둘 다 MRPC 결과지만 R-M16은 dev, single이고 R-P8은 test, single이라 조건이 다르다.",
+      "R-M17 ~ R-P6 | 조건 다름 | 둘 다 CoLA 결과지만 R-M17은 dev, single이고 R-P6는 test, single이라 조건이 다르다.",
+      "R-M18 ~ R-P7 | 조건 다름 | 둘 다 STS 계열 결과지만 R-M18은 dev, single이고 R-P7은 test, single이며 지표 표기도 달라 조건 다름으로 본다.",
+      "R-M20 ~ R-P1 | 조건 다름 | 둘 다 MNLI 계열 결과지만 R-M20은 test, ensemble이고 R-P1은 test, single이라 조건이 다르다.",
+      "R-M21 ~ R-P2 | 조건 다름 | 둘 다 MNLI 계열 결과지만 R-M21은 test, ensemble이고 R-P2는 test, single의 MNLI-mm이라 조건이 다르다.",
+      "R-M22 ~ R-P4 | 조건 다름 | 둘 다 QNLI test 결과지만 R-M22는 ensemble이고 R-P4는 single이라 조건이 다르다.",
+      "R-M23 ~ R-P3 | 조건 다름 | 둘 다 QQP test 결과지만 R-M23은 ensemble이고 R-P3는 single이라 조건이 다르다.",
+      "R-M24 ~ R-P9 | 조건 다름 | 둘 다 RTE test 결과지만 R-M24는 ensemble이고 R-P9는 single이라 조건이 다르다.",
+      "R-M25 ~ R-P5 | 조건 다름 | 둘 다 SST test 결과지만 R-M25는 ensemble이고 R-P5는 single이라 조건이 다르다.",
+      "R-M26 ~ R-P8 | 조건 다름 | 둘 다 MRPC test 결과지만 R-M26은 ensemble이고 R-P8은 single이라 조건이 다르다.",
+      "R-M27 ~ R-P6 | 조건 다름 | 둘 다 CoLA test 결과지만 R-M27은 ensemble이고 R-P6는 single이라 조건이 다르다.",
+      "R-M28 ~ R-P7 | 조건 다름 | 둘 다 STS test 결과지만 R-M28은 ensemble이고 R-P7은 single이며 지표 표기도 달라 조건 다름으로 본다."
+    ],
+    "caution_points": [
+      "[M2 ↔ P2] NSP 관련 구성은 기존 논문의 next sentence prediction task와 직접 대비되는 요소라, 심사자가 같은 문제 설정의 변형으로 볼 수 있다. 본문에서는 해당 목적함수를 제거한 이유와 제거 후 학습 절차 변화가 무엇인지 분명히 보강하는 것이 좋다.",
+      "[M4 ↔ P1] 동적 마스킹은 기존 논문의 masked language model pre-training objective 위에서 마스킹 방식만 바꾼 것으로 지적될 수 있다. 본문에서는 정적 마스킹과 달리 학습 데이터 전반에서 마스크 패턴을 어떻게 바꾸는지 절차 차이를 구체화하는 것이 좋다.",
+      "[M5 ↔ P1] dynamic masking은 MLM 기반과 매우 가깝기 때문에 기존 논문과 실질적으로 같은 계열이라는 지적이 가능하다. 본문에서는 마스킹 목표는 같지만 적용 방식이 바뀐 점과 그 실험 설정을 명확히 설명하는 것이 좋다.",
+      "[M6 ↔ P2,P5,P8] FULL-SENTENCES without NSP loss는 문장 단위 입력과 문장 관계 처리 측면에서 기존 논문의 sentence-pair 구성과 통합 아키텍처와 겹친다는 지적을 받을 수 있다. 본문에서는 NSP 손실 제거와 FULL-SENTENCES 입력 형식이 실제로 어떤 적용 조건 차이를 만드는지 보강하는 것이 좋다.",
+      "[M8 ↔ P6] byte-level BPE 어휘 체계는 입력 표현 체계라는 점에서 WordPiece embeddings와 같은 범주의 요소로 지적될 수 있다. 본문에서는 토큰화 단위와 어휘 구성 범위의 차이가 학습 절차상 어떤 의미를 갖는지 구체적으로 적는 것이 좋다.",
+      "[R-M1 ↔ R-P11] 같은 데이터셋·지표·분할·설정의 결과가 함께 제시되어 직접 비교가 가능하므로, 심사자가 기존 논문과 같은 평가 틀 안의 개선으로 볼 수 있다. 본문에서는 동일 조건 비교의 의의와 차이가 학습 설계에서 나온다는 점을 분명히 하는 것이 좋다.",
+      "[R-M2 ↔ R-P12] 같은 데이터셋·지표·분할·설정의 F1 결과가 있어 기존 논문과 직접 수치 비교가 가능하다. 본문에서는 성능 비교 자체보다 어떤 사전학습 절차 변경이 이 조건에서 평가되었는지 함께 설명하는 것이 좋다.",
+      "[R-M3 ↔ R-P23] SQuAD v2.0 dev single EM 결과가 동일 조건으로 제시되어 기존 논문과 직접 비교될 수 있다. 본문에서는 동일 평가 조건 아래에서 변경된 학습 목표와 절차를 함께 서술하는 것이 좋다.",
+      "[R-M4 ↔ R-P24] SQuAD v2.0 dev single F1 결과는 기존 논문과 조건이 같아 수치가 직접 비교된다. 본문에서는 같은 평가 틀 안에서 무엇이 달라졌는지를 방법 중심으로 선명하게 적는 것이 좋다.",
+      "[R-M5 ↔ R-P25] SQuAD v2.0 test single 결과가 동일 조건으로 대응되어 기존 논문과 직접 비교될 수 있다. 본문에서는 지표 대응 관계를 분명히 하고, 같은 평가 조건에서 학습 절차 차이가 핵심이라는 점을 설명하는 것이 좋다.",
+      "[R-M6 ↔ R-P26] SQuAD v2.0 test single 결과가 동일 조건으로 대응되어 기존 논문과 같은 벤치마크 비교가 가능하다. 본문에서는 해당 수치가 어떤 사전학습 변경의 결과인지 연결해 설명하는 것이 좋다."
+    ],
+    "differentiation_suggestions": [
+      "Our work removes the next sentence prediction objective rather than retaining it during pre-training. This changes the training objective itself while keeping the study focused on how pretraining design choices affect downstream fine-tuning performance.",
+      "Our work uses dynamically changing masking patterns during training, whereas the prior work presents the masked language model objective and also notes a mismatch caused by the [MASK] token between pre-training and fine-tuning. The distinction should be described as a change in training procedure within the same broad MLM framework.",
+      "Our work adopts a larger byte-level BPE vocabulary and also introduces CC-NEWS as an additional pretraining dataset. These changes differentiate the input representation and data scope from the prior work's WordPiece-based setup."
+    ],
+    "related_work_draft": [
+      "The prior work (Devlin et al., arXiv, 2019) introduced BERT with masked language model pre-training and next sentence prediction for bidirectional language representation learning. Our work builds on this line of pretraining research while modifying the training objective, masking procedure, input encoding, and pretraining data conditions."
+    ]
+  },
+  {
+    "overlap_level": [
+      "Medium Overlap"
+    ],
+    "llm_score": [
+      58
+    ],
+    "summary": [
+      "제안 논문과 기존 논문은 모두 사전학습 언어 표현을 다운스트림 과제에 미세조정해 평가하며, 더 나은 사전학습 설계를 찾는다는 공통된 문제의식을 가진다. 다만 제안 논문은 기존 논문의 MLM·NSP 기반 절차를 출발점으로 삼아 NSP 제거, 동적 마스킹, byte-level BPE, 추가 데이터와 같은 학습 절차 변형을 체계적으로 검증하는 반면, 기존 논문은 양방향 Transformer 인코더와 MLM·NSP를 결합한 기본 사전학습 틀 자체를 제시한다."
+    ],
+    "element_mapping": [
+      "M1 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | 더 오래, 더 큰 배치, 더 많은 데이터에서 학습하는 절차는 학습 규모·기간·배치·데이터 양 같은 설정값 변경에 해당하므로 기존 논문의 고유 기술 요소 대응으로 보기 어렵다.",
+      "M2 ↔ P2 | 유사 | M[1] / P[3.1] | NSP 목적함수를 제거하는 방법은 기존 논문의 next sentence prediction task와 직접 대응하며, 같은 역할의 구성요소를 제거한 변형이다.",
+      "M3 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | 더 긴 시퀀스로 학습하는 방법은 시퀀스 길이 설정 변경에 해당하므로 기존 논문의 고유 기술 요소 대응으로 보기 어렵다.",
+      "M4 ↔ P1 | 유사 | M[1] / P[3.1] | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법은 기존 논문의 MLM 목적을 유지한 채 마스킹 적용 방식을 변형한 것이다.",
+      "M5 ↔ P1 | 유사 | M[5] / P[3.1] | dynamic masking은 기존 논문의 MLM 기반 사전학습과 같은 목적을 유지하면서 마스킹 방식을 동적으로 바꾼 변형이다.",
+      "M6 ↔ P2,P5 | 유사 | M[5] / P[3.1],[3] | FULL-SENTENCES without NSP loss는 문장 단위 입력 형식을 유지하면서 NSP를 제거한 구성으로, 기존 논문의 NSP 절차 및 문장 단위 통합 운용과 부분적으로 대응하는 변형이다.",
+      "M7 ↔ - | 없음 | M[5] / 검토 범위 P1~P8 | large mini-batches는 배치 크기 설정 변경에 해당하므로 기존 논문의 고유 기술 요소 대응으로 보기 어렵다.",
+      "M8 ↔ P6 | 유사 | M[5] / P[3] | 더 큰 byte-level BPE 어휘 체계는 기존 논문의 WordPiece embeddings와 같은 입력 어휘/토크나이저 역할을 다른 방식으로 교체한 것이다.",
+      "M9 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | CC-NEWS 추가는 새로 수집한 대규모 뉴스 데이터셋을 사용하는 것으로 데이터 구성과 범위를 확장한 것이며, 기존 논문의 고유 기술 요소 대응으로 보기 어렵다."
+    ],
+    "result_pairs": [
+      "R-M1 ~ R-P11 | 동일 조건 | 둘 다 SQuAD v1.1, dev, single, 추가 데이터 없음, EM이다.",
+      "R-M2 ~ R-P12 | 동일 조건 | 둘 다 SQuAD v1.1, dev, single, 추가 데이터 없음, F1이다.",
+      "R-M3 ~ R-P23 | 동일 조건 | 둘 다 SQuAD v2.0, dev, single, 추가 데이터 없음, EM이다.",
+      "R-M4 ~ R-P24 | 동일 조건 | 둘 다 SQuAD v2.0, dev, single, 추가 데이터 없음, F1이다.",
+      "R-M5 ~ R-P25 | 동일 조건 | 둘 다 SQuAD v2.0, test, single, 추가 데이터 없음, EM이다.",
+      "R-M6 ~ R-P26 | 동일 조건 | 둘 다 SQuAD v2.0, test, single, 추가 데이터 없음, F1이다.",
+      "R-M22 ~ R-P4 | 조건 다름 | 둘 다 QNLI이지만 R-M22는 test ensemble이고 R-P4는 test single이다.",
+      "R-M23 ~ R-P3 | 조건 다름 | 둘 다 QQP이지만 R-M23는 test ensemble이고 R-P3는 test single이며 지표 표기도 일치하지 않는다.",
+      "R-M24 ~ R-P9 | 조건 다름 | 둘 다 RTE이지만 R-M24는 test ensemble이고 R-P9는 test single이다.",
+      "R-M25 ~ R-P5 | 조건 다름 | 둘 다 SST 계열 test 결과이지만 R-M25는 ensemble이고 R-P5는 single이다.",
+      "R-M26 ~ R-P8 | 조건 다름 | 둘 다 MRPC, test이지만 R-M26은 ensemble이고 R-P8은 single이다.",
+      "R-M27 ~ R-P6 | 조건 다름 | 둘 다 CoLA, test이지만 R-M27은 ensemble이고 R-P6는 single이다.",
+      "R-M28 ~ R-P7 | 조건 다름 | 둘 다 STS 계열 test이지만 R-M28은 ensemble이고 R-P7은 single이며 지표 표기가 다르다.",
+      "R-M30 ~ R-P10 | 조건 다름 | 둘 다 전체 평균 성격의 결과지만 R-M30은 test ensemble이고 R-P10은 test single이다."
+    ],
+    "caution_points": [
+      "[M2 ↔ P2] NSP 목적함수 제거는 기존 논문의 next sentence prediction task를 직접 변형한 것으로 지적될 수 있다, 제거 자체가 왜 필요한지와 어떤 비교 설정에서 해석되는지 본문에 명확히 보강하는 것이 좋다.",
+      "[M4 ↔ P1] 동적 마스킹은 기존 논문의 masked language model pre-training objective와 같은 목적 위에서 마스킹 방식만 바꾼 것으로 보일 수 있다, 정적 마스킹과의 절차적 차이와 그 영향 범위를 구체적으로 설명할 필요가 있다.",
+      "[M5 ↔ P1] dynamic masking은 MLM 기반 사전학습의 변형으로 받아들여질 수 있다, 동일 목적을 유지하면서 어떤 학습 차이를 만드는지 비교 근거를 본문에 명시하는 것이 좋다.",
+      "[M6 ↔ P2,P5] FULL-SENTENCES without NSP loss는 기존 논문의 문장 관계 학습과 통합 입력 운용을 수정한 구성으로 보일 수 있다, 입력 형식은 유지하되 목적함수를 제거한 이유와 적용 조건을 분명히 써야 한다.",
+      "[M8 ↔ P6] byte-level BPE 어휘 체계는 기존 논문의 WordPiece embeddings와 같은 입력 표현 계층의 대체로 해석될 수 있다, 토크나이저와 어휘 체계 차이가 학습 범위에 어떤 의미를 갖는지 보강하는 것이 좋다.",
+      "[R-M1 ↔ R-P11] 두 논문은 SQuAD v1.1 dev single EM을 동일 조건으로 보고하므로 수치가 직접 비교될 수 있다, 제안 논문은 비교 목적과 조건 일치 여부를 본문에서 명시해 해석의 기준을 분명히 해야 한다.",
+      "[R-M2 ↔ R-P12] 두 논문은 SQuAD v1.1 dev single F1을 동일 조건으로 제시하므로 직접 대조 지점이 된다, 제안 논문은 학습 절차 차이에서 나온 결과임을 본문에서 함께 설명하는 것이 좋다.",
+      "[R-M3 ↔ R-P23] 두 논문은 SQuAD v2.0 dev single EM을 동일 조건으로 보고하므로 직접 비교가 가능하다, 제안 논문은 어떤 설계 변경이 이 조건의 차이를 만들었는지 연결해 서술하는 것이 바람직하다.",
+      "[R-M4 ↔ R-P24] 두 논문은 SQuAD v2.0 dev single F1을 동일 조건으로 제시하므로 결과가 직접 대조된다, 제안 논문은 동일 평가 조건에서 무엇이 바뀌었는지 학습 절차 중심으로 보강하는 것이 좋다.",
+      "[R-M5 ↔ R-P25] 두 논문은 SQuAD v2.0 test single EM을 같은 조건으로 제시하므로 비교 지점이 된다, 제안 논문은 결과 해석에서 조건 동일성과 지표 대응을 명확히 적는 것이 좋다.",
+      "[R-M6 ↔ R-P26] 두 논문은 SQuAD v2.0 test single F1을 같은 조건으로 제시하므로 직접 비교될 수 있다, 제안 논문은 추가 데이터 없이 같은 평가 분할과 단일 모델 설정임을 함께 밝혀 해석을 분명히 해야 한다."
+    ],
+    "differentiation_suggestions": [
+      "Our work studies the masked language modeling setup as a controlled re-examination of BERT design choices, rather than introducing MLM together with a new bidirectional encoder framework. In particular, we isolate the effect of removing next sentence prediction within an already established pretraining paradigm.",
+      "Our work modifies how masking is applied during pretraining by dynamically changing the masking pattern over the training data. This differs from the prior work’s presentation of masked language modeling as the base objective and should be described as a procedural change within the same objective family.",
+      "Our work expands the input encoding setup by using a larger byte-level BPE vocabulary and by incorporating the CC-NEWS corpus during pretraining. These choices differentiate the data and tokenization scope of our pretraining procedure from the prior work."
+    ],
+    "related_work_draft": [
+      "The prior work (Devlin et al., arXiv, 2019) introduced a bidirectional Transformer pretraining framework based on masked language modeling and next sentence prediction. Our work builds on this line of research by re-examining those pretraining choices and systematically varying the training procedure, masking strategy, vocabulary, and data sources."
+    ]
+  },
+  {
+    "overlap_level": [
+      "Medium Overlap",
+      "Medium Overlap",
+      "Medium Overlap"
+    ],
+    "llm_score": [
+      62
+    ],
+    "summary": [
+      "제안 논문과 기존 논문은 모두 언어 모델 사전학습 설계가 다운스트림 성능에 미치는 영향을 다루며, MLM 기반 사전학습과 GLUE·SQuAD 중심 평가 범위를 공유한다. 다만 제안 논문은 기존 논문의 MLM·NSP 구성과 입력 표현을 바탕으로 NSP 제거, 동적 마스킹, byte-level BPE, FULL-SENTENCES 등 학습 절차와 입력 체계를 구체적으로 변형·확장한다.",
+      "제안 논문과 기존 논문은 모두 언어 모델 사전학습 설계가 다운스트림 성능에 미치는 영향을 다루며, MLM 기반 사전학습과 GLUE·SQuAD 중심 평가 범위를 공유한다. 다만 제안 논문은 기존 논문의 MLM·NSP 구성과 입력 표현을 바탕으로 NSP 제거, 동적 마스킹, byte-level BPE, FULL-SENTENCES 등 학습 절차와 입력 체계를 구체적으로 변형·확장한다.",
+      "제안 논문과 기존 논문은 모두 언어 모델 사전학습 설계가 다운스트림 성능에 미치는 영향을 다루며, MLM 기반 사전학습과 GLUE·SQuAD 중심 평가 범위를 공유한다. 다만 제안 논문은 기존 논문의 MLM·NSP 구성과 입력 표현을 바탕으로 NSP 제거, 동적 마스킹, byte-level BPE, FULL-SENTENCES 등 학습 절차와 입력 체계를 구체적으로 변형·확장한다."
+    ],
+    "element_mapping": [
+      "M1 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | training the model longer, with bigger batches, over more data는 학습 규모·기간·배치·데이터 양 변경에 해당하며, 문서 안내상 이런 설정값 변경은 없음으로 본다.",
+      "M2 ↔ P2 | 유사 | M[1] / P[3.1] | removing the next sentence prediction objective는 next sentence prediction task를 제거하는 변형으로, 같은 역할 축을 대상으로 한 변경이다.",
+      "M3 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | training on longer sequences는 시퀀스 길이 설정을 바꾸는 내용이며, 제공된 P1~P8에 대응하는 고유 기법으로 제시되지 않았다.",
+      "M4 ↔ P1 | 유사 | M[1] / P[3.1] | dynamically changing the masking pattern applied to the training data는 MLM 기반에서 마스킹 적용 방식을 동적으로 바꾸는 변형이다.",
+      "M5 ↔ P1 | 유사 | M[5] / P[3.1] | dynamic masking은 masked language model pre-training objective와 같은 마스킹 기반 사전학습 축에서의 구체적 변형이다.",
+      "M6 ↔ P2 | 유사 | M[5] / P[3.1] | FULL-SENTENCES without NSP loss는 NSP task를 사용하던 절차를 제거·변형한 문장 입력 방식으로 같은 문장 관계 학습 축과 맞닿아 있다.",
+      "M7 ↔ - | 없음 | M[5] / 검토 범위 P1~P8 | large mini-batches는 배치 크기 변경으로, 문서 안내상 학습 규모·배치 같은 설정값 변경은 없음으로 본다.",
+      "M8 ↔ P6 | 유사 | M[5] / P[3] | a larger byte-level BPE는 WordPiece embeddings와 같은 입력 서브워드 표현 역할을 하되 어휘 체계를 교체·확장한 경우다.",
+      "M9 ↔ - | 없음 | M[1] / 검토 범위 P1~P8 | CC-NEWS는 새로 수집한 대규모 뉴스 데이터셋 추가로, 데이터 양·구성 확대에 해당하며 문서 안내상 고유 기법 대응으로 보지 않는다."
+    ],
+    "result_pairs": [
+      "R-M1 ~ R-P11 | 동일 조건 | 둘 다 SQuAD v1.1, dev, single, EM 결과다.",
+      "R-M2 ~ R-P12 | 동일 조건 | 둘 다 SQuAD v1.1, dev, single, F1 결과다.",
+      "R-M3 ~ R-P23 | 동일 조건 | 둘 다 SQuAD v2.0, dev, single, EM 결과다.",
+      "R-M4 ~ R-P24 | 동일 조건 | 둘 다 SQuAD v2.0, dev, single, F1 결과다.",
+      "R-M5 ~ R-P25 | 동일 조건 | 둘 다 SQuAD v2.0, test, single 결과이며, R-M5는 수치 배치상 EM에 대응한다.",
+      "R-M6 ~ R-P26 | 동일 조건 | 둘 다 SQuAD v2.0, test, single 결과이며, R-M6는 수치 배치상 F1에 대응한다.",
+      "R-M20 ~ R-P1 | 조건 다름 | 둘 다 MNLI 계열이지만 R-M20은 test, ensemble이고 R-P1은 test, single이며 세부 평가셋도 MNLI-m으로 다르다.",
+      "R-M21 ~ R-P2 | 조건 다름 | 둘 다 MNLI 계열이지만 R-M21은 test, ensemble이고 R-P2는 test, single이며 세부 평가셋이 MNLI-mm으로 다르다.",
+      "R-M22 ~ R-P4 | 조건 다름 | 둘 다 QNLI이지만 R-M22는 test, ensemble이고 R-P4는 test, single이다.",
+      "R-M23 ~ R-P3 | 조건 다름 | 둘 다 QQP이지만 R-M23은 test, ensemble이고 R-P3는 test, single이며 R-M23의 지표 표기도 불명확하다.",
+      "R-M24 ~ R-P9 | 조건 다름 | 둘 다 RTE이지만 R-M24는 test, ensemble이고 R-P9는 test, single이다.",
+      "R-M25 ~ R-P5 | 조건 다름 | 둘 다 SST 계열이지만 R-M25는 test, ensemble이고 R-P5는 test, single이다.",
+      "R-M26 ~ R-P8 | 조건 다름 | 둘 다 MRPC이지만 R-M26은 test, ensemble이고 R-P8은 test, single이며 R-P8은 F1로 명시되어 있다.",
+      "R-M27 ~ R-P6 | 조건 다름 | 둘 다 CoLA이지만 R-M27은 test, ensemble이고 R-P6는 test, single이며 R-P6의 지표는 Acc.다.",
+      "R-M28 ~ R-P7 | 조건 다름 | 둘 다 STS 계열이지만 R-M28은 test, ensemble이고 R-P7은 test, single이며 R-P7의 지표는 Spearman correlations다.",
+      "R-M30 ~ R-P10 | 조건 다름 | 둘 다 전체 평균 성격의 결과지만 R-M30은 GLUE Avg, test, ensemble, Avg이고 R-P10은 Average, test, single, ?다."
+    ],
+    "caution_points": [
+      "[M2 ↔ P2] NSP를 제거하는 서술은 기존 논문의 next sentence prediction task를 직접 기준점으로 삼는 변형으로 읽힐 수 있다, 제거가 왜 단순한 ablation이 아니라 연구 목적상 필요한 설계 선택인지 문제 설정과 함께 보강하는 것이 좋다.",
+      "[M4 ↔ P1] 동적 마스킹은 기존 논문의 MLM pre-training objective 위에서 마스킹 적용 방식만 바꾼 것으로 지적될 수 있다, 정적 마스킹과의 절차 차이와 그 비교 조건을 본문에서 더 명확히 써야 한다.",
+      "[M5 ↔ P1] dynamic masking은 MLM 기반 사전학습과 같은 축으로 보이므로 기존 논문의 마스킹 목표와 실질적으로 무엇이 다른지 설명이 부족하면 유사 기술로 보일 수 있다, 마스크 갱신 방식과 적용 범위를 구체화해 보강하는 것이 좋다.",
+      "[M6 ↔ P2] FULL-SENTENCES without NSP loss는 기존 논문의 NSP 절차를 대체하는 입력 구성으로 해석될 수 있다, 문장 관계 학습을 제거하고도 어떤 학습 조건을 유지했는지 명시해 차이를 분명히 하는 것이 좋다.",
+      "[M8 ↔ P6] byte-level BPE는 기존 논문의 WordPiece embeddings와 같은 입력 서브워드 표현으로 보일 수 있다, 어휘 단위와 토크나이제이션 차이가 실제 적용 조건에 어떤 변화를 주는지 서술을 보강하는 것이 좋다.",
+      "[R-M1 ↔ R-P11] 같은 SQuAD v1.1 dev single EM 조건의 결과가 직접 비교 가능하므로, 수치 비교가 단순 모델 차이가 아니라 학습 절차 차이에서 나온 것임을 본문에서 분리해 설명할 필요가 있다.",
+      "[R-M2 ↔ R-P12] 같은 SQuAD v1.1 dev single F1 조건의 결과가 제시되어 있어 심사자가 직접 수치 비교를 할 수 있다, 비교 실험의 공통 조건과 차별 조건을 표나 문장으로 명확히 정리하는 것이 좋다.",
+      "[R-M3 ↔ R-P23] 같은 SQuAD v2.0 dev single EM 조건은 제안 논문과 기존 논문의 결과를 직접 대조하게 만든다, 데이터 추가 여부와 학습 절차 차이를 함께 설명해 해석 범위를 제한하는 것이 좋다.",
+      "[R-M4 ↔ R-P24] 같은 SQuAD v2.0 dev single F1 조건은 기존 논문과의 직접 비교 지점이다, 결과 서술에서 동일 평가 분할과 단일 모델 설정임을 명시해 비교 해석을 통제하는 것이 좋다.",
+      "[R-M5 ↔ R-P25] 같은 SQuAD v2.0 test single 조건의 결과는 기존 논문과 직접 수치 비교가 가능하다, 지표가 문서상 물음표로 남아 있으므로 본문에서는 EM임을 분명히 적어 해석 혼선을 줄이는 것이 좋다.",
+      "[R-M6 ↔ R-P26] 같은 SQuAD v2.0 test single 조건의 결과는 기존 논문과 직접 맞대응된다, 지표가 문서상 물음표로 남아 있으므로 본문에서는 F1임을 명시해 결과 해석을 분명히 하는 것이 좋다."
+    ],
+    "differentiation_suggestions": [
+      "Our work removes the next sentence prediction objective, whereas the prior work includes next sentence prediction as a pre-training task. This difference should be described as a change in the pre-training objective rather than a generic reuse of the same setup.",
+      "Our work uses dynamically changing masking patterns during training, while the prior work defines a masked language model objective and notes a mismatch caused by the [MASK] token during fine-tuning. This contrast can be framed as a difference in the training procedure applied within MLM-based pretraining.",
+      "Our work uses a larger byte-level BPE vocabulary, whereas the prior work uses WordPiece embeddings with a 30,000-word vocabulary. This distinction should be stated as a change in the input tokenization and embedding space used for pretraining."
+    ],
+    "related_work_draft": [
+      "Our work is closely related to the prior work of Devlin et al., arXiv, 2019, which introduced masked language model pre-training and next sentence prediction for bidirectional Transformer encoders. Compared with the prior work, our work keeps the MLM-based pretraining setting but changes the objective and input representation through removing NSP, dynamic masking, and a larger byte-level BPE vocabulary.",
+      "Our work is closely related to the prior work of Devlin et al., arXiv, 2019, which introduced masked language model pre-training and next sentence prediction for bidirectional Transformer encoders. Compared with the prior work, our work keeps the MLM-based pretraining setting but changes the objective and input representation through removing NSP, dynamic masking, and a larger byte-level BPE vocabulary.",
+      "Our work is closely related to the prior work of Devlin et al., arXiv, 2019, which introduced masked language model pre-training and next sentence prediction for bidirectional Transformer encoders. Compared with the prior work, our work keeps the MLM-based pretraining setting but changes the objective and input representation through removing NSP, dynamic masking, and a larger byte-level BPE vocabulary."
+    ]
+  }
+]

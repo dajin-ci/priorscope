@@ -1,0 +1,1496 @@
+{
+  "status": "NEEDS_REVIEW",
+  "final_level": "Low Overlap",
+  "classify_level": "Medium Overlap",
+  "classify_agrees": false,
+  "llm_score": 58,
+  "coverage": {
+    "min": 27.8,
+    "max": 27.8,
+    "uncertain_count": 0,
+    "verdict_counts": {
+      "일치": 0,
+      "유사": 5,
+      "없음": 4,
+      "확인필요": 0
+    },
+    "thresholds": {
+      "high": 70.0,
+      "medium": 30.0
+    }
+  },
+  "uncertain_items": [],
+  "mappings": [
+    {
+      "id": "M1",
+      "text": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "training the model longer, with bigger batches, over more data는 학습 기간·배치 크기·데이터 양을 바꾸는 설정 변경으로, 문서 기준상 기존 논문의 고유 요소 대응이 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.516,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.516
+          },
+          {
+            "id": "P4",
+            "score": 0.5053
+          },
+          {
+            "id": "P5",
+            "score": 0.4562
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M2",
+      "text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+      "section": "1",
+      "prior_ids": [
+        "P2"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[1] / P[3.1]",
+      "explanation": "removing the next sentence prediction objective는 기존 논문의 next sentence prediction task를 그대로 쓰는 것이 아니라 제거한 변형이다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.5923,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.5923
+          },
+          {
+            "id": "P1",
+            "score": 0.546
+          },
+          {
+            "id": "P8",
+            "score": 0.4574
+          }
+        ],
+        "cited_max": 0.5923
+      },
+      "votes": [
+        "유사",
+        "유사",
+        "유사"
+      ]
+    },
+    {
+      "id": "M3",
+      "text": "[1] training on longer sequences | 더 긴 시퀀스로 학습하는 방법",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "training on longer sequences는 시퀀스 길이 설정을 늘린 절차 변경으로, 문서 기준상 기존 논문의 핵심 요소와 직접 대응하지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.4605,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.4605
+          },
+          {
+            "id": "P4",
+            "score": 0.4512
+          },
+          {
+            "id": "P3",
+            "score": 0.4456
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M4",
+      "text": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+      "section": "1",
+      "prior_ids": [
+        "P1"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[1] / P[3.1]",
+      "explanation": "dynamically changing the masking pattern은 masked language model pre-training objective를 유지하면서 마스킹 적용 방식을 동적으로 바꾼 것으로, 같은 역할의 변형이다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P1",
+        "max_score": 0.5003,
+        "top": [
+          {
+            "id": "P1",
+            "score": 0.5003
+          },
+          {
+            "id": "P4",
+            "score": 0.448
+          },
+          {
+            "id": "P2",
+            "score": 0.4278
+          }
+        ],
+        "cited_max": 0.5003
+      },
+      "votes": [
+        "유사",
+        "유사",
+        "유사"
+      ]
+    },
+    {
+      "id": "M5",
+      "text": "[5] dynamic mask-ing | 동적 마스킹",
+      "section": "5",
+      "prior_ids": [
+        "P1"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[5] / P[3.1]",
+      "explanation": "dynamic masking은 기존 MLM 기반 위에서 마스킹 방식을 바꾼 것이므로 같은 사전학습 목표의 변형에 해당한다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P1",
+        "max_score": 0.409,
+        "top": [
+          {
+            "id": "P1",
+            "score": 0.409
+          },
+          {
+            "id": "P5",
+            "score": 0.3285
+          },
+          {
+            "id": "P3",
+            "score": 0.3119
+          }
+        ],
+        "cited_max": 0.409
+      },
+      "votes": [
+        "유사",
+        "유사",
+        "유사"
+      ]
+    },
+    {
+      "id": "M6",
+      "text": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+      "section": "5",
+      "prior_ids": [
+        "P2",
+        "P5",
+        "P8"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[5] / P[3.1],[3],[3]",
+      "explanation": "FULL-SENTENCES without NSP loss는 NSP 제거 측면에서 P2와, 문장 단위 입력 및 문장 구분 활용 측면에서 P5와 P8과 관련되지만 동일한 방식은 아니어서 유사하다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P2",
+        "max_score": 0.4869,
+        "top": [
+          {
+            "id": "P2",
+            "score": 0.4869
+          },
+          {
+            "id": "P8",
+            "score": 0.4732
+          },
+          {
+            "id": "P1",
+            "score": 0.4471
+          }
+        ],
+        "cited_max": 0.4869
+      },
+      "votes": [
+        "유사",
+        "유사",
+        "유사"
+      ]
+    },
+    {
+      "id": "M7",
+      "text": "[5] large mini-batches | 대규모 미니배치 학습",
+      "section": "5",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[5] / 검토 범위 P1~P8",
+      "explanation": "large mini-batches는 배치 크기만 키운 설정 변경으로, 문서 기준상 기존 논문의 핵심 기술 요소 대응이 없다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P4",
+        "max_score": 0.4913,
+        "top": [
+          {
+            "id": "P4",
+            "score": 0.4913
+          },
+          {
+            "id": "P2",
+            "score": 0.4542
+          },
+          {
+            "id": "P6",
+            "score": 0.4205
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    },
+    {
+      "id": "M8",
+      "text": "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계",
+      "section": "5",
+      "prior_ids": [
+        "P6"
+      ],
+      "agent_verdict": "유사",
+      "final_verdict": "유사",
+      "evidence": "M[5] / P[3]",
+      "explanation": "a larger byte-level BPE는 입력 어휘·토크나이저 체계라는 역할은 WordPiece embeddings와 같지만 구현 방식과 단위가 다르다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P6",
+        "max_score": 0.5792,
+        "top": [
+          {
+            "id": "P6",
+            "score": 0.5792
+          },
+          {
+            "id": "P1",
+            "score": 0.4522
+          },
+          {
+            "id": "P8",
+            "score": 0.4372
+          }
+        ],
+        "cited_max": 0.5792
+      },
+      "votes": [
+        "유사",
+        "유사",
+        "유사"
+      ]
+    },
+    {
+      "id": "M9",
+      "text": "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법",
+      "section": "1",
+      "prior_ids": [],
+      "agent_verdict": "없음",
+      "final_verdict": "없음",
+      "evidence": "M[1] / 검토 범위 P1~P8",
+      "explanation": "CC-NEWS는 새로 수집한 대규모 뉴스 데이터셋 추가로, 데이터 범위 확장일 뿐 기존 논문의 핵심 요소와 직접 대응하지 않는다.",
+      "demoted_reasons": [],
+      "similarity": {
+        "best_p": "P7",
+        "max_score": 0.4015,
+        "top": [
+          {
+            "id": "P7",
+            "score": 0.4015
+          },
+          {
+            "id": "P2",
+            "score": 0.3956
+          },
+          {
+            "id": "P6",
+            "score": 0.3827
+          }
+        ],
+        "cited_max": null
+      },
+      "votes": [
+        "없음",
+        "없음",
+        "없음"
+      ]
+    }
+  ],
+  "numeric_checks": [
+    {
+      "my_result_id": "R-M1",
+      "prior_result_id": "R-P11",
+      "outcome": "우세",
+      "reason": null,
+      "absolute_difference": 4.800000000000011,
+      "absolute_difference_unit": "em",
+      "relative_change_percent": 5.707491082045198,
+      "comparison_unit": "em",
+      "dataset": "SQuAD v1.1",
+      "my_metric": "EM",
+      "prior_metric": "EM",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE (Single) · dev · single · 추가 데이터 없음",
+      "my_value": "88.9",
+      "prior_value": "84.1",
+      "agent_condition": "동일 조건",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M2",
+      "prior_result_id": "R-P12",
+      "outcome": "우세",
+      "reason": null,
+      "absolute_difference": 3.6999999999999886,
+      "absolute_difference_unit": "f1",
+      "relative_change_percent": 4.070407040704057,
+      "comparison_unit": "f1",
+      "dataset": "SQuAD v1.1",
+      "my_metric": "F1",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE (Single) · dev · single · 추가 데이터 없음",
+      "my_value": "94.6",
+      "prior_value": "90.9",
+      "agent_condition": "동일 조건",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M3",
+      "prior_result_id": "R-P23",
+      "outcome": "우세",
+      "reason": null,
+      "absolute_difference": 7.799999999999997,
+      "absolute_difference_unit": "em",
+      "relative_change_percent": 9.911054637865307,
+      "comparison_unit": "em",
+      "dataset": "SQuAD v2.0",
+      "my_metric": "EM",
+      "prior_metric": "EM",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE (Single) · dev · single · 추가 데이터 없음",
+      "my_value": "86.5",
+      "prior_value": "78.7",
+      "agent_condition": "동일 조건",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M4",
+      "prior_result_id": "R-P24",
+      "outcome": "우세",
+      "reason": null,
+      "absolute_difference": 7.5,
+      "absolute_difference_unit": "f1",
+      "relative_change_percent": 9.157509157509157,
+      "comparison_unit": "f1",
+      "dataset": "SQuAD v2.0",
+      "my_metric": "F1",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE (Single) · dev · single · 추가 데이터 없음",
+      "my_value": "89.4",
+      "prior_value": "81.9",
+      "agent_condition": "동일 조건",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M5",
+      "prior_result_id": "R-P25",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "SQuAD 2.0",
+      "my_metric": "",
+      "prior_metric": "EM",
+      "my_setting": "RoBERTa · test · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE (Single) · test · single · 추가 데이터 없음",
+      "my_value": "86.8",
+      "prior_value": "80.0",
+      "agent_condition": "동일 조건",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M6",
+      "prior_result_id": "R-P26",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "SQuAD 2.0",
+      "my_metric": "",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · test · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE (Single) · test · single · 추가 데이터 없음",
+      "my_value": "89.8",
+      "prior_value": "83.1",
+      "agent_condition": "동일 조건",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M10",
+      "prior_result_id": "R-P1",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "MNLI",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "90.2",
+      "prior_value": "86.7",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M11",
+      "prior_result_id": "R-P1",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "MNLI",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "90.2",
+      "prior_value": "86.7",
+      "agent_condition": "조건 다름",
+      "warnings": [
+        "R-M11는 R-M10와 같은 결과의 중복 추출로 보입니다."
+      ],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M12",
+      "prior_result_id": "R-P4",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "QNLI",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "94.7",
+      "prior_value": "92.7",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M13",
+      "prior_result_id": "R-P3",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "QQP",
+      "my_metric": "",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "92.2",
+      "prior_value": "72.1",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M14",
+      "prior_result_id": "R-P9",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "RTE",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "86.6",
+      "prior_value": "70.1",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M15",
+      "prior_result_id": "R-P5",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "SST",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "96.4",
+      "prior_value": "94.9",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M16",
+      "prior_result_id": "R-P8",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "MRPC",
+      "my_metric": "",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "90.9",
+      "prior_value": "89.3",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M17",
+      "prior_result_id": "R-P6",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "CoLA",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "68.0",
+      "prior_value": "60.5",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M18",
+      "prior_result_id": "R-P7",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "STS",
+      "my_metric": "",
+      "prior_metric": "Spearman correlations",
+      "my_setting": "RoBERTa · dev · single · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "92.4",
+      "prior_value": "86.5",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M20",
+      "prior_result_id": "R-P1",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "MNLI",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "90.8",
+      "prior_value": "86.7",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M21",
+      "prior_result_id": "R-P2",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "MNLI",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "90.2",
+      "prior_value": "85.9",
+      "agent_condition": "조건 다름",
+      "warnings": [
+        "R-M21는 R-M10와 같은 결과의 중복 추출로 보입니다."
+      ],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M22",
+      "prior_result_id": "R-P4",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "QNLI",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "98.9",
+      "prior_value": "92.7",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M23",
+      "prior_result_id": "R-P3",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "QQP",
+      "my_metric": "",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "90.2",
+      "prior_value": "72.1",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M24",
+      "prior_result_id": "R-P9",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "RTE",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "88.2",
+      "prior_value": "70.1",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M25",
+      "prior_result_id": "R-P5",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "SST",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "96.7",
+      "prior_value": "94.9",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M26",
+      "prior_result_id": "R-P8",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "MRPC",
+      "my_metric": "",
+      "prior_metric": "F1",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "92.3",
+      "prior_value": "89.3",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M27",
+      "prior_result_id": "R-P6",
+      "outcome": "비교 불가",
+      "reason": "지표를 확인할 수 없습니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "CoLA",
+      "my_metric": "",
+      "prior_metric": "Acc.",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "67.8",
+      "prior_value": "60.5",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    },
+    {
+      "my_result_id": "R-M28",
+      "prior_result_id": "R-P7",
+      "outcome": "비교 불가",
+      "reason": "데이터셋이 다릅니다.",
+      "absolute_difference": null,
+      "absolute_difference_unit": null,
+      "relative_change_percent": null,
+      "comparison_unit": null,
+      "dataset": "STS",
+      "my_metric": "",
+      "prior_metric": "Spearman correlations",
+      "my_setting": "RoBERTa · test · ensemble · 추가 데이터 없음",
+      "prior_setting": "BERTLARGE · test · single · 추가 데이터 없음",
+      "my_value": "92.2",
+      "prior_value": "86.5",
+      "agent_condition": "조건 다름",
+      "warnings": [],
+      "condition_judge": "code"
+    }
+  ],
+  "expected_result_pairs": [
+    [
+      "R-M1",
+      "R-P11"
+    ],
+    [
+      "R-M1",
+      "R-P13"
+    ],
+    [
+      "R-M1",
+      "R-P15"
+    ],
+    [
+      "R-M1",
+      "R-P17"
+    ],
+    [
+      "R-M1",
+      "R-P19"
+    ],
+    [
+      "R-M1",
+      "R-P21"
+    ],
+    [
+      "R-M2",
+      "R-P12"
+    ],
+    [
+      "R-M2",
+      "R-P14"
+    ],
+    [
+      "R-M2",
+      "R-P16"
+    ],
+    [
+      "R-M2",
+      "R-P18"
+    ],
+    [
+      "R-M2",
+      "R-P20"
+    ],
+    [
+      "R-M2",
+      "R-P22"
+    ],
+    [
+      "R-M3",
+      "R-P23"
+    ],
+    [
+      "R-M3",
+      "R-P25"
+    ],
+    [
+      "R-M4",
+      "R-P24"
+    ],
+    [
+      "R-M4",
+      "R-P26"
+    ]
+  ],
+  "result_warnings": {
+    "duplicates": {
+      "R-M11": "R-M10",
+      "R-M21": "R-M10",
+      "R-P18": "R-P14"
+    },
+    "invalid_locations": []
+  },
+  "issues": [
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M1~R-P13",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M1~R-P15",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M1~R-P17",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M1~R-P19",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M1~R-P21",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M2~R-P14",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M2~R-P16",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M2~R-P18",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M2~R-P20",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M2~R-P22",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M3~R-P25",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_MISSING",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M4~R-P26",
+      "message": "필수 정량 비교 쌍이 결과에서 누락되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M10~R-P1",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M11~R-P1",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M12~R-P4",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M13~R-P3",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M14~R-P9",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M15~R-P5",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M16~R-P8",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M17~R-P6",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M18~R-P7",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M20~R-P1",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M21~R-P2",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M22~R-P4",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M23~R-P3",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M24~R-P9",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M25~R-P5",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M26~R-P8",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M27~R-P6",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M28~R-P7",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M5~R-P25",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_PAIR_OUT_OF_SCOPE",
+      "severity": "review",
+      "path": "comparison_result.result_pairs",
+      "item_id": "R-M6~R-P26",
+      "message": "예상 목록에 없는 정량 비교 쌍이 결과에 포함되었습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M5~R-P25",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M6~R-P26",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M10~R-P1",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M11~R-P1",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M12~R-P4",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M13~R-P3",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M14~R-P9",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M15~R-P5",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M16~R-P8",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M17~R-P6",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M18~R-P7",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M20~R-P1",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M21~R-P2",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M22~R-P4",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M23~R-P3",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M24~R-P9",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M25~R-P5",
+      "message": "데이터셋이 다릅니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M26~R-P8",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_UNAVAILABLE",
+      "severity": "review",
+      "path": "source_records.metric",
+      "item_id": "R-M27~R-P6",
+      "message": "지표를 확인할 수 없습니다."
+    },
+    {
+      "code": "RESULT_CONDITION_MISMATCH",
+      "severity": "review",
+      "path": "source_records.dataset",
+      "item_id": "R-M28~R-P7",
+      "message": "데이터셋이 다릅니다."
+    }
+  ],
+  "not_checked": [
+    {
+      "code": "SEMANTIC_VALIDITY_NOT_CHECKED",
+      "path": "comparison_result.element_mapping",
+      "reason": "기법의 의미상 동일성, 원문 주장 전체의 참·거짓, 근거의 충분성은 규칙 기반으로 판정하지 않습니다."
+    },
+    {
+      "code": "SIMILARITY_THRESHOLD_UNSET",
+      "path": "similarity",
+      "reason": "유사도 임계값이 정해지지 않아 점수만 보고하고 판정은 바꾸지 않았습니다."
+    }
+  ],
+  "similarity": {
+    "available": true,
+    "model": "embedding-passage",
+    "threshold": null,
+    "demoted": [],
+    "stats": {
+      "min": 0.2703,
+      "max": 0.5923,
+      "mean": 0.4123
+    }
+  },
+  "weaknesses": {
+    "prior_only": [
+      {
+        "id": "P3",
+        "text": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+        "section": "3",
+        "reason": "내 논문의 어떤 핵심 기술 요소(M)와도 대응되지 않았습니다."
+      },
+      {
+        "id": "P4",
+        "text": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
+        "section": "3.2",
+        "reason": "내 논문의 어떤 핵심 기술 요소(M)와도 대응되지 않았습니다."
+      },
+      {
+        "id": "P7",
+        "text": "[3] [CLS] | 분류 작업을 위한 집계 시퀀스 표현으로 사용하는 특수 토큰",
+        "section": "3",
+        "reason": "내 논문의 어떤 핵심 기술 요소(M)와도 대응되지 않았습니다."
+      }
+    ],
+    "inferior_results": [],
+    "prior_only_complete": true,
+    "uncertain_without_prior": [],
+    "counts": {
+      "prior_only": 3,
+      "inferior_results": 0
+    }
+  },
+  "consensus": {
+    "runs": 3,
+    "representative_run": 1,
+    "agreement_rate": 1.0,
+    "changed_from_representative": [],
+    "rule": "과반 판정. 과반이 없거나, 과반이 없음인데 겹침 판정이 섞이면 확인필요",
+    "failed_runs": []
+  },
+  "suitability": {
+    "version": "3",
+    "route": "research",
+    "label": "연구 내용 비교",
+    "axes": {
+      "problem": {
+        "relation": "same",
+        "reason": "두 논문 모두 언어 모델 사전학습(pretraining) 방법의 설계와 학습 조건이 다운스트림 과제 성능에 미치는 영향을 규명하고, 더 효과적인 사전학습 접근법을 제시하는 것을 공통된 해결 문제로 삼는다. 내 논문은 BERT를 포함한 기존 자기지도 사전학습 방법들이 계산 비용, 비공개 데이터셋, 하이퍼파라미터 민감성 때문에 비교가 어렵고, BERT가 충분히 학습되지 않아 이후 개선 요인의 해석이 어렵다는 점을 문제로 제기한다. 상대 논문은 단방향 언어 모델 기반 사전학습이 양방향 문맥 활용을 제한해 표현력과 과제별 아키텍처 의존도를 높인다는 점을 문제로 삼는다. 두 문제는 사전학습 표현/절차의 한계를 지적하고 더 나은 사전학습 설계를 찾는다는 점에서 같은 해결 목적을 공유한다.",
+        "my_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+            "source_text": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices."
+          },
+          {
+            "field": "problem",
+            "index": 2,
+            "quote": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+            "source_text": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects."
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "problem",
+            "index": 0,
+            "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+            "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+          },
+          {
+            "field": "contributions",
+            "index": 0,
+            "quote": "We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks.",
+            "source_text": "[1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks."
+          }
+        ]
+      },
+      "scope": {
+        "relation": "comparable",
+        "reason": "두 논문 모두 자연어처리를 대상으로 하며, 사전학습된 언어 표현을 다운스트림 과제에서 미세조정해 평가하는 동일한 입출력·과제 범위를 공유한다. 내 논문은 BERT의 설계 선택과 학습 전략을 대체해 다운스트림 과제 성능을 높이는 것을 범위로 하고, 상대 논문은 양방향 Transformer 인코더 사전학습과 종단간 미세조정을 통해 다양한 과제에서 통합 아키텍처를 사용하는 것을 범위로 한다. 둘 다 GLUE, SQuAD 등 공통 다운스트림 과제에서 단일/앙상블 설정으로 성능을 비교하므로 연구 내용 비교에 대응한다.",
+        "my_evidence": [
+          {
+            "field": "experiment_results",
+            "index": 0,
+            "quote": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]",
+            "source_text": "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]"
+          },
+          {
+            "field": "experiment_results",
+            "index": 9,
+            "quote": "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+            "source_text": "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+            "index_corrected_from": 13
+          },
+          {
+            "field": "contributions",
+            "index": 0,
+            "quote": "We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance.",
+            "source_text": "[1] We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance."
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "experiment_results",
+            "index": 10,
+            "quote": "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]",
+            "source_text": "SQuAD v1.1 | BERTLARGE (Single) | dev | single | 없음 | EM | 84.1 | ↑ | [Table 2]"
+          },
+          {
+            "field": "experiment_results",
+            "index": 0,
+            "quote": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+            "source_text": "MNLI-m | BERTLARGE | test | single | 없음 | Acc. | 86.7 | ↑ | [Table 1]",
+            "index_corrected_from": 8
+          },
+          {
+            "field": "core_techniques",
+            "index": 4,
+            "quote": "unified architecture across different tasks | 다양한 다운스트림 과제에서 거의 동일한 구조를 유지하는 통합 아키텍처",
+            "source_text": "[3] unified architecture across different tasks | 다양한 다운스트림 과제에서 거의 동일한 구조를 유지하는 통합 아키텍처"
+          }
+        ]
+      },
+      "method": {
+        "relation": "specific_shared",
+        "reason": "두 논문은 마스킹된 언어 모델(MLM) 사전학습 목표를 공통 기반으로 사용하며, 내 논문은 상대 논문의 MLM과 NSP 구성을 명시적으로 변형·확장한다. 내 논문은 NSP 목적함수를 제거하고, 더 긴 시퀀스, 동적 마스킹, 더 큰 미니배치, 더 큰 byte-level BPE, 추가 데이터셋(CC-NEWS) 등을 도입해 상대 논문의 사전학습 절차를 구체적으로 수정한다. 따라서 단순 범용 기반 공유가 아니라 구체적 기법·학습 절차에 공통/변형/확장 관계가 있다.",
+        "my_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 1,
+            "quote": "removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+            "source_text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법"
+          },
+          {
+            "field": "core_techniques",
+            "index": 3,
+            "quote": "dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+            "source_text": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법"
+          },
+          {
+            "field": "core_techniques",
+            "index": 4,
+            "quote": "dynamic mask-ing | 동적 마스킹",
+            "source_text": "[5] dynamic mask-ing | 동적 마스킹"
+          },
+          {
+            "field": "core_techniques",
+            "index": 5,
+            "quote": "FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+            "source_text": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법"
+          }
+        ],
+        "prior_evidence": [
+          {
+            "field": "core_techniques",
+            "index": 0,
+            "quote": "\"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+            "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+          },
+          {
+            "field": "core_techniques",
+            "index": 1,
+            "quote": "\"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+            "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+          },
+          {
+            "field": "core_techniques",
+            "index": 2,
+            "quote": "multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+            "source_text": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용"
+          }
+        ]
+      }
+    },
+    "comparison_allowed": true,
+    "evidence_basis": "extracted_text",
+    "warnings": [],
+    "evidence_failures": [],
+    "index_corrections": [
+      {
+        "axis": "scope",
+        "side": "my",
+        "field": "experiment_results",
+        "from": 13,
+        "to": 9
+      },
+      {
+        "axis": "scope",
+        "side": "prior",
+        "field": "experiment_results",
+        "from": 8,
+        "to": 0
+      }
+    ],
+    "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+    "model": "solar-pro4"
+  },
+  "overall_assessment_applicable": true
+}

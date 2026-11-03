@@ -1,0 +1,539 @@
+{
+  "created_at": "2026-11-03T11:36:17",
+  "metrics": {
+    "provisional": true,
+    "samples": 5,
+    "route_accuracy": 1.0,
+    "route_accuracy_disputed": null,
+    "route_accuracy_vs_sheet": 1.0,
+    "gate_leak_rate": 0.0,
+    "over_block_rate": 0.0,
+    "axis_accuracy": {
+      "problem": 1.0,
+      "scope": 0.75,
+      "method": 0.75
+    },
+    "axis_accuracy_vs_sheet": {
+      "problem": 1.0,
+      "scope": 0.75,
+      "method": 0.75
+    },
+    "elements_scored": 26,
+    "false_novelty_rate": 0.0,
+    "false_novelty_rate_agent": 0.0,
+    "element_accuracy": 0.8461538461538461,
+    "uncertain_rate": 0.0,
+    "grade_agreement": 1.0,
+    "vote_agreement": 1.0,
+    "false_novelty_any_run": 0.0,
+    "grade_held": 0
+  },
+  "targets": {
+    "false_novelty_rate": true,
+    "element_accuracy": true,
+    "route_accuracy": true,
+    "gate_leak_rate": true,
+    "grade_agreement": true
+  },
+  "samples": [
+    {
+      "sample": "S1",
+      "provisional": true,
+      "route_pred": "partial",
+      "route_truth": [
+        "partial"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": true,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {
+        "problem": {
+          "pred": "related",
+          "truth": "related",
+          "truth_from_sheet": "related",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "comparable",
+          "truth": "partial",
+          "truth_from_sheet": "partial",
+          "correct": false,
+          "correct_vs_sheet": false
+        },
+        "method": {
+          "pred": "specific_shared",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": true,
+          "correct_vs_sheet": true
+        }
+      },
+      "elements": {
+        "rows": [
+          {
+            "id": "M1",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M2",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M3",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M4",
+            "truth": "일치",
+            "agent": "일치",
+            "final": "일치",
+            "votes": [
+              "일치",
+              "일치",
+              "일치"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M5",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M6",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M7",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M8",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          }
+        ],
+        "missing_in_pred": []
+      },
+      "grade": null
+    },
+    {
+      "sample": "S2",
+      "provisional": true,
+      "route_pred": "research",
+      "route_truth": [
+        "research"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": true,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {
+        "problem": {
+          "pred": "same",
+          "truth": "same",
+          "truth_from_sheet": "same",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "comparable",
+          "truth": "comparable",
+          "truth_from_sheet": "comparable",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "method": {
+          "pred": "specific_shared",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": true,
+          "correct_vs_sheet": true
+        }
+      },
+      "elements": {
+        "rows": [
+          {
+            "id": "M1",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M2",
+            "truth": "없음",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M3",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M4",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M5",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M6",
+            "truth": "없음",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M7",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M8",
+            "truth": "유사",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M9",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          }
+        ],
+        "missing_in_pred": []
+      },
+      "grade": {
+        "pred": "Low Overlap",
+        "truth": "Low Overlap",
+        "held": false,
+        "correct": true
+      }
+    },
+    {
+      "sample": "S3",
+      "provisional": true,
+      "route_pred": "unsuitable",
+      "route_truth": [
+        "unsuitable"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": true,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {
+        "problem": {
+          "pred": "different",
+          "truth": "different",
+          "truth_from_sheet": "different",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "different",
+          "truth": "different",
+          "truth_from_sheet": "different",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "method": {
+          "pred": "generic_only",
+          "truth": "generic_only",
+          "truth_from_sheet": "generic_only",
+          "correct": true,
+          "correct_vs_sheet": true
+        }
+      },
+      "elements": null,
+      "grade": null
+    },
+    {
+      "sample": "S4",
+      "provisional": true,
+      "route_pred": "partial",
+      "route_truth": [
+        "partial"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": true,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {
+        "problem": {
+          "pred": "related",
+          "truth": "related",
+          "truth_from_sheet": "related",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "scope": {
+          "pred": "partial",
+          "truth": "partial",
+          "truth_from_sheet": "partial",
+          "correct": true,
+          "correct_vs_sheet": true
+        },
+        "method": {
+          "pred": "generic_only",
+          "truth": "specific_shared",
+          "truth_from_sheet": "specific_shared",
+          "correct": false,
+          "correct_vs_sheet": false
+        }
+      },
+      "elements": {
+        "rows": [
+          {
+            "id": "M1",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M2",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M3",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M4",
+            "truth": "확인필요",
+            "agent": "유사",
+            "final": "유사",
+            "votes": [
+              "유사",
+              "유사",
+              "유사"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M5",
+            "truth": "확인필요",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M6",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M7",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M8",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          },
+          {
+            "id": "M9",
+            "truth": "없음",
+            "agent": "없음",
+            "final": "없음",
+            "votes": [
+              "없음",
+              "없음",
+              "없음"
+            ],
+            "demoted": false
+          }
+        ],
+        "missing_in_pred": []
+      },
+      "grade": null
+    },
+    {
+      "sample": "S5",
+      "provisional": false,
+      "route_pred": "unsuitable",
+      "route_truth": [
+        "insufficient",
+        "unsuitable"
+      ],
+      "route_correct": true,
+      "route_disputed": false,
+      "route_correct_vs_sheet": null,
+      "gate_leak": false,
+      "over_block": false,
+      "axes": {},
+      "elements": null,
+      "grade": null
+    }
+  ],
+  "results_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/eval/results/v10"
+}

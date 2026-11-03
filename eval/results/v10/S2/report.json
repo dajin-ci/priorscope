@@ -1,0 +1,27 @@
+{
+  "version": "1",
+  "route": "research",
+  "title": "연구 내용 비교",
+  "summary": "해결 문제와 연구 범위가 대응되어 연구 내용을 비교합니다.",
+  "show_mappings": true,
+  "show_overall_grade": true,
+  "show_novelty_candidates": true,
+  "show_weaknesses": true,
+  "show_numeric": true,
+  "numeric": {
+    "status": "비교 가능",
+    "comparable_count": 4,
+    "counts": {
+      "우세": 4
+    },
+    "incomparable_count": 20
+  },
+  "next_actions": [
+    "대응표의 근거를 원문에서 확인하고 변경·추가한 기술을 설명하세요."
+  ],
+  "limitations": [
+    "적합성 근거는 PDF 원문이 아닌 추출본을 대조한 결과입니다.",
+    "범용 기법의 공통점만으로 비교 적합성이나 독창성을 확정하지 않습니다.",
+    "수치 비교는 확인된 평가 조건에 한하며 통계적 우위나 공정한 학습 조건을 보장하지 않습니다."
+  ]
+}
