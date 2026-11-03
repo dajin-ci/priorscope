@@ -4,7 +4,8 @@ import re
 import unicodedata
 from ids import as_list, clean_text
 
-VERSION = "3"  # 2: 인용 정규화 대조, 일부 탈락 허용, 탈락 사유 기록 / 3: 잘못 센 번호 정정
+VERSION = "4"  # 2: 인용 정규화 대조, 일부 탈락 허용, 탈락 사유 기록 / 3: 잘못 센 번호 정정
+# 4: 문제 축 판단 기준 보강(목적 기준), N회 호출 후 갈리면 보수적 경로 (2026-11-03)
 ROUTE_LABELS = {
     "research": "연구 내용 비교", "partial": "공통 범위만 비교",
     "method": "방법론 중심 비교", "unsuitable": "비교 부적합 안내",
@@ -28,6 +29,9 @@ SYSTEM_PROMPT = """너는 논문 비교 적합성 분석기다. 추출본만 근
 JSON 스키마에 맞춰 problem, scope, method의 관계와 양쪽 근거를 반환한다.
 problem: same=같은 해결 문제/목적, related=연관되지만 다른 문제, different=연결 없는 문제,
 unknown=추출 정보만으로 판단 불가. 분야 이름이나 키워드 일치만으로 same이라 하지 않는다.
+problem은 각 논문이 강조한 한계·동기 문장이 아니라 최종 목적(무엇을 더 잘하려는가: 대상 과제와 산출물)으로 판단한다.
+기존 논문의 접근을 같은 목적으로 재검증·개선·변형한 후속 연구는 동기 서술이 달라도 same이다.
+한쪽이 상대 접근을 다른 과제에 적용하거나, 상대에 없는 별도 목적(데이터 구축, 응용 파이프라인 등)이 주된 목적이면 related다.
 scope: comparable=입출력/연구 대상/전제 조건이 연구 내용 비교에 대응함,
 partial=일부 범위만 공통, different=연구 범위가 다름, unknown=판단 근거 부족.
 scope는 실험 조건 일치와 다르다. 실험이 없어도 문제·방법에 대상이 명확하면 판단 가능하다.
@@ -191,7 +195,61 @@ def deferred_assessment(reason):
     return out
 
 
-def assess_suitability(my_paper, prior_paper, *, client=None):
+# 실행마다 경로가 갈리면 덜 단정하는 쪽을 택한다 (허위 신규 주장 회피 원칙).
+# research 는 전체 등급·차별점까지 보여주므로 가장 많이 말하고, method 가 가장 적게 말한다.
+CONSERVATIVE_ORDER = ("method", "partial", "research")
+
+
+def combine_assessments(results):
+    """여러 번 호출한 적합성 결과를 하나로 합친다.
+
+    - 오류로 끝난 실행(error_type)은 성공한 실행이 하나라도 있으면 제외한다.
+    - 경로가 모두 같으면 그대로 쓴다.
+    - 비교 진행/차단이 갈리면 insufficient(판단 보류)로 둔다. 누수도 과잉 차단도 단정하지 않는다.
+    - 모두 비교 진행이지만 경로가 갈리면 CONSERVATIVE_ORDER 에서 가장 앞선 경로를 택한다.
+    축마다 실행별 관계(votes)를 남겨 어느 축이 흔들렸는지 화면과 평가에서 볼 수 있게 한다.
+    """
+    ok = [r for r in results if "error_type" not in r] or list(results)
+    routes = [r["route"] for r in ok]
+    allowed = {r["comparison_allowed"] for r in ok}
+    if len(set(routes)) == 1:
+        chosen = dict(ok[0])
+    elif len(allowed) > 1:
+        chosen = deferred_assessment("적합성 판단이 실행마다 비교 진행과 차단으로 갈려 판단을 보류했습니다.")
+    else:
+        pick = next(route for route in CONSERVATIVE_ORDER if route in routes)
+        chosen = dict(next(r for r in ok if r["route"] == pick))
+    chosen["axes"] = {axis: dict(info) for axis, info in chosen["axes"].items()}
+    for axis in chosen["axes"]:
+        chosen["axes"][axis]["votes"] = [r["axes"][axis]["relation"] for r in ok]
+    unstable = len(set(routes)) > 1
+    chosen["warnings"] = list(chosen.get("warnings", []))
+    if unstable:
+        shaky = [AXIS_LABELS[a] for a in RELATIONS if len({r["axes"][a]["relation"] for r in ok}) > 1]
+        chosen["warnings"].append(
+            f"적합성 판단이 실행마다 달랐습니다(경로 {', '.join(routes)}; 흔들린 축: {', '.join(shaky) or '없음'}). "
+            f"더 보수적인 '{ROUTE_LABELS[chosen['route']]}'로 안내합니다.")
+    chosen["consensus"] = {"runs": len(results), "used": len(ok), "routes": routes,
+                           "unanimous": not unstable,
+                           "failed_runs": len(results) - len(ok) if len(ok) < len(results) else 0}
+    return chosen
+
+
+def assess_suitability(my_paper, prior_paper, *, client=None, runs=None):
+    """적합성을 runs 번(기본 config.SUITABILITY_RUNS) 동시에 판단해 합친다."""
+    if runs is None:
+        from config import SUITABILITY_RUNS
+        runs = SUITABILITY_RUNS
+    runs = max(1, int(runs))
+    if runs == 1:
+        return _assess_once(my_paper, prior_paper, client=client)
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(max_workers=runs) as pool:
+        results = list(pool.map(lambda _: _assess_once(my_paper, prior_paper, client=client), range(runs)))
+    return combine_assessments(results)
+
+
+def _assess_once(my_paper, prior_paper, *, client=None):
     """Studio 설정 변경 없이 구조화된 Solar 호출로 사전 분류한다."""
     for name, paper in (("내 논문", my_paper), ("기존 논문", prior_paper)):
         if not as_list(paper.get("problem")) or not as_list(paper.get("core_techniques")):

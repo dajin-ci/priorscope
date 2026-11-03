@@ -61,6 +61,10 @@ SUITABILITY_MODEL = os.getenv("SUITABILITY_MODEL", "solar-pro4")
 # 같은 입력에 판정이 흔들리면 확인필요로 둔다. 1이면 예전처럼 한 번만 실행한다.
 COMPARE_RUNS = max(1, int(os.getenv("COMPARE_RUNS", "3")))
 
+# 적합성 판단을 몇 번 호출해 합칠지 (2026-11-03: temperature 0 에서도 S2 경로가 3회 중 1회 달라짐).
+# 갈리면 보수적 경로로 안내한다. 1이면 한 번만 호출한다.
+SUITABILITY_RUNS = max(1, int(os.getenv("SUITABILITY_RUNS", "3")))
+
 ##################################################
 # Project Directory
 ##################################################
