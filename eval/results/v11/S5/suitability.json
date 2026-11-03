@@ -1,0 +1,136 @@
+{
+  "version": "4",
+  "route": "unsuitable",
+  "label": "비교 부적합 안내",
+  "axes": {
+    "problem": {
+      "relation": "different",
+      "reason": "두 논문은 해결하려는 최종 목적과 대상 과제가 서로 다르다. 내 논문은 AI/HPC/데이터 분석 워크로드를 더 빠르고 효율적으로 처리하기 위한 GPU 하드웨어 아키텍처 및 CUDA 소프트웨어 스택의 성능·활용성 향상을 목적으로 한다. 반면 상대 논문은 단방향 언어 모델의 한계를 극복하고 양방향 문맥을 활용한 범용 언어 표현(사전학습 모델)을 얻는 것을 목적으로 하며, 이는 자연어처리 과제 성능 향상을 위한 모델 방법론이다. 둘 다 'AI'를 언급하지만, 한쪽은 가속기·시스템 수준의 컴퓨팅 자원 제공, 다른 쪽은 언어 이해 표현 학습이라는 상이한 최종 산출물을 지향하므로 같은 문제로 볼 수 없다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Increasingly complex and varied AI, HPC, and data analytics workloads require additional GPU computing power, multi-GPU connectivity enhancements, and a comprehensive suite of supporting software stacks.",
+          "source_text": "Increasingly complex and varied AI, HPC, and data analytics workloads require additional GPU computing power, multi-GPU connectivity enhancements, and a comprehensive suite of supporting software stacks."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "The new NVIDIAⓇ A100 Tensor Core GPU builds upon the capabilities of the prior NVIDIA Tesla V100 GPU, adding many new features while delivering significantly faster performance for HPC, AI, and data analytics workloads.",
+          "source_text": "[Introduction] The new NVIDIAⓇ A100 Tensor Core GPU builds upon the capabilities of the prior NVIDIA Tesla V100 GPU, adding many new features while delivering significantly faster performance for HPC, AI, and data analytics workloads."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+          "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks.",
+          "source_text": "[1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks."
+        }
+      ],
+      "votes": [
+        "different",
+        "different",
+        "different"
+      ]
+    },
+    "scope": {
+      "relation": "different",
+      "reason": "연구 범위와 입출력·전제 조건이 비교 대응하지 않는다. 내 논문은 GPU 하드웨어 구조(텐서 코어, 메모리 계층, 인터커넥트, 가상화 등)와 CUDA 실행 모델·API를 다루며, 대상도 데이터 센터 가속기 및 워크로드 실행 환경이다. 상대 논문은 Transformer 인코더 기반 언어 모델의 사전학습 목표와 미세조정 절차를 다루며, 대상도 텍스트 입력과 다운스트림 NLP 과제다. 입출력 형태, 연구 대상, 전제 조건이 서로 다른 층위이므로 연구 내용 비교에 대응하는 공통 범위가 아니다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[Introduction] \"Multi-Instance GPU\" (or MIG) virtualization and GPU partitioning capability | 단일 A100 GPU를 여러 GPU 인스턴스로 분할하는 가상화/파티셔닝 기능",
+          "source_text": "[Introduction] \"Multi-Instance GPU\" (or MIG) virtualization and GPU partitioning capability | 단일 A100 GPU를 여러 GPU 인스턴스로 분할하는 가상화/파티셔닝 기능"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "[NVIDIA A100 Tensor Core GPU Overview] 40 GB of high-speed HBM2 memory with a class-leading 1555 GB/sec of memory bandwidth | 고대역폭 HBM2 메모리로 연산 유닛에 데이터를 공급하는 메모리 기술",
+          "source_text": "[NVIDIA A100 Tensor Core GPU Overview] 40 GB of high-speed HBM2 memory with a class-leading 1555 GB/sec of memory bandwidth | 고대역폭 HBM2 메모리로 연산 유닛에 데이터를 공급하는 메모리 기술"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용",
+          "source_text": "[3] multi-layer bidirectional Transformer encoder | 양방향 self-attention을 사용하는 Transformer 인코더를 기본 구조로 사용"
+        },
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        }
+      ],
+      "votes": [
+        "different",
+        "different",
+        "different"
+      ]
+    },
+    "method": {
+      "relation": "different",
+      "reason": "구체적인 기법·모듈·학습 절차 사이에 공통 또는 변형·확장 관계가 없다. 내 논문은 텐서 코어 세대 개선, 구조화된 희소성, L2 캐시 상주성 제어, 비동기 복사, CUDA 작업 그래프, MIG 가상화 등 하드웨어·시스템·실행 모델 수준의 기법을 제시한다. 상대 논문은 MLM 사전학습 목표, 다음 문장 예측, 양방향 Transformer 인코더, WordPiece 임베딩, [CLS]/[SEP] 토큰, 종단간 미세조정 등 언어 모델 학습·구조 기법을 제시한다. 양쪽이 공유하는 것은 Transformer 계열이나 AI/딥러닝이라는 매우 일반적인 기반뿐이며, 방법 수준에서 의미 있는 연결은 확인되지 않는다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[Introduction] Third-Generation Tensor Core | 처리량을 높이고 다양한 DL/HPC 데이터 타입을 지원하는 3세대 텐서 코어",
+          "source_text": "[Introduction] Third-Generation Tensor Core | 처리량을 높이고 다양한 DL/HPC 데이터 타입을 지원하는 3세대 텐서 코어"
+        },
+        {
+          "field": "core_techniques",
+          "index": 16,
+          "quote": "[A100 Introduces Fine-Grained Structured Sparsity] Fine-Grained Structured Sparsity | 딥러닝 네트워크에서 구조화된 희소성을 사용해 계산량을 줄이는 기법",
+          "source_text": "[A100 Introduces Fine-Grained Structured Sparsity] Fine-Grained Structured Sparsity | 딥러닝 네트워크에서 구조화된 희소성을 사용해 계산량을 줄이는 기법"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
+          "source_text": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정"
+        }
+      ],
+      "votes": [
+        "different",
+        "different",
+        "different"
+      ]
+    }
+  },
+  "comparison_allowed": false,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4",
+  "consensus": {
+    "runs": 3,
+    "used": 3,
+    "routes": [
+      "unsuitable",
+      "unsuitable",
+      "unsuitable"
+    ],
+    "unanimous": true,
+    "failed_runs": 0
+  }
+}

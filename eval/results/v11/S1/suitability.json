@@ -1,0 +1,130 @@
+{
+  "version": "4",
+  "route": "partial",
+  "label": "공통 범위만 비교",
+  "axes": {
+    "problem": {
+      "relation": "related",
+      "reason": "두 논문은 모두 오디오-비주얼 멀티모달 임베딩과 관련되지만, 해결하려는 최종 목적과 산출물이 다르다. 내 논문은 학습 중 보지 못한 이벤트 카테고리까지 명시적 카테고리로 예측하는 개방어휘 AVEL 문제와 이를 위한 벤치마크·지표·베이스라인을 제안한다. 반면 기존 논문은 여러 모달리티를 하나의 공유 임베딩 공간에 묶는 ImageBind 표현 학습 자체를 제안하며, 특정 다운스트림 과제인 AVEL을 주된 목표로 삼지 않는다. 따라서 같은 문제를 더 잘 해결하려는 동일 목적 연구가 아니라, ImageBind의 통합 공간을 내 논문이 AVEL이라는 별도 과제에 활용하는 연관 관계다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
+          "source_text": "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos.",
+          "source_text": "[1] We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We present IMAGEBIND, which learns a single shared representation space by leveraging multiple types of image-paired data.",
+          "source_text": "[1] We present IMAGEBIND, which learns a single shared representation space by leveraging multiple types of image-paired data. It does not need datasets where all modalities co-occur with each other. Instead, we leverage the binding property of images and we show that just aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities. IMAGEBIND can be initialized with large-scale vision-language models such as CLIP [60], thereby leveraging the rich image and text representations of these models. We use large-scale image-text paired data along with naturally paired 'self-supervised' data across four new modalities - audio, depth, thermal, and Inertial Measurement Unit (IMU) readings - and show strong emergent zero-shot classification and retrieval performance on tasks for each of these modalities. Finally, we show that IMAGEBIND's joint embeddings can be used for a wide variety of compositional tasks, including cross-modal retrieval, combining embeddings via arithmetic, detecting audio sources in images, and generating images given audio input."
+        }
+      ],
+      "votes": [
+        "related",
+        "related",
+        "related"
+      ]
+    },
+    "scope": {
+      "relation": "partial",
+      "reason": "두 논문 모두 오디오와 비주얼을 포함한 멀티모달 표현을 다루므로 연구 대상의 일부가 겹친다. 그러나 내 논문의 범위는 세그먼트 수준 이벤트 위치 추정과 개방어휘 분류라는 구체적 AVEL 과제와 그 벤치마크인 반면, 기존 논문의 범위는 이미지 중심의 여러 모달리티 임베딩 정렬과 제로샷 분류·검색 등 더 넓은 표현 학습이다. 입출력·전제 조건의 공통 부분은 존재하지만, 연구 범위 전체가 대응하지는 않는다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+          "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+        },
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
+          "source_text": "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+          "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 6,
+          "quote": "We use separate encoders for images, text, audio, ther- mal images, depth images, and IMU | 모달리티별로 분리된 인코더를 사용함",
+          "source_text": "[3.3] We use separate encoders for images, text, audio, ther- mal images, depth images, and IMU | 모달리티별로 분리된 인코더를 사용함"
+        }
+      ],
+      "votes": [
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "내 논문은 기존 논문의 ImageBind 통합 멀티모달 임베딩 공간을 직접 구성 요소로 사용한다. 내 논문의 핵심 기법 중 하나가 사전학습된 ImageBind에서 오디오·비주얼·텍스트 특징을 추출하는 것이며, 이는 기존 논문이 만든 공유 임베딩 공간을 그대로 활용하는 관계다. 또한 내 논문은 경량 temporal layer와 표준 Transformer 블록 스택을 추가해 시간 관계를 학습하는데, 기존 논문도 모든 모달리티 인코더에 Transformer 아키텍처를 사용하므로 Transformer 기반 구조라는 점에서 방법적 연결이 있다. 다만 내 논문의 temporal layer와 미세조정 방식은 기존 논문에 없는 확장이며, 기존 논문의 대조학습 정렬 기법 자체가 내 논문에 그대로 재사용되는 것은 아니다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
+          "source_text": "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
+          "source_text": "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함",
+          "source_text": "[3.2] aligning each modality's embedding to image embeddings leads to an emergent alignment across all of the modalities | 각 모달리티 임베딩을 이미지 임베딩에 정렬해 보지 않은 모달리티 쌍 사이의 정렬이 자연스럽게 발생하도록 함"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함",
+          "source_text": "[3.3] We use a Transformer architecture [73] for all the modality encoders | 모든 모달리티 인코더에 Transformer 아키텍처를 사용함"
+        }
+      ],
+      "votes": [
+        "specific_shared",
+        "specific_shared",
+        "specific_shared"
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4",
+  "consensus": {
+    "runs": 3,
+    "used": 3,
+    "routes": [
+      "partial",
+      "partial",
+      "partial"
+    ],
+    "unanimous": true,
+    "failed_runs": 0
+  }
+}
