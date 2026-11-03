@@ -1,0 +1,61 @@
+{
+  "title": [
+    "NVIDIA A100 Tensor Core GPU Architecture"
+  ],
+  "language": [
+    "en"
+  ],
+  "research_field": [
+    "GPU architecture, high-performance computing, artificial intelligence systems"
+  ],
+  "problem": [
+    "Increasingly complex and varied AI, HPC, and data analytics workloads require additional GPU computing power, multi-GPU connectivity enhancements, and a comprehensive suite of supporting software stacks.",
+    "Data center managers aim to keep resource utilization high, so an ideal data center accelerator doesn't just go big- it also efficiently accelerates many smaller workloads.",
+    "Because memory system resources were shared across all the applications, one application could interfere with the others if it had high demands for DRAM bandwidth or its requests oversubscribed the L2 cache.",
+    "Using CUDA Streams for such workflows requires that the work be resubmitted to the GPU by the CPU with every iteration, which consumes both time and CPU resources."
+  ],
+  "core_techniques": [
+    "[Introduction] \"Multi-Instance GPU\" (or MIG) virtualization and GPU partitioning capability | 단일 A100 GPU를 여러 GPU 인스턴스로 분할하는 가상화/파티셔닝 기능",
+    "[Introduction] Third-Generation Tensor Core | 처리량을 높이고 다양한 DL/HPC 데이터 타입을 지원하는 3세대 텐서 코어",
+    "[Introduction] Sparsity feature | 희소성을 활용해 텐서 코어 처리량을 추가로 2배 높이는 기능",
+    "[NVIDIA A100 Tensor Core GPU Overview] 40 GB of high-speed HBM2 memory with a class-leading 1555 GB/sec of memory bandwidth | 고대역폭 HBM2 메모리로 연산 유닛에 데이터를 공급하는 메모리 기술",
+    "[NVIDIA A100 Tensor Core GPU Overview] L2 cache residency controls | 데이터를 L2 캐시에 유지/축출하도록 제어하는 캐시 상주성 관리 기능",
+    "[NVIDIA A100 Tensor Core GPU Overview] Compute Data Compression | DRAM/L2 대역폭과 L2 용량 효율을 높이는 데이터 압축 기능",
+    "[NVIDIA A100 Tensor Core GPU Overview] Third-generation NVLink | 멀티 GPU 확장성과 GPU-GPU 통신 대역폭을 높이는 고속 인터커넥트",
+    "[NVIDIA A100 Tensor Core GPU Overview] PCI Express Gen 4 (PCle Gen 4) | CPU 및 네트워크 인터페이스 연결 대역폭을 높이는 PCIe 4.0 지원",
+    "[NVIDIA A100 Tensor Core GPU Overview] Single Root Input/Output Virtualization (SR-IOV) | 단일 PCIe 연결을 여러 프로세스/가상머신이 공유하도록 하는 가상화 기능",
+    "[NVIDIA A100 Tensor Core GPU Overview] asynchronous copy instruction | 글로벌 메모리에서 공유 메모리로 직접 비동기 복사하는 명령어",
+    "[NVIDIA A100 Tensor Core GPU Overview] hardware-accelerated barriers in shared memory | 비동기 arrive/wait를 지원하는 하드웨어 가속 배리어",
+    "[NVIDIA A100 Tensor Core GPU Overview] CUDA Task Graphs | 반복 워크플로를 define-once/run-repeatedly 방식으로 실행하는 작업 그래프",
+    "[A100 Tensor Cores Support All DL Data Types] TF32 | FP32 범위를 유지하면서 Tensor Core를 기본 활용하게 하는 데이터 형식",
+    "[A100 Tensor Cores Support All DL Data Types] BF16 | FP16 대안으로 mixed-precision 학습을 지원하는 데이터 형식",
+    "[A100 Tensor Cores Accelerate HPC] Double Precision Matrix Multiply Add instruction | FP64 HPC 연산을 텐서 코어에서 가속하는 배정밀도 MMA 명령",
+    "[Mixed Precision Tensor Cores for HPC] Tensor Core Accelerated Iterative Refinement Solver (TCAIRS) | 혼합정밀도 반복 정련법을 자동화하는 HPC 솔버",
+    "[A100 Introduces Fine-Grained Structured Sparsity] Fine-Grained Structured Sparsity | 딥러닝 네트워크에서 구조화된 희소성을 사용해 계산량을 줄이는 기법",
+    "[Sparse Matrix Definition] 2:4 sparse matrix definition | 4개 엔트리마다 2개만 non-zero를 허용하는 구조적 희소성 정의",
+    "[Sparse Matrix Multiply-Accumulate (MMA) Operations] Sparse MMA instructions | 0 값 연산을 건너뛰어 처리량을 2배 높이는 희소 행렬 MMA 명령",
+    "[New NVIDIA Ampere Architecture Features Improved Tensor Core Performance] asynchronous copy instruction | 데이터 패치 효율을 높이기 위해 글로벌 메모리에서 공유 메모리로 직접 복사하는 비동기 명령",
+    "[CUDA Task Graph Basics] Task graphs enable a define-once/run-repeatedly execution flow | 반복 실행 워크플로의 CPU 오버헤드를 줄이는 그래프 실행 모델",
+    "[CUDA Asynchronous Copy Operation] async copy API | A100의 direct-copy-to-shared 기능을 활용하는 CUDA 11 비동기 복사 API",
+    "[Asynchronous Barriers] ISO C++-conforming barrier objects | CUDA 11에서 제공되는 비동기 배리어 객체",
+    "[L2 Cache Residency Control] set aside a portion of L2 cache for persistent data accesses | 반복 접근 데이터를 위해 L2 일부를 예약하는 캐시 제어 기법",
+    "[Cooperative Groups] reduce API | warp-wide reduction을 단일 단계로 가속하는 집단 연산 API"
+  ],
+  "experiment_results": [],
+  "keywords": [
+    "NVIDIA A100",
+    "NVIDIA Ampere architecture",
+    "Multi-Instance GPU (MIG)",
+    "Third-Generation Tensor Core",
+    "TensorFloat-32 (TF32)",
+    "Structured Sparsity"
+  ],
+  "contributions": [
+    "[Introduction] The new NVIDIAⓇ A100 Tensor Core GPU builds upon the capabilities of the prior NVIDIA Tesla V100 GPU, adding many new features while delivering significantly faster performance for HPC, AI, and data analytics workloads.",
+    "[Introduction] The A100 GPU includes a revolutionary new \"Multi-Instance GPU\" (or MIG) virtualization and GPU partitioning capability that is particularly beneficial to Cloud Service Providers (CSPs).",
+    "[Introduction] A100 adds a powerful new Third-Generation Tensor Core that boosts throughput overV100 while adding comprehensive support for DL and HPC data types, together with a new Sparsity feature to deliver a further doubling of throughput.",
+    "[Introduction] The NVIDIA A100 GPU is the first elastic GPU architecture with the ability to scale-up to giant GPUs using NVLink, NVSwitch, and InfiniBand, or scale-out to support multiple independent users with MIG, simultaneously achieving great performance and lowest cost per-GPU instance.",
+    "[A100 Introduces Fine-Grained Structured Sparsity] With the A100 GPU, NVIDIA introduces Fine-Grained Structured Sparsity, a novel approach which doubles compute throughput for deep neural networks.",
+    "[CUDA Advances for NVIDIA Ampere Architecture GPUs] CUDA 11 provides programming and API support for Third-Generation Tensor Cores, Sparsity features, CUDA Graphs, Multi-Instance GPU, L2 cache residency controls, and a number of other new capabilities of the NVIDIA Ampere architecture."
+  ]
+}

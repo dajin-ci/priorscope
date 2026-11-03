@@ -29,18 +29,19 @@
       "grade_note": "설계서 원안의 기대 등급(Medium)이다. 요소 라벨이 있으면 evaluate.py 는 라벨에서 등급을 계산하므로 이 값은 쓰지 않는다. 2026-11-02 판정 기준 확정 후 라벨 기준 커버리지 16.7%로 Low. RoBERTa 추출 요소가 BERT에서 바꾼 점 위주라(MLM·Transformer 인코더 같은 계승 요소가 M에 없음) 커버리지가 낮게 나온다"
     },
     "S3": {
-      "pair": "선정 필요",
-      "status": "미선정",
+      "pair": "End-to-End Object Detection with Transformers (DETR) ↔ Conformer: Convolution-augmented Transformer for Speech Recognition",
+      "status": "추출 고정됨 (2026-11-03). 사람 라벨 전",
       "design_intent": "unsuitable 후보. 문제도 구체적 방법도 다르고 Transformer 같은 범용 기반만 공통인 쌍",
       "selection_criteria": "분야가 아예 다른 쌍보다, 둘 다 Transformer·대조학습처럼 흔한 기반을 쓰는 쌍을 고른다. 범용 기반만으로 method 로 새는지 시험하기 위해서다",
       "label_mode": "blind",
       "checks": [
         "route"
-      ]
+      ],
+      "finding": "물체 검출(이분 매칭·집합 예측) ↔ 음성 인식(합성곱+self-attention 결합). 공통은 Transformer 인코더 기반뿐. 추출 core_techniques M 11개, P 12개"
     },
     "S4": {
-      "pair": "선정 필요 (국문 논문 ↔ 같은 기술의 영문 논문)",
-      "status": "미선정",
+      "pair": "BERT 기반 자연어처리 모델의 미세 조정을 통한 한국어 리뷰 감성 분석: 입력 시퀀스 길이 최적화 (JICS 2024) ↔ How to Fine-Tune BERT for Text Classification? (Sun et al., 2019)",
+      "status": "추출 고정됨 (2026-11-03). 사람 라벨 전",
       "design_intent": "research 후보. 언어가 달라도 적합성 판단과 요소 대응이 유지되는지",
       "selection_criteria": "국문 논문이 영문 논문의 기법을 적용·확장한 쌍. 국문 저널 논문의 참고문헌에서 찾으면 빠르다",
       "label_mode": "blind",
@@ -48,11 +49,12 @@
         "route",
         "elements",
         "cross_language"
-      ]
+      ],
+      "finding": "language ko ↔ en 확인. 추출 core_techniques M 9개, P 6개. 처음엔 BERT 원 논문과 짝지으려 했으나 문제가 달라(범용 사전학습 ↔ 응용 미세 조정) 대응 요소가 1~2개뿐일 것으로 보고, 같은 문제(BERT 미세 조정 기반 텍스트 분류)를 다루는 Sun et al.로 교체. 데이터셋이 달라(M사 리뷰 ↔ IMDb·Yelp 등) 정량 비교 쌍 0개가 정상"
     },
     "S5": {
-      "pair": "선정 필요 (논문이 아닌 문서 ↔ 아무 논문)",
-      "status": "미선정",
+      "pair": "NVIDIA A100 Tensor Core GPU Architecture (백서) ↔ BERT",
+      "status": "추출 고정됨 (2026-11-03). prior_paper.json 은 S2 고정본을 복사해 사용",
       "design_intent": "비교가 진행되지 않아야 한다",
       "selection_criteria": "기술 백서나 제품 소개서처럼 논문처럼 보이는 문서를 고른다. 영수증처럼 명백한 문서는 추출 단계에서 걸러져 게이트를 시험하지 못한다",
       "label_mode": "designed",
@@ -63,7 +65,8 @@
       "preferred_route": "insufficient",
       "checks": [
         "route"
-      ]
+      ],
+      "finding": "백서에서 core_techniques 25개가 추출됨(설계서의 '논문이 아닌데 그럴듯한 요소가 추출되는 문서' 사례). experiment_results 는 0개로, 홍보성 성능 수치는 실험 결과로 뽑히지 않음. 요소만으로 게이트를 통과하는지 시험하는 샘플"
     }
   },
   "optional": {

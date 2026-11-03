@@ -1,0 +1,84 @@
+{
+  "title": [
+    "How to Fine-Tune BERT for Text Classification?"
+  ],
+  "language": [
+    "en"
+  ],
+  "research_field": [
+    "자연어처리"
+  ],
+  "problem": [
+    "Although BERT has achieved amazing results in many natural language understanding (NLU) tasks, its potential has yet to be fully explored.",
+    "There is little research to enhance BERT to improve the performance on target tasks further.",
+    "The first problem of applying BERT to text classification is how processing the text with a length larger than 512.",
+    "Catastrophic forgetting (McCloskey and Cohen, 1989) is usually a common problem in transfer learning, which means the pre-trained knowledge is erased during learning of new knowledge."
+  ],
+  "core_techniques": [
+    "[4.2] Within-task pre-training | 타깃 과제의 학습 데이터로 BERT를 추가 사전학습하는 방법",
+    "[4.2] In-domain pre-training | 동일 도메인의 데이터로 BERT를 추가 사전학습하는 방법",
+    "[4.2] Cross-domain pre-training | 동일 및 다른 도메인의 데이터를 함께 사용해 추가 사전학습하는 방법",
+    "[4.3] Multi-task Fine-Tuning | 여러 관련 과제를 동시에 학습하면서 BERT를 멀티태스크 방식으로 미세조정하는 방법",
+    "[4.1] head+tail | 긴 문서에서 앞 128개와 뒤 382개 토큰을 선택하는 절단 방식",
+    "[4.1] layer-wise learning rate | 하위 층에 더 작은 학습률을 적용하는 층별 감소 학습률"
+  ],
+  "experiment_results": [
+    "IMDb | BERT-Feat | test | single | 없음 | error rate (%) | 6.79 | ↓ | [Table 6]",
+    "Yelp P. | BERT-Feat | test | single | 없음 | error rate (%) | 2.39 | ↓ | [Table 6]",
+    "Yelp F. | BERT-Feat | test | single | 없음 | error rate (%) | 30.47 | ↓ | [Table 6]",
+    "TREC | BERT-Feat | test | single | 없음 | error rate (%) | 4.20 | ↓ | [Table 6]",
+    "Yah. A. | BERT-Feat | test | single | 없음 | error rate (%) | 22.72 | ↓ | [Table 6]",
+    "AG | BERT-Feat | test | single | 없음 | error rate (%) | 5.92 | ↓ | [Table 6]",
+    "DBP | BERT-Feat | test | single | 없음 | error rate (%) | 0.70 | ↓ | [Table 6]",
+    "Sogou | BERT-Feat | test | single | 없음 | error rate (%) | 2.50 | ↓ | [Table 6]",
+    "IMDb | BERT-FiT | test | single | 없음 | error rate (%) | 5.40 | ↓ | [Table 6]",
+    "Yelp P. | BERT-FiT | test | single | 없음 | error rate (%) | 2.28 | ↓ | [Table 6]",
+    "Yelp F. | BERT-FiT | test | single | 없음 | error rate (%) | 30.06 | ↓ | [Table 6]",
+    "TREC | BERT-FiT | test | single | 없음 | error rate (%) | 2.80 | ↓ | [Table 6]",
+    "Yah. A. | BERT-FiT | test | single | 없음 | error rate (%) | 22.42 | ↓ | [Table 6]",
+    "AG | BERT-FiT | test | single | 없음 | error rate (%) | 5.25 | ↓ | [Table 6]",
+    "DBP | BERT-FiT | test | single | 없음 | error rate (%) | 0.71 | ↓ | [Table 6]",
+    "Sogou | BERT-FiT | test | single | 없음 | error rate (%) | 2.43 | ↓ | [Table 6]",
+    "IMDb | BERT-ITPT-FiT | test | single | IMDb | error rate (%) | 4.37 | ↓ | [Table 6]",
+    "Yelp P. | BERT-ITPT-FiT | test | single | Yelp P. | error rate (%) | 1.92 | ↓ | [Table 6]",
+    "Yelp F. | BERT-ITPT-FiT | test | single | Yelp F. | error rate (%) | 29.42 | ↓ | [Table 6]",
+    "TREC | BERT-ITPT-FiT | test | single | TREC | error rate (%) | 3.20 | ↓ | [Table 6]",
+    "Yah. A. | BERT-ITPT-FiT | test | single | Yah. A. | error rate (%) | 22.38 | ↓ | [Table 6]",
+    "AG | BERT-ITPT-FiT | test | single | AG | error rate (%) | 4.80 | ↓ | [Table 6]",
+    "DBP | BERT-ITPT-FiT | test | single | DBP | error rate (%) | 0.68 | ↓ | [Table 6]",
+    "Sogou | BERT-ITPT-FiT | test | single | Sogou | error rate (%) | 1.93 | ↓ | [Table 6]",
+    "IMDb | BERT-IDPT-FiT | test | single | all sentiment | error rate (%) | 4.88 | ↓ | [Table 6]",
+    "Yelp P. | BERT-IDPT-FiT | test | single | all sentiment | error rate (%) | 1.87 | ↓ | [Table 6]",
+    "Yelp F. | BERT-IDPT-FiT | test | single | all sentiment | error rate (%) | 29.25 | ↓ | [Table 6]",
+    "TREC | BERT-IDPT-FiT | test | single | all question | error rate (%) | 2.20 | ↓ | [Table 6]",
+    "Yah. A. | BERT-IDPT-FiT | test | single | all question | error rate (%) | 21.86 | ↓ | [Table 6]",
+    "AG | BERT-IDPT-FiT | test | single | all topic | error rate (%) | 4.88 | ↓ | [Table 6]",
+    "DBP | BERT-IDPT-FiT | test | single | all topic | error rate (%) | 0.65 | ↓ | [Table 6]",
+    "IMDb | BERT-CDPT-FiT | test | single | all | error rate (%) | 5.18 | ↓ | [Table 6]",
+    "Yelp P. | BERT-CDPT-FiT | test | single | all | error rate (%) | 1.97 | ↓ | [Table 6]",
+    "Yelp F. | BERT-CDPT-FiT | test | single | all | error rate (%) | 29.20 | ↓ | [Table 6]",
+    "TREC | BERT-CDPT-FiT | test | single | all | error rate (%) | 2.80 | ↓ | [Table 6]",
+    "Yah. A. | BERT-CDPT-FiT | test | single | all | error rate (%) | 21.94 | ↓ | [Table 6]",
+    "AG | BERT-CDPT-FiT | test | single | all | error rate (%) | 5.08 | ↓ | [Table 6]",
+    "DBP | BERT-CDPT-FiT | test | single | all | error rate (%) | 0.67 | ↓ | [Table 6]",
+    "IMDb | + ITPT | test | single | IMDb | error rate (%) | 4.21 | ↓ | [Table 8]",
+    "Yelp P. | + ITPT | test | single | Yelp P. | error rate (%) | 1.81 | ↓ | [Table 8]",
+    "Yelp F. | + ITPT | test | single | Yelp F. | error rate (%) | 28.62 | ↓ | [Table 8]",
+    "AG | + ITPT | test | single | AG | error rate (%) | 4.66 | ↓ | [Table 8]",
+    "DBP | + ITPT | test | single | DBP | error rate (%) | 0.61 | ↓ | [Table 8]"
+  ],
+  "keywords": [
+    "BERT",
+    "text classification",
+    "fine-tuning",
+    "further pre-training",
+    "multi-task learning",
+    "few-shot learning"
+  ],
+  "citation_info": [
+    "Sun et al., arXiv, 2020",
+    "Sun et al., arXiv, 2020"
+  ],
+  "limitations": [],
+  "contributions": "[1] We propose a general solution to fine-tune the pre-trained BERT model, which includes three steps: (1) further pre-train BERT on within-task training data or in-domain data; (2) optional fine-tuning BERT with multi-task learning if several related tasks are available; (3) fine-tune BERT for the target task. We also investigate the fine-tuning methods for BERT on target task, including preprocess of long text, layer selection, layer-wise learning rate, catastrophic forgetting, and low-shot learning problems. We achieve the new state-of-the-art results on seven widely-studied English text classification datasets and one Chinese news classification dataset."
+}
