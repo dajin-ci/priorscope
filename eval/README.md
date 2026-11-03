@@ -28,7 +28,7 @@ python eval/labeling.py merge S2                    # route_label.json, labels.j
 
 라벨러가 한 명뿐일 때는 `merge S1 --provisional` 로 임시로 합칠 수 있다. 이때 `label_status.json` 에 `provisional: true` 와 라벨러 이름이 남고, 평가 결과에도 임시 라벨 기준이라고 표시해야 한다. 빈 양식(판정을 하나도 채우지 않은 파일)은 라벨러 수에 넣지 않는다. 사람 두 명이 라벨을 채운 뒤 `--provisional` 없이 merge 하면 정답 파일과 `label_status.json` 이 교체된다. 이때 `route_claude.json`, `labels_claude.json` 처럼 LLM 라벨 파일이 폴더에 남아 있으면 라벨러로 함께 합쳐지므로, 사람 라벨만으로 정답을 만들려면 먼저 `eval/samples/<샘플>/llm/` 같은 하위 폴더로 옮긴다.
 
-현재 S1, S2 의 정답은 Claude 가 만든 임시 라벨이다 (2026-11-02).
+현재 S1, S2 (2026-11-02), S3, S4 (2026-11-03) 의 정답은 Claude 가 만든 임시 라벨이다. S5 는 designed 라 라벨이 필요 없다.
 
 ## 경로 라벨을 축으로 받는 이유
 

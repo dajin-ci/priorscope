@@ -1,0 +1,7 @@
+{
+  "provisional": true,
+  "labelers": [
+    "claude"
+  ],
+  "note": "라벨러가 두 명 미만인 임시 라벨이다. 사람 라벨 두 개가 모이면 merge 를 다시 실행한다."
+}

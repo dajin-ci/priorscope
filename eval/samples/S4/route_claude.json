@@ -1,0 +1,19 @@
+{
+  "problem": {
+    "relation": "related",
+    "relation_from_sheet": "related",
+    "memo": "둘 다 사전학습 BERT를 텍스트 분류에 미세 조정할 때 성능을 높이는 방법을 다룬다는 점에서 연결됨. 다만 내 논문은 한국어 쇼핑 리뷰의 라벨 노이즈·불균형, 메모리를 고려한 입력 길이 선택, 카테고리별 감성 점수 산출이라는 응용 문제이고, Sun et al.은 BERT 미세 조정 일반 방법론(긴 문서 처리, 추가 사전학습, 층별 학습률, 망각)이다. same으로 볼 여지도 있으나 내 논문의 문제 목록 절반(라벨 재조정·불균형)이 기존 논문과 무관해 related로 판단"
+  },
+  "scope": {
+    "relation": "partial",
+    "relation_from_sheet": "partial",
+    "memo": "감성 분류(이진, IMDb·Yelp)와 BERT 미세 조정은 공통. 언어(한국어 vs 영어), 텍스트 길이(평균 12토큰 vs 512 초과 긴 문서), 모델(한국어 BERT 계열 5종 vs BERT-base), 내 논문의 카테고리 분류·점수 산출 단계는 기존 논문에 없음"
+  },
+  "method": {
+    "relation": "specific_shared",
+    "relation_from_sheet": "specific_shared",
+    "memo": "사전학습 BERT의 과제 미세 조정 절차를 공유. 입력 길이 처리(M4 ↔ P5)도 같은 대상을 다룸. 단 P 목록에는 기본 미세 조정(BERT-FiT, 기여점 3단계)이 요소로 추출되지 않음"
+  },
+  "route_intuition": "partial",
+  "memo": "LLM(Claude) 임시 라벨 (2026-11-03). 계산 경로 partial(related+partial), 직감도 partial. manifest의 설계 의도는 research 후보였지만, 국문 논문이 응용 중심이라 문제가 same까지는 아니라고 판단. 이 쌍을 고른 사람이 Claude라 의도를 알고 라벨링했음을 밝혀 둔다"
+}

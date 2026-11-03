@@ -1,0 +1,19 @@
+{
+  "problem": {
+    "relation": "different",
+    "relation_from_sheet": "different",
+    "memo": "DETR은 이미지 물체 검출을 집합 예측으로 푸는 문제(앵커·NMS 같은 후처리 제거), Conformer는 음성 인식에서 전역 문맥(self-attention)과 지역 특징(합성곱)을 함께 모델링하는 문제. 입력 모달리티와 과제가 모두 다르고 시트의 problem·contributions에서도 연결이 보이지 않음"
+  },
+  "scope": {
+    "relation": "different",
+    "relation_from_sheet": "different",
+    "memo": "이미지 → 박스·클래스 집합(COCO) vs 음성 특징 → 텍스트(LibriSpeech). 입출력·대상·평가 지표(AP vs WER) 모두 다름"
+  },
+  "method": {
+    "relation": "generic_only",
+    "relation_from_sheet": "generic_only",
+    "memo": "공통점은 Transformer/self-attention 기반이라는 것뿐(M3 인코더-디코더 ↔ P1 MHSA). DETR의 핵심(M1 집합 예측, M2·M5·M7 이분 매칭·헝가리안, M4 객체 쿼리)은 Conformer에 없고, Conformer의 핵심(P4·P5 합성곱 모듈, P8~P10 Macaron FFN)은 DETR에 없음. M9 CNN 백본과 P4·P5 합성곱도 역할(이미지 특징 추출 vs 블록 내부 지역 문맥)이 달라 범용 수준"
+  },
+  "route_intuition": "unsuitable",
+  "memo": "LLM(Claude) 임시 라벨 (2026-11-03). 범용 기반(Transformer)만 공유하는 쌍. 계산 경로와 직감 모두 unsuitable. 이 쌍을 고른 사람이 Claude라 설계 의도(unsuitable 후보)를 알고 라벨링했음을 밝혀 둔다"
+}

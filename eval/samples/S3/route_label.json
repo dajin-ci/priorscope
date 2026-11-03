@@ -1,0 +1,70 @@
+{
+  "version": 2,
+  "axes": {
+    "problem": {
+      "relation": "different",
+      "relation_agreed": true,
+      "relation_answers": {
+        "claude": "different"
+      },
+      "relation_from_sheet": "different",
+      "relation_from_sheet_agreed": true,
+      "relation_from_sheet_answers": {
+        "claude": "different"
+      },
+      "extraction_gap": false
+    },
+    "scope": {
+      "relation": "different",
+      "relation_agreed": true,
+      "relation_answers": {
+        "claude": "different"
+      },
+      "relation_from_sheet": "different",
+      "relation_from_sheet_agreed": true,
+      "relation_from_sheet_answers": {
+        "claude": "different"
+      },
+      "extraction_gap": false
+    },
+    "method": {
+      "relation": "generic_only",
+      "relation_agreed": true,
+      "relation_answers": {
+        "claude": "generic_only"
+      },
+      "relation_from_sheet": "generic_only",
+      "relation_from_sheet_agreed": true,
+      "relation_from_sheet_answers": {
+        "claude": "generic_only"
+      },
+      "extraction_gap": false
+    }
+  },
+  "routes_by_labeler": {
+    "claude": "unsuitable"
+  },
+  "routes_from_sheet_by_labeler": {
+    "claude": "unsuitable"
+  },
+  "intuition_by_labeler": {
+    "claude": "unsuitable"
+  },
+  "expected_route": "unsuitable",
+  "acceptable_routes": [
+    "unsuitable"
+  ],
+  "disputed": false,
+  "comparison_expected": false,
+  "from_sheet": {
+    "expected_route": "unsuitable",
+    "acceptable_routes": [
+      "unsuitable"
+    ],
+    "disputed": false,
+    "comparison_expected": false
+  },
+  "route_changed_by_extraction": false,
+  "intuition_mismatch": [],
+  "needs_element_labels": false
+}

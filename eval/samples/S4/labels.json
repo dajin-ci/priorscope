@@ -1,0 +1,38 @@
+{
+  "M1": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M2": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M3": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M4": {
+    "verdict": "확인필요",
+    "prior": []
+  },
+  "M5": {
+    "verdict": "확인필요",
+    "prior": []
+  },
+  "M6": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M7": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M8": {
+    "verdict": "없음",
+    "prior": []
+  },
+  "M9": {
+    "verdict": "없음",
+    "prior": []
+  }
+}
