@@ -1,0 +1,130 @@
+{
+  "S2": {
+    "runs": 3,
+    "m_count": {
+      "values": [
+        9,
+        9,
+        9
+      ],
+      "min": 9,
+      "max": 9
+    },
+    "p_count": {
+      "values": [
+        4,
+        4,
+        4
+      ],
+      "min": 4,
+      "max": 4
+    },
+    "routes": [
+      "partial",
+      "partial",
+      "research"
+    ],
+    "route_consistent": false,
+    "levels": [
+      "적용 안 함",
+      "적용 안 함",
+      "Low Overlap"
+    ],
+    "level_consistent": false,
+    "seconds": [
+      145.6,
+      142.8,
+      281.6
+    ],
+    "detail": [
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-114212-04e2d2",
+        "seconds": 145.6,
+        "n_m": 9,
+        "n_p": 4,
+        "route": "partial",
+        "final_level": "적용 안 함"
+      },
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-114438-2c439d",
+        "seconds": 142.8,
+        "n_m": 9,
+        "n_p": 4,
+        "route": "partial",
+        "final_level": "적용 안 함"
+      },
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-114701-391a39",
+        "seconds": 281.6,
+        "n_m": 9,
+        "n_p": 4,
+        "route": "research",
+        "final_level": "Low Overlap"
+      }
+    ]
+  },
+  "S4": {
+    "runs": 3,
+    "m_count": {
+      "values": [
+        9,
+        9,
+        9
+      ],
+      "min": 9,
+      "max": 9
+    },
+    "p_count": {
+      "values": [
+        6,
+        6,
+        6
+      ],
+      "min": 6,
+      "max": 6
+    },
+    "routes": [
+      "partial",
+      "partial",
+      "partial"
+    ],
+    "route_consistent": true,
+    "levels": [
+      "적용 안 함",
+      "적용 안 함",
+      "적용 안 함"
+    ],
+    "level_consistent": true,
+    "seconds": [
+      106.9,
+      112.1,
+      112.1
+    ],
+    "detail": [
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-115142-6578bd",
+        "seconds": 106.9,
+        "n_m": 9,
+        "n_p": 6,
+        "route": "partial",
+        "final_level": "적용 안 함"
+      },
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-115329-b4b690",
+        "seconds": 112.1,
+        "n_m": 9,
+        "n_p": 6,
+        "route": "partial",
+        "final_level": "적용 안 함"
+      },
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-115521-a7d9f7",
+        "seconds": 112.1,
+        "n_m": 9,
+        "n_p": 6,
+        "route": "partial",
+        "final_level": "적용 안 함"
+      }
+    ]
+  }
+}

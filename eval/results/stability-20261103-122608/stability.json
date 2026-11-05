@@ -1,0 +1,66 @@
+{
+  "S2": {
+    "runs": 3,
+    "m_count": {
+      "values": [
+        9,
+        9,
+        9
+      ],
+      "min": 9,
+      "max": 9
+    },
+    "p_count": {
+      "values": [
+        4,
+        4,
+        4
+      ],
+      "min": 4,
+      "max": 4
+    },
+    "routes": [
+      "research",
+      "research",
+      "research"
+    ],
+    "route_consistent": true,
+    "levels": [
+      "Low Overlap",
+      "Low Overlap",
+      "Low Overlap"
+    ],
+    "level_consistent": true,
+    "seconds": [
+      306.1,
+      165.4,
+      339.5
+    ],
+    "detail": [
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-122608-675f23",
+        "seconds": 306.1,
+        "n_m": 9,
+        "n_p": 4,
+        "route": "research",
+        "final_level": "Low Overlap"
+      },
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-123114-fbcc12",
+        "seconds": 165.4,
+        "n_m": 9,
+        "n_p": 4,
+        "route": "research",
+        "final_level": "Low Overlap"
+      },
+      {
+        "run_dir": "/Users/kangdajin/Desktop/26-2/LLM OPS/priorscope/runs/20261103-123359-0e5902",
+        "seconds": 339.5,
+        "n_m": 9,
+        "n_p": 4,
+        "route": "research",
+        "final_level": "Low Overlap"
+      }
+    ]
+  }
+}
