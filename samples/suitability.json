@@ -1,0 +1,189 @@
+{
+  "version": "4",
+  "route": "research",
+  "label": "연구 내용 비교",
+  "axes": {
+    "problem": {
+      "relation": "same",
+      "reason": "두 논문 모두 자연어처리를 위한 언어 모델 사전학습(pretraining) 방법을 개선하여 다운스트림 과제 성능을 높이는 것을 최종 목적으로 한다. BERT는 단방향 모델의 한계를 지적하고 양방향 사전학습을 도입해 표현력과 과제 성능을 높이려 했고, RoBERTa는 BERT의 사전학습이 계산 비용·데이터 크기·하이퍼파라미터 민감성 때문에 비교가 어렵고 BERT가 충분히 학습되지 않았으며 설계 선택이 간과되었다고 지적하며, 같은 자기지도 사전학습 틀 안에서 설계 선택과 학습 절차를 개선해 하위 과제 성능을 더 높이려 한다. 즉 해결하려는 문제 영역이 동일하고, RoBERTa는 BERT의 접근을 같은 목적(사전학습 방법 개선 → 하위 과제 성능 향상)으로 재검증·개선한 후속 연구에 해당한다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+          "source_text": "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+          "source_text": "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance.",
+          "source_text": "[1] We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations.",
+          "source_text": "Current pre-trained language representation methods rely on unidirectional language models in both feature-based and fine-tuning approaches, which restricts the power of the learned representations."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks.",
+          "source_text": "[1] We demonstrate the importance of bidirectional pre-training for language representations. We show that pre-trained representations reduce the need for many heavily-engineered task-specific architectures. BERT advances the state of the art for eleven NLP tasks."
+        }
+      ],
+      "votes": [
+        "same",
+        "same",
+        "same"
+      ]
+    },
+    "scope": {
+      "relation": "comparable",
+      "reason": "두 논문 모두 자연어처리에서 사전학습된 언어 표현(Transformer 인코더 기반)을 만들고 이를 다양한 하위 과제(GLUE, SQuAD 등)에 미세조정하여 평가하는 동일한 입출력·대상·전제 범위 안에서 연구된다. BERT가 제시한 MLM, [CLS]/[SEP], WordPiece, fine-tune all parameters, 통합 아키텍처 등의 전제를 RoBERTa도 기본적으로 공유하며, RoBERTa는 여기에 NSP 제거, FULL-SENTENCES, 더 큰 배치·더 긴 시퀀스·동적 마스킹·더 큰 BPE·추가 데이터(CC-NEWS) 같은 변형을 더해 같은 비교 틀 안에서 설계 선택을 재검토한다. 따라서 연구 내용 비교에 대응하는 범위가 대체로 공통된다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+          "source_text": "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+          "source_text": "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+          "source_text": "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+          "index_corrected_from": 4
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+          "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정",
+          "source_text": "[3.2] fine-tune all the parameters end-to-end | 다운스트림 작업에서 동일한 사전학습 파라미터로 초기화한 뒤 전체 파라미터를 종단간 미세조정"
+        }
+      ],
+      "votes": [
+        "comparable",
+        "comparable",
+        "comparable"
+      ]
+    },
+    "method": {
+      "relation": "specific_shared",
+      "reason": "RoBERTa의 핵심 기법들은 BERT의 구체적 사전학습 구성요소를 직접 변형·확장한 관계에 있다. BERT가 도입한 MLM 목표를 RoBERTa도 유지하되 마스킹 패턴을 동적으로 바꾸고, BERT의 next sentence prediction을 제거했으며, FULL-SENTENCES 입력 형식을 사용하고, 더 큰 byte-level BPE 어휘, 더 큰 미니배치, 더 긴 시퀀스, 더 많은 데이터(CC-NEWS)로 학습 절차를 확장했다. 이는 단순히 ‘AI/딥러닝/Transformer’라는 범용 기반만 공유하는 수준이 아니라, BERT의 구체적 사전학습 모듈과 학습 절차에 대한 공통·변형·확장 관계가 명확하다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+          "source_text": "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "[5] dynamic mask-ing | 동적 마스킹",
+          "source_text": "[5] dynamic mask-ing | 동적 마스킹",
+          "index_corrected_from": 5
+        },
+        {
+          "field": "core_techniques",
+          "index": 7,
+          "quote": "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계",
+          "source_text": "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계"
+        },
+        {
+          "field": "core_techniques",
+          "index": 8,
+          "quote": "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법",
+          "source_text": "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표",
+          "source_text": "[3.1] \"masked language model\" (MLM) pre-training objective | 입력 토큰 일부를 마스킹하고 문맥으로 원래 토큰을 예측하도록 학습하는 양방향 사전학습 목표"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차",
+          "source_text": "[3.1] \"next sentence prediction\" task | 두 문장 관계를 이해하도록 다음 문장 여부를 이진 분류로 함께 사전학습하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "[3] WordPiece embeddings | 30,000개 어휘의 WordPiece 임베딩을 입력 표현으로 사용",
+          "source_text": "[3] WordPiece embeddings | 30,000개 어휘의 WordPiece 임베딩을 입력 표현으로 사용"
+        }
+      ],
+      "votes": [
+        "specific_shared",
+        "specific_shared",
+        "specific_shared"
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [
+    {
+      "axis": "scope",
+      "side": "my",
+      "field": "core_techniques",
+      "from": 4,
+      "to": 5
+    },
+    {
+      "axis": "method",
+      "side": "my",
+      "field": "core_techniques",
+      "from": 5,
+      "to": 4
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4",
+  "consensus": {
+    "runs": 3,
+    "used": 3,
+    "routes": [
+      "research",
+      "research",
+      "research"
+    ],
+    "unanimous": true,
+    "failed_runs": 0
+  }
+}

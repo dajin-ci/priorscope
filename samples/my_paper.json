@@ -1,47 +1,73 @@
 {
     "title": [
-        "Towards Open-Vocabulary Audio-Visual Event Localization"
+        "RoBERTa: A Robustly Optimized BERT Pretraining Approach"
     ],
     "language": [
         "en"
     ],
     "research_field": [
-        "컴퓨터비전"
+        "자연어처리"
     ],
     "problem": [
-        "기존 AVEL 연구는 closed-set 가정에 머물러 학습 중 보지 못한(unseen) 이벤트 카테고리가 포함된 테스트 데이터를 처리하기 어렵다.",
-        "기존 open-set AVEL은 unseen 이벤트를 \"unknown\"으로만 인식할 수 있어 카테고리별 의미를 제공하지 못한다."
+        "Language model pretraining methods are hard to compare carefully because training is computationally expensive, often uses private datasets of different sizes, and final results are highly sensitive to hyperparameter choices.",
+        "It is challenging to determine which aspects of existing self-training methods contribute the most because tuning is limited by computational cost and training data varies in size across methods.",
+        "BERT was significantly undertrained, making later reported improvements difficult to interpret relative to training procedure and data effects.",
+        "Previously overlooked design choices raise questions about the source of recently reported improvements in post-BERT methods."
     ],
     "core_techniques": [
-        "[1] the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) problem | seen과 unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 개방어휘 AVEL 문제를 정식화",
-        "[1] the OV-AVEBench dataset | 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 데이터셋 구축",
-        "[1] three evaluation metrics | 정확도와 segment-level/event-level F1을 포함한 평가 지표를 정립",
-        "[1] the unified multimodal space from the pretrained ImageBind model | 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출",
-        "[1] comparing the consistency of audio-text and visual-text feature similarities | 오디오-텍스트와 비주얼-텍스트 유사도의 일치성으로 예측하는 학습 없는 베이스라인",
-        "[1] lightweight temporal layers to encode temporal relations within the audio and visual modalities | 오디오/비주얼 모달리티 내부의 시간 관계를 학습하기 위한 경량 temporal layer 삽입",
-        "[3.2] a stack of L standard Transformer [41] blocks | temporal layer를 표준 Transformer 블록 스택으로 구현해 시간 상호작용을 강화",
-        "[3.2] The ground truth Y' E RT×(C¹ for the training data can be easily obtained by select- ing columns of corresponding seen classes from Y E RT×(C+1). Then, our fine-tuning baseline is trained by op- timizing the cross entropy loss between Save and Y'. | seen 클래스 열만 사용한 정답과 Save 사이의 cross entropy로 미세조정 학습"
+        "[1] training the model longer, with bigger batches, over more data | 더 오래, 더 큰 배치로, 더 많은 데이터에서 학습하는 절차",
+        "[1] removing the next sentence prediction objective | NSP 목적함수를 제거하는 방법",
+        "[1] training on longer sequences | 더 긴 시퀀스로 학습하는 방법",
+        "[1] dynamically changing the mask-ing pattern applied to the training data | 학습 데이터에 적용되는 마스킹 패턴을 동적으로 바꾸는 방법",
+        "[5] dynamic mask-ing | 동적 마스킹",
+        "[5] FULL-SENTENCES without NSP loss | NSP 손실 없이 FULL-SENTENCES 입력 형식을 사용하는 방법",
+        "[5] large mini-batches | 대규모 미니배치 학습",
+        "[5] a larger byte-level BPE | 더 큰 byte-level BPE 어휘 체계",
+        "[1] CC-NEWS | 새로 수집한 대규모 뉴스 데이터셋을 추가하는 방법"
     ],
     "experiment_results": [
-        "OV-AVEBench | Training-free (our), total | Avg. | 46.6 | ↑ | [Table 2]",
-        "OV-AVEBench | Training-free (our), seen | Avg. | 45.5 | ↑ | [Table 2]",
-        "OV-AVEBench | Training-free (our), unseen | Avg. | 47.0 | ↑ | [Table 2]",
-        "OV-AVEBench | Fine-tuning (our), total | Avg. | 57.8 | ↑ | [Table 2]",
-        "OV-AVEBench | Fine-tuning (our), seen | Avg. | 62.9 | ↑ | [Table 2]",
-        "OV-AVEBench | Fine-tuning (our), unseen | Avg. | 55.8 | ↑ | [Table 2]"
+        "SQuAD v1.1 | RoBERTa | dev | single | 없음 | EM | 88.9 | ↑ | [Table 6]",
+        "SQuAD v1.1 | RoBERTa | dev | single | 없음 | F1 | 94.6 | ↑ | [Table 6]",
+        "SQuAD v2.0 | RoBERTa | dev | single | 없음 | EM | 86.5 | ↑ | [Table 6]",
+        "SQuAD v2.0 | RoBERTa | dev | single | 없음 | F1 | 89.4 | ↑ | [Table 6]",
+        "SQuAD 2.0 | RoBERTa | test | single | 없음 | ? | 86.8 | ↑ | [Table 6]",
+        "SQuAD 2.0 | RoBERTa | test | single | 없음 | ? | 89.8 | ↑ | [Table 6]",
+        "RACE | RoBERTa | test | single | 없음 | Accuracy | 83.2 | ↑ | [Table 7]",
+        "RACE-Middle | RoBERTa | test | single | 없음 | Accuracy | 86.5 | ↑ | [Table 7]",
+        "RACE-High | RoBERTa | test | single | 없음 | Accuracy | 81.3 | ↑ | [Table 7]",
+        "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "MNLI | RoBERTa | dev | single | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "QNLI | RoBERTa | dev | single | 없음 | ? | 94.7 | ↑ | [Table 5]",
+        "QQP | RoBERTa | dev | single | 없음 | ? | 92.2 | ↑ | [Table 5]",
+        "RTE | RoBERTa | dev | single | 없음 | ? | 86.6 | ↑ | [Table 5]",
+        "SST | RoBERTa | dev | single | 없음 | ? | 96.4 | ↑ | [Table 5]",
+        "MRPC | RoBERTa | dev | single | 없음 | ? | 90.9 | ↑ | [Table 5]",
+        "CoLA | RoBERTa | dev | single | 없음 | ? | 68.0 | ↑ | [Table 5]",
+        "STS | RoBERTa | dev | single | 없음 | ? | 92.4 | ↑ | [Table 5]",
+        "WNLI | RoBERTa | dev | single | 없음 | ? | 91.3 | ↑ | [Table 5]",
+        "MNLI | RoBERTa | test | ensemble | 없음 | ? | 90.8 | ↑ | [Table 5]",
+        "MNLI | RoBERTa | test | ensemble | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "QNLI | RoBERTa | test | ensemble | 없음 | ? | 98.9 | ↑ | [Table 5]",
+        "QQP | RoBERTa | test | ensemble | 없음 | ? | 90.2 | ↑ | [Table 5]",
+        "RTE | RoBERTa | test | ensemble | 없음 | ? | 88.2 | ↑ | [Table 5]",
+        "SST | RoBERTa | test | ensemble | 없음 | ? | 96.7 | ↑ | [Table 5]",
+        "MRPC | RoBERTa | test | ensemble | 없음 | ? | 92.3 | ↑ | [Table 5]",
+        "CoLA | RoBERTa | test | ensemble | 없음 | ? | 67.8 | ↑ | [Table 5]",
+        "STS | RoBERTa | test | ensemble | 없음 | ? | 92.2 | ↑ | [Table 5]",
+        "WNLI | RoBERTa | test | ensemble | 없음 | ? | 89.0 | ↑ | [Table 5]",
+        "GLUE Avg | RoBERTa | test | ensemble | 없음 | Avg | 88.5 | ↑ | [Table 5]"
     ],
     "keywords": [
-        "Open-Vocabulary Audio-Visual Event Localization",
-        "OV-AVEBench",
-        "Audio-Visual Event Localization",
-        "ImageBind",
-        "training-free baseline",
-        "fine-tuning baseline"
+        "RoBERTa",
+        "BERT pretraining",
+        "masked language modeling",
+        "dynamic masking",
+        "next sentence prediction",
+        "byte-level BPE"
     ],
     "contributions": [
-        "[1] We propose the Open-Vocabulary Audio-Visual Event Localization (OV-AVEL) task, aiming to localize both seen and unseen audio-visual events in test videos.",
-        "[1] To facilitate this new task, we construct the OV-AVEBench dataset, which includes segment-level manual event annotations.",
-        "[1] Besides, we establish standard evaluation metrics that encompass typical accuracy, as well as segment-level and event-level Fl-scores.",
-        "[1] We present two simple baselines: one adopting a training-free paradigm, which can be upgraded through further fine-tuning on available training data."
+        "[1] We present a set of important BERT design choices and training strategies and introduce alternatives that lead to better downstream task performance.",
+        "[1] We use a novel dataset, CC-NEWS, and confirm that using more data for pretraining further improves performance on downstream tasks.",
+        "[1] Our training improvements show that masked language model pretraining, under the right design choices, is competitive with all other recently published methods."
     ]
 }
