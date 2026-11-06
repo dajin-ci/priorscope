@@ -462,16 +462,20 @@ def render_privacy_notice():
     )
 
 
-def render_delete_button(bundle):
-    """이번 실행의 서버 파일(runs/<run_id>/)을 바로 지운다. 화면의 결과와 다운로드는 그대로 남는다."""
+def render_delete_button(bundle, divider=True):
+    """
+    이번 실행의 서버 파일(runs/<run_id>/)을 바로 지운다.
+    분석 전(업로드만 한 상태)·실패 후·완료 후 모두 쓸 수 있고, 분석 중에는 지우지 않는다.
+    """
     run_dir = bundle.get("run_dir")
-    if not run_dir:
+    if not run_dir or is_running(run_dir):
         return
-    st.divider()
+    if divider:
+        st.divider()
     if st.session_state.get("deleted_run") == run_dir:
         st.success("서버에 저장된 이번 분석 파일(논문 PDF, 결과 JSON)을 삭제했습니다. 이 화면을 닫으면 결과도 사라지니 필요하면 먼저 다운로드하세요.")
         return
-    st.caption(f"서버에 저장된 이번 분석 파일은 {_hours_text()} 뒤 자동 삭제됩니다.")
+    st.caption(f"서버에 저장된 이번 분석 파일(올린 PDF와 결과)은 {_hours_text()} 뒤 자동 삭제됩니다.")
     if st.button("🗑️ 이번 분석 파일 지금 삭제", key="delete_run"):
         if delete_run(run_dir):
             st.session_state["deleted_run"] = run_dir
@@ -651,6 +655,7 @@ def tab_new_analysis():
         error = state.get("error") or {}
         st.error(f"{error.get('step', '실행')}에서 실패했습니다.\n{error.get('message', '')}")
         st.caption("이전 결과로 대신 채우지 않았습니다. 원인을 확인한 뒤 다시 시작해 주세요.")
+        render_delete_button({"run_dir": str(run_dir)})
     elif state.get("status") == "done":
         bundle = load_bundle(run_dir)
         if bundle is None:
@@ -663,6 +668,9 @@ def tab_new_analysis():
         render_delete_button(bundle)
     elif st.session_state.get("deleted_run"):
         st.success("서버에 저장된 분석 파일(논문 PDF, 결과 JSON)을 삭제했습니다.")
+    elif run_dir is not None and files:
+        # 분석 전이라도 올린 PDF는 서버에 저장돼 있으므로 바로 지울 수 있게 한다.
+        render_delete_button({"run_dir": str(run_dir)})
 
 
 def tab_sample():
