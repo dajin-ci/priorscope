@@ -7,11 +7,19 @@ PriorScope 화면용 실행 함수 (설계서 2장, 6장)
 - 폴더 생성·보관 기간 정리·삭제는 run_storage.py가 맡는다 (멘토링 #2 기밀성).
 - 단계가 실패하면 StepError로 즉시 멈춘다. 이전 결과로 대신 채우지 않는다.
 - 임베딩 유사도(멘토링 10/27)는 보조 지표라, 실패해도 멈추지 않고 '유사도 없이 검증'한 사실을 결과에 남긴다.
+- 관계·인사이트 분석(8단계, 멘토링 11/05)도 보조라 실패해도 1~7단계 결과는 그대로 둔다.
+- 화면은 start_in_background()로 실행한다 (멘토링 11/05). Streamlit 세션과 분리된 스레드라
+  새로고침해도 실행이 끊기지 않고, run.lock으로 중복 실행을 막고, state.json으로 진행 단계를 복원한다.
 """
 
 import hashlib
 import json
+import threading
+import time
+import traceback
 from pathlib import Path
+
+import insight_agent
 
 from config import COMPARE_RUNS, FONT_PATH, validate_config
 from upload import upload_file
@@ -21,7 +29,9 @@ from matching_agent import analyze_matching
 from compare_builder import create_compare_input
 from validator import combine_runs
 from similarity import UpstageEmbedder, compute_similarity
-from run_storage import cleanup_old_runs, new_run_dir
+from run_storage import (
+    acquire_lock, cleanup_old_runs, new_run_dir, read_state, release_lock, touch_lock, update_state,
+)
 from suitability import assess_suitability
 from comparison_report import build_report, apply_scope_policy
 
@@ -78,7 +88,7 @@ def _run_compare_agents(step, file_id, runs):
 
 
 def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step=None,
-                       compare_runs: int | None = None) -> dict:
+                       compare_runs: int | None = None, focus: dict | None = None) -> dict:
     """
     추출이 끝난 두 논문 JSON으로 3~7단계(적합성 → 비교 PDF → Compare Agent → 임베딩 → 검증)를 실행한다.
 
@@ -102,7 +112,10 @@ def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step
     # 3. 비교용 PDF
     step = "4단계 · 비교용 PDF 생성"
     compare_pdf = run_dir / "Compare_Input.pdf"
-    _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH, suitability=suitability))
+    # 관심 초점은 고른 경우에만 넘긴다 (평가 도구는 focus 없이 예전과 같은 PDF를 만든다).
+    focus_kwargs = {"focus": focus} if focus else {}
+    _run_step(step, on_step, lambda: create_compare_input(my_paper, prior_paper, compare_pdf, FONT_PATH,
+                                                          suitability=suitability, **focus_kwargs))
 
     # 4. 비교 분석: 같은 PDF를 compare_runs 번 동시에 분석해 판정 흔들림을 잡는다.
     step = "5단계 · 비교 분석"
@@ -137,11 +150,23 @@ def run_from_extracted(my_paper: dict, prior_paper: dict, run_dir: Path, on_step
     report = build_report(suitability, verified)
     _save_json(report, run_dir / "report.json")
 
+    # 8. 관계·인사이트 (보조: 실패해도 계속, INSIGHT_MODEL 이 없으면 건너뜀)
+    insight = None
+    if insight_agent.is_enabled() and verified.get("status") != "FAILED":
+        on_step("8단계 · 관계·인사이트 분석")
+        try:
+            insight = insight_agent.run_insight(my_paper, prior_paper, verified, focus,
+                                                route=suitability["route"])
+        except Exception as exc:  # noqa: BLE001
+            insight = {"error": f"{type(exc).__name__}: {exc}"[:300]}
+        _save_json(insight, run_dir / "insight_result.json")
+
     return {"suitability": suitability, "compare_result": compare_result, "similarity": similarity,
-            "verified": verified, "report": report}
+            "verified": verified, "report": report, "insight": insight}
 
 
-def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
+def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None, *,
+                        run_dir: Path | None = None, focus: dict | None = None) -> dict:
     """
     내 논문 PDF bytes, 기존 논문 PDF bytes → 결과 dict
 
@@ -166,7 +191,8 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
     except Exception:  # noqa: BLE001
         pass
 
-    run_dir = new_run_dir()
+    # 화면은 업로드할 때 폴더를 미리 만들어 둔다 (새로고침 복원). CLI·평가는 새로 만든다.
+    run_dir = Path(run_dir) if run_dir is not None else new_run_dir()
     my_path = run_dir / "My_Paper.pdf"
     prior_path = run_dir / "Prior_Paper.pdf"
     my_path.write_bytes(my_pdf)
@@ -182,8 +208,55 @@ def run_compare_service(my_pdf: bytes, prior_pdf: bytes, on_step=None) -> dict:
     prior_paper = _require_dict(step, _run_step(step, on_step, lambda: analyze_jd(upload_file(prior_path))))
     _save_json(prior_paper, run_dir / "prior_paper.json")
 
-    result = run_from_extracted(my_paper, prior_paper, run_dir, on_step)
+    result = run_from_extracted(my_paper, prior_paper, run_dir, on_step, focus=focus)
 
     on_step("완료")
 
     return {"run_dir": str(run_dir), "my_paper": my_paper, "prior_paper": prior_paper, **result}
+
+
+##################################################
+# 화면용: 백그라운드 실행과 새로고침 복원 (멘토링 11/05)
+##################################################
+
+def _run_job(run_dir: Path, focus: dict | None) -> None:
+    """start_in_background()의 스레드 본문. 결과와 오류는 모두 state.json에 남긴다."""
+    started = time.time()
+
+    def on_step(name):
+        touch_lock(run_dir)
+        update_state(run_dir, step=name)
+
+    try:
+        my_pdf = (run_dir / "My_Paper.pdf").read_bytes()
+        prior_pdf = (run_dir / "Prior_Paper.pdf").read_bytes()
+        run_compare_service(my_pdf, prior_pdf, on_step=on_step, run_dir=run_dir, focus=focus)
+    except StepError as exc:
+        update_state(run_dir, status="failed", error={"step": exc.step, "message": exc.message},
+                     finished_at=time.time())
+    except Exception as exc:  # noqa: BLE001
+        traceback.print_exc()
+        update_state(run_dir, status="failed",
+                     error={"step": read_state(run_dir).get("step") or "실행",
+                            "message": f"예상하지 못한 오류: {type(exc).__name__}: {exc}"},
+                     finished_at=time.time())
+    else:
+        update_state(run_dir, status="done", step="완료", finished_at=time.time(),
+                     elapsed=round(time.time() - started, 1))
+    finally:
+        release_lock(run_dir)
+
+
+def start_in_background(run_dir, focus: dict | None = None) -> bool:
+    """
+    화면의 [비교 시작]이 부른다. 이미 실행 중이면 False를 돌려주고 아무것도 하지 않는다.
+    lock을 이 자리에서 먼저 잡으므로 버튼을 빠르게 두 번 눌러도 한 번만 실행된다.
+    """
+    run_dir = Path(run_dir)
+    if not acquire_lock(run_dir):
+        return False
+    update_state(run_dir, status="running", step="실행 준비", error=None, focus=focus,
+                 started_at=time.time(), finished_at=None)
+    threading.Thread(target=_run_job, args=(run_dir, focus), daemon=True,
+                     name=f"priorscope-{run_dir.name}").start()
+    return True

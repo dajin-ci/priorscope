@@ -11,6 +11,7 @@ Matching Agent
 """
 
 import json
+import os
 import time
 
 from openai import OpenAI
@@ -29,6 +30,15 @@ client = OpenAI(
     base_url="https://api.upstage.ai/v2",
     default_headers=UPSTAGE_HEADERS
 )
+
+
+# 상태 확인 최대 대기 시간(초). 설계서 6장 기본 180초.
+# bench_pages.py 측정 결과로 조정한다. 넘으면 AgentTimeoutError로 멈춘다.
+AGENT_MAX_WAIT = int(os.getenv("AGENT_MAX_WAIT", "180"))
+
+
+class AgentTimeoutError(TimeoutError):
+    """Studio Job이 최대 대기 시간 안에 끝나지 않았다."""
 
 
 ##################################################
@@ -93,8 +103,12 @@ class AgentClient:
     def wait_until_complete(
         self,
         job_id: str,
-        interval: int = 2
+        interval: int = 2,
+        max_wait: int | None = None
     ):
+
+        max_wait = max_wait or AGENT_MAX_WAIT
+        deadline = time.monotonic() + max_wait
 
         response = client.responses.retrieve(
 
@@ -110,6 +124,12 @@ class AgentClient:
             "queued",
             "in_progress"
         ):
+
+            if time.monotonic() > deadline:
+                raise AgentTimeoutError(
+                    f"Studio Agent가 {max_wait}초 안에 끝나지 않았습니다. "
+                    "PDF가 너무 길거나 서비스가 혼잡할 수 있습니다."
+                )
 
             time.sleep(interval)
 

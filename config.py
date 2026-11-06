@@ -66,6 +66,13 @@ COMPARE_RUNS = max(1, int(os.getenv("COMPARE_RUNS", "3")))
 SUITABILITY_RUNS = max(1, int(os.getenv("SUITABILITY_RUNS", "3")))
 
 ##################################################
+# 관계·인사이트 분석 (8단계, 멘토링 11/05)
+##################################################
+
+# 적합성 판단과 같은 Upstage Chat Completions 호출이다. 비우면 8단계를 건너뛴다.
+INSIGHT_MODEL = os.getenv("INSIGHT_MODEL", "")
+
+##################################################
 # Project Directory
 ##################################################
 

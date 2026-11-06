@@ -62,3 +62,4 @@ data/
 
 eval/results/**/Compare_Input.pdf
 eval/results/**/embedding_cache.json
+eval/bench/slice_*.pdf

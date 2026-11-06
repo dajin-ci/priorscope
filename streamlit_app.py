@@ -9,6 +9,8 @@ PriorScope 결과 화면 (설계서 5장)
 
 import hashlib
 import json
+import os
+import time
 from pathlib import Path
 
 import streamlit as st
@@ -17,16 +19,33 @@ from ids import assign_ids, clean_text
 from validator import derive_weaknesses
 from suitability import AXIS_LABELS, deferred_assessment
 from comparison_report import build_report
-from run_storage import cleanup_old_runs, delete_run, retention_hours
+from focus import ASPECTS, GOALS, normalize as normalize_focus
+from run_storage import (
+    cleanup_old_runs, delete_run, is_running, load_bundle, new_run_dir, read_state,
+    retention_hours, run_dir_from_id, save_upload, update_state,
+)
+import insight_agent
 
 BASE_DIR = Path(__file__).resolve().parent
 SAMPLES_DIR = BASE_DIR / "samples"
+UPLOAD_SAMPLES = {"my": "My_Paper.pdf", "prior": "Prior_Paper.pdf"}
 SAMPLE_FILES = {
     "my_paper": "my_paper.json",
     "prior_paper": "prior_paper.json",
     "compare_result": "compare_result.json",
     "verified": "validated_result.json",
 }
+
+# 페이지 수 안내 기준. bench_pages.py 측정 결과로 정한다 (지금 값은 임시).
+PAGE_WARN = int(os.getenv("PAGE_WARN", "20"))
+PAGE_MAX = int(os.getenv("PAGE_MAX", "40"))
+
+# service.py 의 on_step 이름과 같아야 진행 표시가 맞는다.
+STEP_ORDER = [
+    "1단계 · 내 논문 분석", "2단계 · 기존 논문 분석", "3단계 · 비교 적합성 판단",
+    "4단계 · 비교용 PDF 생성", "5단계 · 비교 분석", "6단계 · 임베딩 유사도",
+    "7단계 · 코드 검증", "8단계 · 관계·인사이트 분석",
+]
 
 VERDICT_BADGE = {"일치": "🔴 일치", "유사": "🟠 유사", "없음": "🟢 없음", "확인필요": "🟡 확인필요"}
 SHORT_LEVEL = {"High Overlap": "High", "Medium Overlap": "Medium", "Low Overlap": "Low"}
@@ -156,9 +175,11 @@ def render_mapping_table(verified, ids):
     st.dataframe(rows, hide_index=True)
 
 
-def render_novel_overlap(verified):
+def render_novel_overlap(verified, ids=None, insight=None):
     novel = [m for m in verified["mappings"] if m["final_verdict"] == "없음"]
     overlap = [m for m in verified["mappings"] if m["final_verdict"] in ("일치", "유사")]
+    p_section = {p["id"]: p.get("section") for p in (ids or {}).get("P", [])}
+    detail = {o["my_id"]: o for o in (insight or {}).get("overlap_insights", [])}
 
     left, right = st.columns(2)
     with left:
@@ -169,12 +190,50 @@ def render_novel_overlap(verified):
         else:
             st.info("대응 없음으로 남은 요소가 없습니다.")
     with right:
-        st.subheader("기존 논문과 겹치는 요소")
+        st.subheader("기존 연구를 바탕으로 한 요소 (겹침)")
         if overlap:
+            st.caption("Related Work에서 인용할 위치와, 겹치는 안에서 내 쪽이 바꾼 점을 함께 적어 두세요.")
             for m in overlap:
-                st.text(f"{m['id']} ↔ {','.join(m['prior_ids'])} ({m['final_verdict']}). {m['text']}")
+                with st.container(border=True):
+                    st.text(f"{m['id']} ↔ {','.join(m['prior_ids'])} ({m['final_verdict']}). {m['text']}")
+                    sections = sorted({p_section[p] for p in m["prior_ids"] if p_section.get(p)})
+                    if sections:
+                        st.caption("인용할 위치: " + ", ".join(f"기존 논문 {sec}절" for sec in sections))
+                    if m["id"] in detail:
+                        d = detail[m["id"]]
+                        st.caption(f"내 쪽의 차이: {d['delta']}")
+                        if d.get("how_to_write"):
+                            st.caption(f"서술 방식: {d['how_to_write']}")
+                        if d.get("reviewer_question"):
+                            st.caption(f"예상 리뷰어 질문: {d['reviewer_question']}")
         else:
             st.info("겹치는 요소가 없습니다.")
+
+
+def render_insight(insight):
+    """8단계 관계·인사이트. 보조 분석이라 실패해도 다른 결과는 그대로 둔다."""
+    if not insight:
+        return
+    st.subheader("두 논문 주장의 관계")
+    if insight.get("error"):
+        st.caption(f"관계 분석은 이번에 실패했습니다 ({insight['error']}). 다른 결과는 정상입니다.")
+        return
+    relations = insight.get("relations") or []
+    if not relations:
+        st.info("확장·보완·상충·연결로 볼 만한 뚜렷한 관계를 찾지 못했습니다.")
+    for r in relations:
+        with st.container(border=True):
+            st.markdown(f"**{r['type']}** · 내 논문 {', '.join(r['my_ids'])} ↔ 기존 논문 {', '.join(r['prior_ids'])}")
+            st.text(f"기존 논문: {r['prior_claim']}")
+            st.text(f"내 논문: {r['my_claim']}")
+            st.write(r["insight"])
+            if r.get("inferred"):
+                st.caption("두 논문의 주장을 이은 추론입니다. 직접 검증된 결과가 아닐 수 있으니 본문에서는 가설로 표현하세요.")
+            if r.get("uncertain_ids"):
+                st.caption(f"{', '.join(r['uncertain_ids'])}는 대응이 확인필요인 요소입니다. 확인한 뒤에 쓰세요.")
+    for note in insight.get("focus_notes") or []:
+        st.info(note)
+    st.caption(f"AI 분석({insight.get('backend') or '-'})이며 번호 검증만 코드가 했습니다. 원문을 확인한 뒤 사용하세요.")
 
 
 def _fmt_diff(diff, unit):
@@ -182,10 +241,10 @@ def _fmt_diff(diff, unit):
 
 
 def render_weakness(verified, ids):
-    st.subheader("부족한 점 (기존 논문 대비)")
+    st.subheader("보완을 검토할 지점 (기존 논문 대비)")
     st.caption(
         "코드가 대응표와 정량 비교에서 계산한 항목입니다. "
-        "기존 논문에만 있는 구성이 모두 약점은 아니므로, 내 연구 범위에 필요한지 판단해 보세요."
+        "기존 논문에만 있는 구성이 꼭 필요한 것은 아니므로, 내 연구 범위에 넣을지 아니면 범위 밖이라고 밝힐지 정해 보세요."
     )
     # 예전 결과 파일(weaknesses 없음)도 같은 함수로 계산해 보여준다.
     weak = verified.get("weaknesses") or derive_weaknesses(verified, ids)
@@ -341,7 +400,7 @@ def render_result(bundle, key_prefix):
                 st.caption("요소 대응은 공통 범위·방법의 관계를 검토하기 위한 자료입니다. 전체 연구의 차별성으로 해석하지 마세요.")
             render_mapping_table(verified, ids)
         if report["show_novelty_candidates"]:
-            render_novel_overlap(verified)
+            render_novel_overlap(verified, ids, bundle.get("insight"))
             st.caption("대응 없음은 선택한 비교 논문의 추출 범위에 한정됩니다. 원문을 다시 확인하세요.")
         if report["show_weaknesses"]:
             render_weakness(verified, ids)
@@ -352,6 +411,7 @@ def render_result(bundle, key_prefix):
             st.info("이 경로에서는 연구 간 성능 우위를 제시하지 않습니다.")
         if report["show_mappings"]:
             render_uncertain(verified)
+            render_insight(bundle.get("insight"))
         with st.expander(f"검증 상세 (status: {verified['status']}, 이슈 {len(verified['issues'])}건)"):
             st.dataframe(
                 [{"코드": i["code"], "심각도": i["severity"], "항목": i.get("item_id") or "",
@@ -414,74 +474,165 @@ def render_delete_button(bundle):
     if st.button("🗑️ 이번 분석 파일 지금 삭제", key="delete_run"):
         if delete_run(run_dir):
             st.session_state["deleted_run"] = run_dir
+            _reset_run()  # 주소와 업로드 칸도 비워서, 지운 파일이 다시 저장되지 않게 한다
             st.rerun()
         else:
             st.error("삭제하지 못했습니다. 이미 삭제되었거나 실행 폴더가 아닙니다.")
 
 
+def _current_run_dir():
+    """URL의 ?run=<run_id>로 실행 폴더를 찾는다. 새로고침해도 같은 폴더로 돌아온다."""
+    return run_dir_from_id(st.query_params.get("run"))
+
+
+def _ensure_run_dir(run_dir):
+    if run_dir is None:
+        run_dir = new_run_dir()
+        st.query_params["run"] = run_dir.name
+    return run_dir
+
+
+def _run_state(run_dir):
+    if run_dir is None:
+        return {"status": "idle", "files": {}}
+    state = read_state(run_dir)
+    if state.get("status") == "running" and not is_running(run_dir):
+        # running인데 lock이 없으면 서버 재시작 등으로 실행이 끊긴 것이다.
+        state = update_state(run_dir, status="failed", error={
+            "step": state.get("step") or "실행",
+            "message": "서버가 다시 시작되어 분석이 중단되었습니다. 다시 시작해 주세요."})
+    return state
+
+
+def _reset_run():
+    st.query_params.clear()
+    st.session_state["upload_gen"] = st.session_state.get("upload_gen", 0) + 1
+
+
+def _start(run_dir, focus):
+    # on_click 콜백은 화면을 다시 그리기 전에 실행된다. 여기서 lock과 running을 기록하므로
+    # 다음 화면에서 버튼은 이미 잠겨 있다 (멘토링 11/05: 진행 중 중복 클릭 방지).
+    from service import start_in_background
+
+    st.session_state.pop("deleted_run", None)
+    if not start_in_background(run_dir, focus):
+        st.session_state["start_msg"] = "이미 진행 중인 분석이 있습니다. 끝날 때까지 기다려 주세요."
+
+
+def render_uploads(run_dir, running):
+    files = _run_state(run_dir).get("files", {})
+    gen = st.session_state.get("upload_gen", 0)
+    left, right = st.columns(2)
+    for col, kind, label in ((left, "my", "투고할 내 논문 PDF"), (right, "prior", "비교할 기존 논문 PDF")):
+        with col:
+            up = st.file_uploader(label, type=["pdf"], key=f"{kind}_pdf_{gen}", disabled=running)
+            if up is not None:
+                data = up.getvalue()
+                # 같은 파일이면 다시 저장하지 않는다 (저장하면 이전 결과가 지워진다).
+                if files.get(kind, {}).get("sha256") != hashlib.sha256(data).hexdigest():
+                    run_dir = _ensure_run_dir(run_dir)
+                    files[kind] = save_upload(run_dir, kind, up.name, data)
+            info = files.get(kind)
+            if info:
+                pages = info.get("pages")
+                st.caption(f"저장됨: {info['name']} ({pages or '?'}쪽, {info['size'] // 1024:,} KB)")
+                if pages and pages > PAGE_MAX:
+                    st.warning(f"{PAGE_MAX}쪽이 넘으면 시간 초과로 실패할 수 있습니다. 부록을 뺀 본문만 올리는 것을 권합니다.")
+                elif pages and pages > PAGE_WARN:
+                    st.caption(f"{pages}쪽이라 분석이 평소보다 오래 걸릴 수 있습니다.")
+            name = UPLOAD_SAMPLES[kind]
+            path = SAMPLES_DIR / name
+            if path.exists():
+                st.download_button(f"샘플 {name} 받기", path.read_bytes(), file_name=name, key=f"sample_{name}")
+    return run_dir, files
+
+
+def render_focus(state, disabled):
+    saved = normalize_focus(state.get("focus"))
+    with st.expander("관심 초점 고르기 (선택)", expanded=bool(saved["aspects"] or saved["goals"])):
+        st.caption("고르면 주의 지점, 서술 제안, 관계 분석이 이 항목을 먼저 다룹니다. 요소 대응표와 등급 계산은 바뀌지 않습니다.")
+        focus = {"aspects": [], "goals": []}
+        c1, c2 = st.columns(2)
+        c1.markdown("**보고 싶은 측면**")
+        for key, (label, _) in ASPECTS.items():
+            if c1.checkbox(label, value=key in saved["aspects"], key=f"aspect_{key}", disabled=disabled):
+                focus["aspects"].append(key)
+        c2.markdown("**얻고 싶은 것**")
+        for key, (label, _) in GOALS.items():
+            if c2.checkbox(label, value=key in saved["goals"], key=f"goal_{key}", disabled=disabled):
+                focus["goals"].append(key)
+    return focus
+
+
+@st.fragment(run_every=2)
+def render_progress(run_dir):
+    """2초마다 state.json을 다시 읽는다. 끝나면 화면 전체를 다시 그려 결과를 보여준다."""
+    state = _run_state(run_dir)
+    if state.get("status") != "running":
+        st.rerun()
+    current = state.get("step") or "실행 준비"
+    index = STEP_ORDER.index(current) if current in STEP_ORDER else -1
+    with st.container(border=True):
+        st.markdown(f"**분석 중 · {current}**")
+        for i, name in enumerate(STEP_ORDER):
+            if name.startswith("8단계") and not insight_agent.is_enabled():
+                continue
+            mark = "✅" if i < index else "⏳" if i == index else "▫️"
+            st.text(f"{mark} {name}")
+        if started := state.get("started_at"):
+            st.caption(f"경과 {int(time.time() - started)}초 · 새로고침하거나 창을 닫아도 분석은 계속됩니다. "
+                       "이 주소로 다시 오면 결과를 볼 수 있습니다.")
+
+
 def tab_new_analysis():
     render_privacy_notice()
 
-    left, right = st.columns(2)
-    my_file = left.file_uploader("투고할 내 논문 PDF", type=["pdf"], key="my_pdf")
-    prior_file = right.file_uploader("비교할 기존 논문 PDF", type=["pdf"], key="prior_pdf")
+    run_dir = _current_run_dir()
+    running = _run_state(run_dir).get("status") == "running"
 
-    # 샘플 PDF (samples/ 에 있을 때만 표시)
-    for col, name in ((left, "My_Paper.pdf"), (right, "Prior_Paper.pdf")):
-        path = SAMPLES_DIR / name
-        if path.exists():
-            col.download_button(f"샘플 {name} 받기", path.read_bytes(), file_name=name, key=f"sample_{name}")
+    run_dir, files = render_uploads(run_dir, running)
+    state = _run_state(run_dir)
 
     problems = []
-    if my_file is None:
+    if "my" not in files:
         problems.append("내 논문 PDF를 올려 주세요.")
-    if prior_file is None:
+    if "prior" not in files:
         problems.append("기존 논문 PDF를 올려 주세요.")
-
-    my_bytes = my_file.getvalue() if my_file else None
-    prior_bytes = prior_file.getvalue() if prior_file else None
-    if my_bytes and prior_bytes and my_bytes == prior_bytes:
+    if "my" in files and "prior" in files and files["my"]["sha256"] == files["prior"]["sha256"]:
         problems.append("두 칸에 같은 파일이 올라갔습니다. 서로 다른 논문을 올려 주세요.")
+    if not running:
+        for p in problems:
+            st.caption(f"⚠️ {p}")
 
-    for p in problems:
-        st.caption(f"⚠️ {p}")
+    focus = render_focus(state, running)
 
-    clicked = st.button("비교 시작", type="primary", disabled=bool(problems))
-    current_id = _input_id(my_bytes, prior_bytes) if not problems else None
+    c1, c2 = st.columns([3, 1])
+    c1.button("분석하는 중…" if running else "비교 시작", type="primary", use_container_width=True,
+              disabled=running or bool(problems), on_click=_start, args=(run_dir, focus))
+    c2.button("새 비교", use_container_width=True, disabled=running, on_click=_reset_run)
+    if msg := st.session_state.pop("start_msg", None):
+        st.warning(msg)
 
-    if clicked and not problems:
-        from service import StepError, run_compare_service
+    if running:
+        render_progress(run_dir)
+        return
 
-        st.session_state.pop("result", None)
-        st.session_state.pop("error", None)
-
-        with st.status("비교 실행 중... (1~3분)", expanded=True) as status:
-
-            def on_step(name):
-                status.update(label=name)
-                status.write(name)
-
-            try:
-                bundle = run_compare_service(my_bytes, prior_bytes, on_step=on_step)
-            except StepError as exc:
-                status.update(label=f"{exc.step}에서 실패", state="error")
-                st.session_state["error"] = (current_id, f"{exc.step}에서 실패했습니다.\n{exc.message}")
-            except Exception as exc:  # noqa: BLE001
-                status.update(label="실행 실패", state="error")
-                st.session_state["error"] = (current_id, f"예상하지 못한 오류: {type(exc).__name__}: {exc}")
-            else:
-                status.update(label="비교 완료", state="complete", expanded=False)
-                st.session_state["result"] = (current_id, bundle)
-
-    error = st.session_state.get("error")
-    if error and error[0] == current_id:
-        st.error(error[1])
-
-    result = st.session_state.get("result")
-    if result and result[0] == current_id:
+    if state.get("status") == "failed":
+        error = state.get("error") or {}
+        st.error(f"{error.get('step', '실행')}에서 실패했습니다.\n{error.get('message', '')}")
+        st.caption("이전 결과로 대신 채우지 않았습니다. 원인을 확인한 뒤 다시 시작해 주세요.")
+    elif state.get("status") == "done":
+        bundle = load_bundle(run_dir)
+        if bundle is None:
+            st.warning("결과 파일을 찾지 못했습니다. 보관 기간이 지나 삭제되었을 수 있습니다. 다시 분석해 주세요.")
+            return
+        if state.get("elapsed"):
+            st.caption(f"분석 시간 {state['elapsed']:g}초")
         st.divider()
-        render_result(result[1], "new")
-        render_delete_button(result[1])
+        render_result(bundle, "new")
+        render_delete_button(bundle)
+    elif st.session_state.get("deleted_run"):
+        st.success("서버에 저장된 분석 파일(논문 PDF, 결과 JSON)을 삭제했습니다.")
 
 
 def tab_sample():
