@@ -508,6 +508,8 @@ def _run_state(run_dir):
 def _reset_run():
     st.query_params.clear()
     st.session_state["upload_gen"] = st.session_state.get("upload_gen", 0) + 1
+    for kind in UPLOAD_SAMPLES:
+        st.session_state[f"replace_{kind}"] = False
 
 
 def _start(run_dir, focus):
@@ -520,30 +522,57 @@ def _start(run_dir, focus):
         st.session_state["start_msg"] = "이미 진행 중인 분석이 있습니다. 끝날 때까지 기다려 주세요."
 
 
+def _set_replace(kind, value):
+    st.session_state[f"replace_{kind}"] = value
+
+
 def render_uploads(run_dir, running):
+    """
+    저장된 PDF가 있으면 업로드 칸 대신 파일 카드를 보여준다.
+    브라우저는 보안상 새로고침 후 업로드 칸에 파일을 다시 채울 수 없어서,
+    빈 업로드 칸만 보이면 사용자는 파일이 사라졌다고 느낀다 (11/06 확인).
+    """
     files = _run_state(run_dir).get("files", {})
     gen = st.session_state.get("upload_gen", 0)
     left, right = st.columns(2)
     for col, kind, label in ((left, "my", "투고할 내 논문 PDF"), (right, "prior", "비교할 기존 논문 PDF")):
         with col:
-            up = st.file_uploader(label, type=["pdf"], key=f"{kind}_pdf_{gen}", disabled=running)
-            if up is not None:
-                data = up.getvalue()
-                # 같은 파일이면 다시 저장하지 않는다 (저장하면 이전 결과가 지워진다).
-                if files.get(kind, {}).get("sha256") != hashlib.sha256(data).hexdigest():
-                    run_dir = _ensure_run_dir(run_dir)
-                    files[kind] = save_upload(run_dir, kind, up.name, data)
             info = files.get(kind)
-            if info:
-                pages = info.get("pages")
-                st.caption(f"저장됨: {info['name']} ({pages or '?'}쪽, {info['size'] // 1024:,} KB)")
+            replacing = st.session_state.get(f"replace_{kind}", False)
+
+            if info and not replacing:
+                st.markdown(label)
+                with st.container(border=True):
+                    pages = info.get("pages")
+                    st.markdown(f"📄 **{info['name']}**")
+                    st.caption(f"{pages or '?'}쪽 · {info['size'] // 1024:,} KB · 서버에 저장됨 (새로고침해도 유지)")
+                    saved = Path(run_dir) / UPLOAD_SAMPLES[kind]
+                    c1, c2 = st.columns(2)
+                    if saved.exists():
+                        c1.download_button("PDF 다시 받기", saved.read_bytes(), file_name=info["name"],
+                                           mime="application/pdf", key=f"saved_{kind}", use_container_width=True)
+                    c2.button("다른 파일로 바꾸기", key=f"replace_btn_{kind}", disabled=running,
+                              on_click=_set_replace, args=(kind, True), use_container_width=True)
                 if pages and pages > PAGE_MAX:
                     st.warning(f"{PAGE_MAX}쪽이 넘으면 시간 초과로 실패할 수 있습니다. 부록을 뺀 본문만 올리는 것을 권합니다.")
                 elif pages and pages > PAGE_WARN:
                     st.caption(f"{pages}쪽이라 분석이 평소보다 오래 걸릴 수 있습니다.")
+            else:
+                up = st.file_uploader(label, type=["pdf"], key=f"{kind}_pdf_{gen}", disabled=running)
+                if up is not None:
+                    data = up.getvalue()
+                    # 같은 파일이면 다시 저장하지 않는다 (저장하면 이전 결과가 지워진다).
+                    if (info or {}).get("sha256") != hashlib.sha256(data).hexdigest():
+                        run_dir = _ensure_run_dir(run_dir)
+                        files[kind] = save_upload(run_dir, kind, up.name, data)
+                    st.session_state[f"replace_{kind}"] = False
+                    st.rerun()  # 바로 파일 카드로 바꿔 보여준다
+                if replacing:
+                    st.button("바꾸지 않기", key=f"cancel_replace_{kind}", on_click=_set_replace, args=(kind, False))
+
             name = UPLOAD_SAMPLES[kind]
             path = SAMPLES_DIR / name
-            if path.exists():
+            if path.exists() and not files.get(kind):
                 st.download_button(f"샘플 {name} 받기", path.read_bytes(), file_name=name, key=f"sample_{name}")
     return run_dir, files
 
