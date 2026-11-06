@@ -1557,11 +1557,16 @@ _NO_PAIR_MARKERS = {"해당 없음", "해당없음", "없음", "-", "n/a", "na",
 _TEXT_SINGLE_FIELDS = ("summary", "related_work_draft")
 
 
+# "데이터셋과 지표가 같은 R-M ~ R-P 쌍은 없다"처럼 문장으로 풀어 쓴 경우 (11/06 S1 실행)
+_NO_PAIR_SENTENCE = re.compile(r"(없[다음습]|해당\s*없|존재하지\s*않|\bno\b|\bnone\b|n/a)", re.IGNORECASE)
+
+
 def _is_no_pair_line(line: Any) -> bool:
+    """비교 쌍이 없다는 표시 줄인가. 번호(R-M1, R-P2)가 있는 줄은 형식이 깨졌어도 버리지 않는다."""
     if not isinstance(line, str) or re.search(r"R-[MP]\d+", line):
-        return False  # 번호가 있는 줄은 형식이 깨졌어도 버리지 않고 기존대로 오류로 본다
+        return False
     head = line.split("|")[0].strip().strip(".").lower()
-    return head in _NO_PAIR_MARKERS
+    return head in _NO_PAIR_MARKERS or bool(_NO_PAIR_SENTENCE.search(head))
 
 
 def _collapse_repeated_singles(compare_result: Any) -> tuple[Any, list[tuple[str, int]]]:

@@ -56,3 +56,13 @@ def test_none_marker_result_no_longer_fails_validation():
     result = validate(PAPER, PAPER, compare)
     assert not any(i["code"] == "RESULT_PAIR_FORMAT_INVALID" for i in result["issues"])
     assert any(i["code"] == "RESULT_PAIRS_NONE_MARKER" for i in result["issues"])
+
+
+def test_no_pair_sentence_is_recognized():
+    from validator import _is_no_pair_line
+    assert _is_no_pair_line("데이터셋과 지표가 같은 R-M ~ R-P 쌍은 없다 | 조건 다름 | R-M은 OV-AVEBench, R-P는 IN1K 등")
+    assert _is_no_pair_line("비교 가능한 쌍이 존재하지 않음 | - | -")
+    assert _is_no_pair_line("No comparable pairs | - | -")
+    # 번호가 있거나, 부정 표현이 없는 줄은 기존대로 형식 오류로 둔다
+    assert not _is_no_pair_line("R-M1 ~ R-P2 쌍은 없다 | 조건 다름 | x")
+    assert not _is_no_pair_line("SQuAD 결과 비교 | 동일 조건 | x")
