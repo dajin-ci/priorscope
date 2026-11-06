@@ -11,6 +11,7 @@
 | 겹치는 요소에서 얻는 인사이트 | 겹침 칸에 인용할 기존 논문 절, 내 쪽의 차이, 서술 방식, 예상 리뷰어 질문 표시 | streamlit_app.py, insight_agent.py |
 | A→B, B→C 관계 | 8단계 관계 분석 (확장·보완·상충·연결). '연결'은 항상 추론으로 표시 | insight_agent.py |
 | 샘플 결과가 FAILED로 표시됨 | Studio가 단일 값 필드에 같은 값을 반복해 낸 경우(overlap_level ×3 등) 하나로 합치고 info로 기록. 값이 다르면 기존대로 오류. 샘플을 v11 S2 원출력으로 현재 코드에서 다시 검증 | validator.py, samples/ |
+| 비교할 실험이 없으면 FAILED | Compare Agent가 result_pairs에 "해당 없음"을 쓰면 빈 목록으로 처리, summary·related_work_draft가 여러 문장으로 나뉘면 이어 붙임 (모두 info로 기록). 저장된 FAILED 4건(v9 S1, v10 S4, v11 S1·S2)이 판정 변화 없이 해소 | validator.py |
 | "부족한 점" 어감 | "보완을 검토할 지점 (기존 논문 대비)"로 변경 | streamlit_app.py |
 | 관심 분야 반영 | 체크박스(측면 6개, 얻고 싶은 것 3개). Compare_Input.pdf 안내문과 관계 분석 프롬프트에 들어감. 대응 판정·등급에는 영향 없음 | focus.py, compare_builder.py |
 | 대주제가 다른데 내용이 같은 경우 | 이번에는 진행하지 않음 (2차) | - |

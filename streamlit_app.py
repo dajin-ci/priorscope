@@ -320,7 +320,8 @@ def render_numeric(verified, ids):
 def render_report(compare):
     st.subheader("차별성 리포트")
     st.markdown("**요약**")
-    st.text(_first(compare, "summary") or "-")
+    # 여러 문장으로 나뉘어 나온 경우도 모두 보여준다 (validator 는 이어 붙여 검증한다).
+    st.text(" ".join(_list(compare, "summary")) or "-")
 
     st.markdown("**주의 지점**")
     for item in _list(compare, "caution_points") or ["-"]:
@@ -331,7 +332,7 @@ def render_report(compare):
         st.text(f"{i}. {item}")
 
     st.subheader("Related Work 초안")
-    st.code(_first(compare, "related_work_draft") or "-", language=None, wrap_lines=True)
+    st.code(" ".join(_list(compare, "related_work_draft")) or "-", language=None, wrap_lines=True)
     st.caption("오른쪽 위 아이콘으로 복사할 수 있습니다.")
 
 

@@ -1551,6 +1551,19 @@ def _summarize(mappings: list[dict[str, Any]], compare_result: Mapping[str, Any]
     }
 
 
+# 비교할 실험 쌍이 없을 때 Compare Agent가 빈 배열 대신 쓰는 표시. 첫 칸이 이것뿐인 줄만 해당한다.
+_NO_PAIR_MARKERS = {"해당 없음", "해당없음", "없음", "-", "n/a", "na", "none", "비교 불가", "비교 가능한 쌍 없음"}
+# 여러 문장으로 나뉘어 나와도 이어 붙이면 되는 서술 필드. overlap_level·llm_score는 엄격하게 둔다.
+_TEXT_SINGLE_FIELDS = ("summary", "related_work_draft")
+
+
+def _is_no_pair_line(line: Any) -> bool:
+    if not isinstance(line, str) or re.search(r"R-[MP]\d+", line):
+        return False  # 번호가 있는 줄은 형식이 깨졌어도 버리지 않고 기존대로 오류로 본다
+    head = line.split("|")[0].strip().strip(".").lower()
+    return head in _NO_PAIR_MARKERS
+
+
 def _collapse_repeated_singles(compare_result: Any) -> tuple[Any, list[tuple[str, int]]]:
     """단일 값 필드에 '완전히 같은 값'이 여러 번 들어 있으면 하나로 합친다.
 
@@ -1571,6 +1584,45 @@ def _collapse_repeated_singles(compare_result: Any) -> tuple[Any, list[tuple[str
             result[field] = [value[0]]
             collapsed.append((field, len(value)))
     return result, collapsed
+
+
+def _normalize_agent_output(compare_result: Any) -> tuple[Any, list[dict[str, Any]]]:
+    """Compare Agent 출력의 알려진 형식 흔들림을 정리하고, 정리한 내용을 info 이슈로 돌려준다.
+
+    판정을 바꾸지 않는 표기 문제만 다룬다.
+    - 단일 필드에 같은 값 반복 → 하나로
+    - summary·related_work_draft 가 여러 문장으로 나뉨 → 이어 붙임
+    - result_pairs 에 "해당 없음" 같은 표시 줄 → 빈 목록 (비교 쌍은 코드가 따로 계산한다)
+    """
+    result, collapsed = _collapse_repeated_singles(compare_result)
+    notes: list[dict[str, Any]] = []
+
+    def note(code: str, field: str, message: str) -> None:
+        notes.append({"code": code, "severity": "info", "path": f"comparison_result.{field}",
+                      "item_id": None, "message": message})
+
+    for field, count in collapsed:
+        note("SINGLE_FIELD_REPEATED", field, f"단일 값 필드에 같은 값이 {count}번 들어 있어 하나로 합쳤습니다 (Studio Extract 반복 출력).")
+    if not isinstance(result, Mapping):
+        return result, notes
+
+    result = dict(result)
+    for field in _TEXT_SINGLE_FIELDS:
+        value = result.get(field)
+        if _is_sequence(value) and len(value) > 1 and all(isinstance(v, str) for v in value):
+            parts = [v.strip() for v in value if v.strip()]
+            if parts:
+                result[field] = [" ".join(parts)]
+                note("TEXT_FIELD_JOINED", field, f"서술 필드가 {len(value)}개로 나뉘어 있어 이어 붙였습니다.")
+
+    pairs = result.get("result_pairs")
+    if _is_sequence(pairs):
+        kept = [line for line in pairs if not _is_no_pair_line(line)]
+        if len(kept) != len(pairs):
+            result["result_pairs"] = kept
+            note("RESULT_PAIRS_NONE_MARKER", "result_pairs",
+                 f"'해당 없음' 같은 표시 줄 {len(pairs) - len(kept)}개를 빈 목록으로 처리했습니다. 비교 쌍은 코드가 따로 계산합니다.")
+    return result, notes
 
 
 def validate(
@@ -1602,16 +1654,9 @@ def validate(
         "result_pairs": _expected_result_pairs(rm, rp),
     }
 
-    compare_result, collapsed = _collapse_repeated_singles(compare_result)
+    compare_result, notes = _normalize_agent_output(compare_result)
     report = validate_comparison(compare_result, source_records, expected_items)
-    for field, count in collapsed:
-        report["issues"].append({
-            "code": "SINGLE_FIELD_REPEATED",
-            "severity": "info",
-            "path": f"comparison_result.{field}",
-            "item_id": None,
-            "message": f"단일 값 필드에 같은 값이 {count}번 들어 있어 하나로 합쳤습니다 (Studio Extract 반복 출력).",
-        })
+    report["issues"].extend(notes)
 
     # 정량 비교 후처리: 동일 조건 여부(에이전트 판정)·근거 위치·중복 추출을 반영한다.
     record_by_id = {r["id"]: r for r in rm + rp}
