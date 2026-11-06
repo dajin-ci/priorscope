@@ -4,7 +4,7 @@ streamlit_app.py
 PriorScope 결과 화면 (설계서 5장)
 
 탭 1 · 새로 분석      : PDF 2개 → service.run_compare_service() → 결과
-탭 2 · 샘플 결과 보기 : samples/ 의 JSON 4개로 같은 화면을 즉시 표시
+탭 2 · 샘플 결과 보기 : samples/cases/ 의 경로별 사례를 골라 같은 화면을 즉시 표시 (eval/build_samples.py 로 생성)
 """
 
 import hashlib
@@ -29,12 +29,15 @@ import insight_agent
 BASE_DIR = Path(__file__).resolve().parent
 SAMPLES_DIR = BASE_DIR / "samples"
 UPLOAD_SAMPLES = {"my": "My_Paper.pdf", "prior": "Prior_Paper.pdf"}
+SAMPLE_CASES_DIR = SAMPLES_DIR / "cases"
 SAMPLE_FILES = {
     "my_paper": "my_paper.json",
     "prior_paper": "prior_paper.json",
+    "suitability": "suitability.json",
     "compare_result": "compare_result.json",
     "verified": "validated_result.json",
 }
+ROUTE_BADGE = {"research": "🟢", "partial": "🟡", "method": "🟠", "unsuitable": "⚪", "insufficient": "⏸️"}
 
 # 페이지 수 안내 기준. bench_pages.py 측정 결과로 정한다 (지금 값은 임시).
 PAGE_WARN = int(os.getenv("PAGE_WARN", "20"))
@@ -673,20 +676,39 @@ def tab_new_analysis():
         render_delete_button({"run_dir": str(run_dir)})
 
 
-def tab_sample():
+def load_sample_case(key):
+    """samples/cases/<key>/ 의 JSON으로 화면용 bundle을 만든다. 비교 전에 멈춘 사례는 비교 결과가 없다."""
+    case_dir = SAMPLE_CASES_DIR / key
     bundle = {}
-    for key, name in SAMPLE_FILES.items():
-        path = SAMPLES_DIR / name
-        if not path.exists():
-            st.info(f"샘플 파일이 없습니다: samples/{name}")
-            return
-        bundle[key] = json.loads(path.read_text(encoding="utf-8"))
+    for field, name in SAMPLE_FILES.items():
+        path = case_dir / name
+        bundle[field] = json.loads(path.read_text(encoding="utf-8")) if path.exists() else None
+    return bundle
 
-    suitability_path = SAMPLES_DIR / "suitability.json"
-    if suitability_path.exists():
-        bundle["suitability"] = json.loads(suitability_path.read_text(encoding="utf-8"))
-    st.caption("미리 실행해 둔 결과입니다. 에이전트를 호출하지 않습니다.")
-    render_result(bundle, "sample")
+
+def tab_sample():
+    index_path = SAMPLE_CASES_DIR / "cases.json"
+    if not index_path.exists():
+        st.info("샘플 사례가 없습니다. python eval/build_samples.py 로 만들어 주세요.")
+        return
+    cases = json.loads(index_path.read_text(encoding="utf-8"))["cases"]
+
+    st.caption("미리 실행해 둔 결과입니다. 에이전트를 호출하지 않습니다. 비교 적합성에 따라 결과 화면이 어떻게 달라지는지 경우별로 볼 수 있습니다.")
+    labels = {c["key"]: f"{ROUTE_BADGE.get(c['route'], '')} {c['label']}" for c in cases}
+    key = st.radio("사례", list(labels), format_func=labels.get, horizontal=True,
+                   key="sample_case", label_visibility="collapsed")
+    case = next(c for c in cases if c["key"] == key)
+    with st.container(border=True):
+        st.markdown(f"**{case['pair']}**")
+        st.caption(case["look_for"])
+        st.caption(f"출처: eval/results/{case['source']}")
+
+    bundle = load_sample_case(key)
+    if bundle["my_paper"] is None or bundle["prior_paper"] is None:
+        st.warning(f"사례 파일이 없습니다: samples/cases/{key}/")
+        return
+    st.divider()
+    render_result(bundle, f"sample_{key}")
 
 
 ##################################################

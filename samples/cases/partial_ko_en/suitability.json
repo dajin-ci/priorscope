@@ -1,0 +1,213 @@
+{
+  "version": "4",
+  "route": "partial",
+  "label": "공통 범위만 비교",
+  "axes": {
+    "problem": {
+      "relation": "related",
+      "reason": "두 논문 모두 BERT 계열 모델을 텍스트 분류(감성 분석/텍스트 분류)에 미세 조정한다는 공통점이 있으나, 해결하려는 최종 목적과 대상이 다르다. 내 논문은 한국어 의류 쇼핑 리뷰의 라벨 재조정, 데이터 불균형 완화, 입력 시퀀스 길이 최적화, 카테고리 분류 및 감성 점수 산출이라는 구체적 응용 파이프라인을 목표로 한다. 반면 선행 논문은 BERT의 미세 조정 방법 자체를 일반화하여 긴 텍스트 처리, 추가 사전학습, 멀티태스크 미세 조정, 층별 학습률 등 미세 조정 전략을 탐구하고 여러 영어/중국어 분류 데이터셋에서 성능 향상을 목표로 한다. 따라서 같은 BERT 미세 조정이라는 넓은 주제 안에 있지만, 내 논문은 선행 논문의 일반 해법을 특정 도메인·언어·태스크에 적용하고 추가 목적(라벨 재조정, 불균형 완화, 길이 최적화, 토픽 모델링)을 더하므로 '연관되지만 다른 문제'로 판단한다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "리뷰 데이터는 종종 부정확하거나 불균형을 이루는 만족도 점수 분포와 텍스트의 다양성으로 인해 분석에 어려움을 겪는다[4].",
+          "source_text": "리뷰 데이터는 종종 부정확하거나 불균형을 이루는 만족도 점수 분포와 텍스트의 다양성으로 인해 분석에 어려움을 겪는다[4]."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "한국어 의류 쇼핑 플랫폼 리뷰 데이터를 수집하고 GPT-4 API로 구매 만족도 라벨 값을 재조정한다.",
+          "source_text": "[1] 한국어 의류 쇼핑 플랫폼 리뷰 데이터를 수집하고 GPT-4 API로 구매 만족도 라벨 값을 재조정한다."
+        },
+        {
+          "field": "contributions",
+          "index": 2,
+          "quote": "한국어 의류 쇼핑 플랫폼에서 최적의 BERT 기반 모델과 입력 시퀀스 길이를 탐구한다.",
+          "source_text": "[1] 한국어 의류 쇼핑 플랫폼에서 최적의 BERT 기반 모델과 입력 시퀀스 길이를 탐구한다."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Although BERT has achieved amazing results in many natural language understanding (NLU) tasks, its potential has yet to be fully explored.",
+          "source_text": "Although BERT has achieved amazing results in many natural language understanding (NLU) tasks, its potential has yet to be fully explored."
+        },
+        {
+          "field": "problem",
+          "index": 2,
+          "quote": "The first problem of applying BERT to text classification is how processing the text with a length larger than 512.",
+          "source_text": "The first problem of applying BERT to text classification is how processing the text with a length larger than 512."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We propose a general solution to fine-tune the pre-trained BERT model, which includes three steps: (1) further pre-train BERT on within-task training data or in-domain data; (2) optional fine-tuning BERT with multi-task learning if several related tasks are available; (3) fine-tune BERT for the target task.",
+          "source_text": "[1] We propose a general solution to fine-tune the pre-trained BERT model, which includes three steps: (1) further pre-train BERT on within-task training data or in-domain data; (2) optional fine-tuning BERT with multi-task learning if several related tasks are available; (3) fine-tune BERT for the target task. We also investigate the fine-tuning methods for BERT on target task, including preprocess of long text, layer selection, layer-wise learning rate, catastrophic forgetting, and low-shot learning problems. We achieve the new state-of-the-art results on seven widely-studied English text classification datasets and one Chinese news classification dataset."
+        }
+      ],
+      "votes": [
+        "related",
+        "related",
+        "related"
+      ]
+    },
+    "scope": {
+      "relation": "partial",
+      "reason": "두 논문 모두 BERT 기반 모델을 텍스트 분류/감성 분석에 사용한다는 점에서 입출력 형태(텍스트 입력 → 분류/감성 결과)와 연구 대상(사전학습 언어 모델의 미세 조정)이 일부 공통된다. 그러나 내 논문은 한국어 의류 쇼핑 리뷰라는 특정 도메인·언어, 라벨 재조정과 불균형 완화, 입력 시퀀스 길이 최적화, BERTopic 기반 카테고리 분류까지 포함한 응용 범위를 갖는다. 선행 논문은 여러 영어/중국어 텍스트 분류 데이터셋을 대상으로 미세 조정 전략(추가 사전학습, 멀티태스크, 긴 텍스트 절단, 층별 학습률)을 비교하는 일반 방법론을 다룬다. 따라서 연구 대상의 언어·도메인·부가 절차가 달라 범위가 부분적으로만 겹친다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "Python 언어와 Selenium, BeautifulSoup 라이브러리 등을 활용하여 웹 스크래핑을 진행한다.",
+          "source_text": "[3.1.1] Python 언어와 Selenium, BeautifulSoup 라이브러리 등을 활용하여 웹 스크래핑을 진행한다. | Python, Selenium, BeautifulSoup를 이용해 리뷰 데이터를 수집하는 웹 스크래핑 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "긍정과 부정의 비율을 약 6:4로 설정하여 긍정 리뷰의 개수를 그 비율에 맞게 랜덤하게 삭제하는 작업을 진행한다.",
+          "source_text": "[3.1.2] 긍정과 부정의 비율을 약 6:4로 설정하여 긍정 리뷰의 개수를 그 비율에 맞게 랜덤하게 삭제하는 작업을 진행한다. | 데이터 불균형 완화를 위해 언더샘플링으로 6:4 비율을 맞추는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "16, 32, 64, 128으로 설정하여 결과를 비교한다.",
+          "source_text": "[3.2.1] 16, 32, 64, 128으로 설정하여 결과를 비교한다. | 입력 시퀀스 길이를 여러 값으로 설정해 성능과 효율을 비교하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "BERTopic[18]을 사용하여 토픽 모델링을 진행한다.",
+          "source_text": "[3.3] BERTopic[18]을 사용하여 토픽 모델링을 진행한다. | BERTopic으로 리뷰 카테고리를 분류하는 토픽 모델링",
+          "index_corrected_from": 6
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "Within-task pre-training",
+          "source_text": "[4.2] Within-task pre-training | 타깃 과제의 학습 데이터로 BERT를 추가 사전학습하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "In-domain pre-training",
+          "source_text": "[4.2] In-domain pre-training | 동일 도메인의 데이터로 BERT를 추가 사전학습하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "head+tail",
+          "source_text": "[4.1] head+tail | 긴 문서에서 앞 128개와 뒤 382개 토큰을 선택하는 절단 방식"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "layer-wise learning rate",
+          "source_text": "[4.1] layer-wise learning rate | 하위 층에 더 작은 학습률을 적용하는 층별 감소 학습률"
+        },
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "IMDb | BERT-Feat | test | single | 없음 | error rate (%) | 6.79",
+          "source_text": "IMDb | BERT-Feat | test | single | 없음 | error rate (%) | 6.79 | ↓ | [Table 6]"
+        }
+      ],
+      "votes": [
+        "partial",
+        "partial",
+        "partial"
+      ]
+    },
+    "method": {
+      "relation": "generic_only",
+      "reason": "두 논문 모두 BERT 계열 사전학습 모델을 미세 조정한다는 점에서 Transformer 기반 언어 모델을 활용한다는 일반적 기반은 공통된다. 그러나 내 논문의 핵심 방법은 한국어 리뷰 수집(웹 스크래핑), GPT-4 API를 이용한 라벨 재조정, 언더샘플링을 통한 불균형 완화, 입력 시퀀스 길이별 비교, 한국어 BERT 계열 모델(klue/bert, klue/roberta, albert, kcbert, KcELECTRA) 미세 조정, BERTopic 토픽 모델링, Okt 형태소 분석기 기반 키워드 사전 구축, Softmax 감성 점수 산출 등 응용·데이터 처리 중심의 구체적 절차로 구성된다. 선행 논문의 핵심 방법은 추가 사전학습(within-task/in-domain/cross-domain), 멀티태스크 미세 조정, 긴 텍스트 절단(head+tail), 층별 학습률 등 BERT 미세 조정 전략 자체에 초점이 있다. 두 논문이 공유하는 것은 BERT를 미세 조정한다는 일반적 접근뿐이며, 구체적인 기법·모듈·학습 절차에서 직접적인 변형·확장·공통 관계로 볼 만한 연결은 추출본에서 확인되지 않는다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "GPT-4의 API를 사용하여 진행한다.",
+          "source_text": "[3.1.2] GPT-4의 API를 사용하여 진행한다. | GPT-4 API로 구매 만족도 라벨을 재조정하는 절차"
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "klue/bert, klue/roberta, kykim/albert-kor*, beomi/kcbert**, beomi/KcELECTRA* *** 모델",
+          "source_text": "[3.2.2] klue/bert, klue/roberta, kykim/albert-kor*, beomi/kcbert**, beomi/KcELECTRA* *** 모델 | 5개의 한국어 BERT 계열 사전학습 모델을 미세 조정 대상으로 사용"
+        },
+        {
+          "field": "core_techniques",
+          "index": 8,
+          "quote": "sotfmax 함수를 활용하여 구한다.",
+          "source_text": "[3.4] sotfmax 함수를 활용하여 구한다. | Softmax로 부정/긍정 확률을 계산해 감성 점수를 산출",
+          "index_corrected_from": 7
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "Within-task pre-training",
+          "source_text": "[4.2] Within-task pre-training | 타깃 과제의 학습 데이터로 BERT를 추가 사전학습하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "Cross-domain pre-training",
+          "source_text": "[4.2] Cross-domain pre-training | 동일 및 다른 도메인의 데이터를 함께 사용해 추가 사전학습하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 3,
+          "quote": "Multi-task Fine-Tuning",
+          "source_text": "[4.3] Multi-task Fine-Tuning | 여러 관련 과제를 동시에 학습하면서 BERT를 멀티태스크 방식으로 미세조정하는 방법"
+        },
+        {
+          "field": "core_techniques",
+          "index": 5,
+          "quote": "layer-wise learning rate",
+          "source_text": "[4.1] layer-wise learning rate | 하위 층에 더 작은 학습률을 적용하는 층별 감소 학습률"
+        }
+      ],
+      "votes": [
+        "generic_only",
+        "generic_only",
+        "generic_only"
+      ]
+    }
+  },
+  "comparison_allowed": true,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [
+    {
+      "axis": "scope",
+      "side": "my",
+      "field": "core_techniques",
+      "from": 6,
+      "to": 5
+    },
+    {
+      "axis": "method",
+      "side": "my",
+      "field": "core_techniques",
+      "from": 7,
+      "to": 8
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4",
+  "consensus": {
+    "runs": 3,
+    "used": 3,
+    "routes": [
+      "partial",
+      "partial",
+      "partial"
+    ],
+    "unanimous": true,
+    "failed_runs": 0
+  }
+}

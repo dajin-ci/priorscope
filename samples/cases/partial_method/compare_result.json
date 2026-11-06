@@ -1,0 +1,38 @@
+{
+  "overlap_level": [
+    "Medium Overlap"
+  ],
+  "llm_score": [
+    48
+  ],
+  "summary": [
+    "제안 논문과 기존 논문은 모두 오디오와 비주얼을 포함한 멀티모달 표현을 다루며, 제안 논문은 기존 논문의 ImageBind 통합 임베딩 공간을 활용한다. 다만 제안 논문은 개방어휘 AVEL 문제, 세그먼트 수준 벤치마크, 평가 지표와 베이스라인에 초점을 두는 반면, 기존 논문은 공유 임베딩 공간을 학습하는 표현 학습 자체를 주된 목표로 한다.",
+    "제안 논문은 temporal layer와 fine-tuning 절차를 추가해 AVEL에 맞춘 확장을 수행하지만, 기존 논문과의 직접적 공통점은 사전학습된 ImageBind 공간 활용과 Transformer 기반 구성에 있다."
+  ],
+  "element_mapping": [
+    "M1 ↔ - | 없음 | 검토 범위 P1~P8 | 기존 논문은 공유 임베딩 공간을 학습하는 표현 학습을 다루며, seen/unseen 테스트 데이터 모두에 대해 명시적 이벤트 카테고리를 예측하는 OV-AVEL 문제 정식화는 제시하지 않는다.",
+    "M2 ↔ - | 없음 | 검토 범위 P1~P8 | 기존 논문에는 67개 실생활 오디오-비주얼 장면과 수동 segment-level 주석을 포함한 AVEL용 벤치마크 데이터셋 구축이 없다.",
+    "M3 ↔ - | 없음 | 검토 범위 P1~P8 | 기존 논문은 정확도, segment-level F1, event-level F1으로 구성된 AVEL 전용 평가 지표를 핵심 요소로 제시하지 않는다.",
+    "M4 ↔ P1,P7,P8 | 일치 | M[1] / P[3.2], P[3.3] | 제안 논문은 사전학습된 ImageBind의 통합 멀티모달 임베딩 공간에서 오디오·비주얼·텍스트 특징을 추출하며, 이는 기존 논문의 공유 임베딩 공간과 모달리티별 인코더·프로젝션 구성을 그대로 활용하는 관계다.",
+    "M5 ↔ P1 | 유사 | M[1] / P[3.2] | 제안 논문은 오디오-텍스트와 비주얼-텍스트 특징 유사도의 일치성을 비교해 예측하고, 기존 논문은 각 모달리티를 공유 임베딩 공간에서 이미지에 정렬해 교차 모달 정렬 관계를 형성하므로, 공유 임베딩 공간의 유사도·정렬을 활용한다는 점에서 유사하다.",
+    "M6 ↔ - | 없음 | 검토 범위 P1~P8 | 제안 논문의 경량 temporal layer는 오디오/비주얼 모달리티 내부의 시간 관계 학습을 위한 별도 구성으로, 기존 논문에는 이러한 AVEL용 temporal layer 삽입이 없다.",
+    "M7 ↔ P6 | 유사 | M[3.2] / P[3.3] | 제안 논문은 temporal layer를 표준 Transformer 블록 스택으로 구현하고, 기존 논문도 모든 모달리티 인코더에 Transformer 아키텍처를 사용하므로 구현 기반은 유사하지만 목적과 배치가 다르다.",
+    "M8 ↔ - | 없음 | 검토 범위 P1~P8 | seen 클래스 열만 선택한 정답과 Save 사이의 cross entropy로 미세조정하는 학습 절차는 기존 논문의 InfoNCE 및 양방향 대칭 정렬 손실과 다르며, 기존 논문에 제시되지 않는다."
+  ],
+  "result_pairs": [
+    "해당 없음"
+  ],
+  "caution_points": [
+    "[M4 ↔ P1,P7,P8] 사전학습된 ImageBind의 통합 임베딩 공간과 모달리티별 인코더 구성을 그대로 활용한다는 점은 기존 논문과 같다고 지적될 수 있다. 본문에서는 이를 AVEL의 다운스트림 적용을 위한 구성 요소 활용으로 한정하고, 문제 설정과 학습 절차의 차이를 명확히 적는 것이 좋다.",
+    "[M5 ↔ P1] 공유 임베딩 공간에서 교차 모달 유사도와 정렬 관계를 활용한다는 점 때문에 기존 논문의 정렬 아이디어를 변형한 것으로 보일 수 있다. 본문에서는 학습 없는 추론 규칙과 AVEL 예측 목적이 표현 학습 자체와 다르다는 점을 구체화하는 것이 좋다.",
+    "[M7 ↔ P6] Transformer 블록을 사용한 temporal layer 구현은 기존 논문의 Transformer 인코더 사용과 방법적으로 비슷하다고 지적될 수 있다. 본문에서는 이 구성이 모달리티 인코더 자체가 아니라 시간 관계 학습을 위한 추가 계층이라는 점을 분명히 쓰는 것이 좋다."
+  ],
+  "differentiation_suggestions": [
+    "Our work uses the pretrained ImageBind space as a component for open-vocabulary audio-visual event localization, whereas the prior work focuses on learning a general joint embedding space rather than formulating AVEL as the target task.",
+    "Our work compares audio-text and visual-text similarity consistency for event prediction in a training-free AVEL baseline, while the prior work uses cross-modal alignment to build a shared representation space instead of an explicit localization-and-classification rule.",
+    "Our work adds temporal layers implemented with standard Transformer blocks to encode within-modality temporal relations, whereas the prior work applies Transformer architectures to modality encoders without introducing an AVEL-specific temporal refinement module."
+  ],
+  "related_work_draft": [
+    "The prior work (Girdhar et al., arXiv, 2023) learns a unified embedding space by aligning multiple modalities to images, enabling broad multimodal representation learning. In contrast, our work uses that pretrained space for open-vocabulary audio-visual event localization with task-specific localization, evaluation, and baseline design."
+  ]
+}

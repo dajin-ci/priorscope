@@ -1,0 +1,58 @@
+{
+  "title": [
+    "Conformer: Convolution-augmented Transformer for Speech Recognition"
+  ],
+  "language": [
+    "en"
+  ],
+  "research_field": [
+    "speech recognition"
+  ],
+  "problem": [
+    "Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively.",
+    "However, models with self-attention or convolutions each has its limitations.",
+    "While Transformers are good at modeling long-range global context, they are less capable to extract fine-grained local feature patterns.",
+    "One limitation of using local connectivity is that you need many more layers or parameters to capture global information.",
+    "However, it is still limited in capturing dynamic global context as it only applies a global averaging over the entire sequence."
+  ],
+  "core_techniques": [
+    "[2.1] multi-headed self-attention (MHSA) | 다중 헤드 자기어텐션 모듈을 사용한다.",
+    "[2.1] relative sinusoidal positional encoding scheme | 상대적 사인파 위치 인코딩을 사용해 길이 일반화와 강건성을 높인다.",
+    "[2.1] pre-norm residual units | 잔차 유닛 내부에 사전 정규화를 적용한다.",
+    "[2.2] a pointwise convolution and a gated linear unit (GLU) | 포인트와이즈 합성곱과 GLU 게이팅으로 시작하는 합성곱 모듈이다.",
+    "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다.",
+    "[2.2] Batchnorm | 깊은 모델 학습을 돕기 위해 합성곱 뒤에 배치정규화를 둔다.",
+    "[2.3] Swish activation | 피드포워드 모듈에서 Swish 활성화를 사용한다.",
+    "[2.4] two Feed Forward modules sandwiching the Multi-Headed Self-Attention module and the Convolution module | 어텐션과 합성곱 모듈을 두 개의 FFN이 감싸는 샌드위치 구조를 사용한다.",
+    "[2.4] Macaron-Net | Macaron-Net에서 영감을 받은 이중 FFN 구조를 사용한다.",
+    "[2.4] half-step residual weights | FFN 모듈에 half-step residual을 적용한다.",
+    "[3.1] SpecAugment | 입력 음성 특징에 데이터 증강을 적용한다.",
+    "[3.2] shallow fusion | 외부 언어모델과의 얕은 결합으로 성능을 높인다."
+  ],
+  "experiment_results": [
+    "LibriSpeech | Conformer(S) | test | single | 없음 | WER | 2.7 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(S) | test | single | 없음 | WER | 6.3 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(S) | test | single | LM | WER | 2.1 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(S) | test | single | LM | WER | 5.0 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(M) | test | single | 없음 | WER | 2.3 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(M) | test | single | 없음 | WER | 5.0 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(M) | test | single | LM | WER | 2.0 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(M) | test | single | LM | WER | 4.3 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(L) | test | single | 없음 | WER | 2.1 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(L) | test | single | 없음 | WER | 4.3 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(L) | test | single | LM | WER | 1.9 | ↓ | [Table 2]",
+    "LibriSpeech | Conformer(L) | test | single | LM | WER | 3.9 | ↓ | [Table 2]"
+  ],
+  "keywords": [
+    "speech recognition",
+    "attention",
+    "convolutional neural networks",
+    "transformer",
+    "end-to-end"
+  ],
+  "citation_info": [
+    "Gulati et al., arXiv, 2020"
+  ],
+  "limitations": [],
+  "contributions": "[1] we propose the convolution-augmented transformer for speech recognition, named Conformer. [1] Conformer significantly outperforms the previous Transformer and CNN based models achieving state-of-the-art accuracies. [1] On the widely used LibriSpeech benchmark, our model achieves WER of 2.1%/4.3% without using a language model and 1.9%/3.9% with an external language model on test/testother. [1] We also observe competitive performance of 2.7%/6.3% with a small model of only 10M parameters. [1] We further carefully study the effects of the number of attention heads, convolution kernel sizes, activation functions, placement of feed-forward layers, and different strategies of adding convolution modules to a Transformer-based network, and shed light on how each contributes to the accuracy improvements."
+}

@@ -1,0 +1,145 @@
+{
+  "version": "4",
+  "route": "unsuitable",
+  "label": "비교 부적합 안내",
+  "axes": {
+    "problem": {
+      "relation": "different",
+      "reason": "두 논문은 해결하려는 대상 과제와 최종 산출물이 서로 다르다. 내 논문은 객체 검출을 직접 집합 예측 문제로 정식화하여 COCO에서 박스 좌표와 클래스 예측을 목표로 하고, 상대 논문은 음성 인식에서 음성 특징으로부터 텍스트 전사(WER)를 목표로 한다. 둘 다 Transformer를 사용하지만, 이는 범용 기반일 뿐 해결 문제와 산출물이 일치하지 않는다.",
+      "my_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Modern detectors address this set prediction task in an indirect way, by defining surrogate regression and classification problems on a large set of proposals, anchors, or window centers.",
+          "source_text": "Modern detectors address this set prediction task in an indirect way, by defining surrogate regression and classification problems on a large set of proposals, anchors, or window centers."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "We present a new method that views object detection as a direct set prediction problem.",
+          "source_text": "[1] We present a new method that views object detection as a direct set prediction problem."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "problem",
+          "index": 0,
+          "quote": "Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively.",
+          "source_text": "Transformer models are good at capturing content-based global interactions, while CNNs exploit local features effectively."
+        },
+        {
+          "field": "contributions",
+          "index": 0,
+          "quote": "we propose the convolution-augmented transformer for speech recognition, named Conformer.",
+          "source_text": "[1] we propose the convolution-augmented transformer for speech recognition, named Conformer. [1] Conformer significantly outperforms the previous Transformer and CNN based models achieving state-of-the-art accuracies. [1] On the widely used LibriSpeech benchmark, our model achieves WER of 2.1%/4.3% without using a language model and 1.9%/3.9% with an external language model on test/testother. [1] We also observe competitive performance of 2.7%/6.3% with a small model of only 10M parameters. [1] We further carefully study the effects of the number of attention heads, convolution kernel sizes, activation functions, placement of feed-forward layers, and different strategies of adding convolution modules to a Transformer-based network, and shed light on how each contributes to the accuracy improvements."
+        }
+      ],
+      "votes": [
+        "different",
+        "different",
+        "different"
+      ]
+    },
+    "scope": {
+      "relation": "different",
+      "reason": "연구 범위와 입출력·전제 조건이 비교 가능한 공통 대상을 공유하지 않는다. 내 논문은 이미지 기반 객체 검출과 팬옵틱 분할을 다루고, 상대 논문은 음성 인식에서 스펙트로그램 특징과 언어모델 얕은 결합을 다룬다. 실험 벤치마크도 COCO와 LibriSpeech로 서로 달라 연구 범위가 다르다.",
+      "my_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "COCO | Faster RCNN-DC5 | dev | single | 없음 | AP | 39.0 | ↑ | [Table 1]",
+          "source_text": "COCO | Faster RCNN-DC5 | dev | single | 없음 | AP | 39.0 | ↑ | [Table 1]"
+        },
+        {
+          "field": "contributions",
+          "index": 5,
+          "quote": "DETR can be easily generalized to produce panoptic segmentation in a unified manner.",
+          "source_text": "[1] DETR can be easily generalized to produce panoptic segmentation in a unified manner."
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "experiment_results",
+          "index": 0,
+          "quote": "LibriSpeech | Conformer(S) | test | single | 없음 | WER | 2.7 | ↓ | [Table 2]",
+          "source_text": "LibriSpeech | Conformer(S) | test | single | 없음 | WER | 2.7 | ↓ | [Table 2]"
+        },
+        {
+          "field": "core_techniques",
+          "index": 11,
+          "quote": "[3.2] shallow fusion | 외부 언어모델과의 얕은 결합으로 성능을 높인다.",
+          "source_text": "[3.2] shallow fusion | 외부 언어모델과의 얕은 결합으로 성능을 높인다.",
+          "index_corrected_from": 8
+        }
+      ],
+      "votes": [
+        "different",
+        "different",
+        "different"
+      ]
+    },
+    "method": {
+      "relation": "generic_only",
+      "reason": "두 논문이 공유하는 방법상 연결은 Transformer 계열 구조를 사용한다는 범용 기반 수준이다. 내 논문은 객체 검출을 위해 이분 매칭 손실, 트랜스포머 인코더-디코더, 학습된 객체 쿼리를 사용하고, 상대 논문은 음성 인식을 위해 다중 헤드 자기어텐션, 1차원 depthwise convolution, 샌드위치 FFN 구조를 사용한다. 구체적인 기법·모듈·학습 절차가 서로 변형·확장 관계로 연결되지 않는다.",
+      "my_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 2,
+          "quote": "[1] a transformer encoder-decoder architecture | 트랜스포머 인코더-디코더 구조",
+          "source_text": "[1] a transformer encoder-decoder architecture | 트랜스포머 인코더-디코더 구조"
+        },
+        {
+          "field": "core_techniques",
+          "index": 1,
+          "quote": "[1] a set-based global loss that forces unique predictions via bipartite matching | 이분 매칭을 통해 중복 없는 유일한 예측을 강제하는 집합 기반 전역 손실",
+          "source_text": "[1] a set-based global loss that forces unique predictions via bipartite matching | 이분 매칭을 통해 중복 없는 유일한 예측을 강제하는 집합 기반 전역 손실"
+        }
+      ],
+      "prior_evidence": [
+        {
+          "field": "core_techniques",
+          "index": 0,
+          "quote": "[2.1] multi-headed self-attention (MHSA) | 다중 헤드 자기어텐션 모듈을 사용한다.",
+          "source_text": "[2.1] multi-headed self-attention (MHSA) | 다중 헤드 자기어텐션 모듈을 사용한다."
+        },
+        {
+          "field": "core_techniques",
+          "index": 4,
+          "quote": "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다.",
+          "source_text": "[2.2] single 1-D depthwise convolution layer | 지역 문맥 포착을 위한 1차원 depthwise convolution을 사용한다."
+        }
+      ],
+      "votes": [
+        "generic_only",
+        "generic_only",
+        "generic_only"
+      ]
+    }
+  },
+  "comparison_allowed": false,
+  "evidence_basis": "extracted_text",
+  "warnings": [],
+  "evidence_failures": [],
+  "index_corrections": [
+    {
+      "axis": "scope",
+      "side": "prior",
+      "field": "core_techniques",
+      "from": 8,
+      "to": 11
+    }
+  ],
+  "numeric_policy": "실험 조건은 적합성과 별개로 코드 검증 후 판단합니다.",
+  "model": "solar-pro4",
+  "consensus": {
+    "runs": 3,
+    "used": 3,
+    "routes": [
+      "unsuitable",
+      "unsuitable",
+      "unsuitable"
+    ],
+    "unanimous": true,
+    "failed_runs": 0
+  }
+}
