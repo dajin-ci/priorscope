@@ -1551,6 +1551,28 @@ def _summarize(mappings: list[dict[str, Any]], compare_result: Mapping[str, Any]
     }
 
 
+def _collapse_repeated_singles(compare_result: Any) -> tuple[Any, list[tuple[str, int]]]:
+    """단일 값 필드에 '완전히 같은 값'이 여러 번 들어 있으면 하나로 합친다.
+
+    Studio Extract가 같은 값을 반복해 내는 경우가 있다 (예: overlap_level 이 Medium Overlap ×3).
+    값이 하나라도 다르면 어느 쪽이 맞는지 알 수 없으므로 합치지 않고 기존대로 오류로 남긴다.
+    원본은 수정하지 않고 사본을 돌려준다.
+    """
+    if not isinstance(compare_result, Mapping):
+        return compare_result, []
+    collapsed: list[tuple[str, int]] = []
+    result = dict(compare_result)
+    for field in _SINGLE_FIELDS:
+        value = result.get(field)
+        if not _is_sequence(value) or len(value) < 2:
+            continue
+        keys = {" ".join(v.split()) if isinstance(v, str) else repr(v) for v in value}
+        if len(keys) == 1:
+            result[field] = [value[0]]
+            collapsed.append((field, len(value)))
+    return result, collapsed
+
+
 def validate(
     my_paper: Mapping[str, Any],
     prior_paper: Mapping[str, Any],
@@ -1580,7 +1602,16 @@ def validate(
         "result_pairs": _expected_result_pairs(rm, rp),
     }
 
+    compare_result, collapsed = _collapse_repeated_singles(compare_result)
     report = validate_comparison(compare_result, source_records, expected_items)
+    for field, count in collapsed:
+        report["issues"].append({
+            "code": "SINGLE_FIELD_REPEATED",
+            "severity": "info",
+            "path": f"comparison_result.{field}",
+            "item_id": None,
+            "message": f"단일 값 필드에 같은 값이 {count}번 들어 있어 하나로 합쳤습니다 (Studio Extract 반복 출력).",
+        })
 
     # 정량 비교 후처리: 동일 조건 여부(에이전트 판정)·근거 위치·중복 추출을 반영한다.
     record_by_id = {r["id"]: r for r in rm + rp}
